@@ -7,6 +7,7 @@
   "private": true,
   "dependencies": {
     "@atlaskit/css-reset": "^6.0.5",
+    "jsonpointer": "^4.1.0",
     "react": "^16.8",
     "react-dom": "^16.8",
     "styled-components": "^3.2"
