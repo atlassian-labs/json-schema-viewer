@@ -2,14 +2,24 @@
   "name": "json-schema-viewer",
   "version": "1.0.0",
   "description": "A website that allows for the viewing of JSON Schemas.",
-  "main": "index.js",
   "author": "Robert Massaioli <robertmassaioli@gmail.com>",
   "license": "MIT",
-  "private": false,
+  "private": true,
   "dependencies": {
     "@atlaskit/css-reset": "^6.0.5",
     "react": "^16.8",
     "react-dom": "^16.8",
     "styled-components": "^3.2"
+  },
+  "devDependencies": {
+    "@types/react": "^16.8",
+    "@types/react-dom": "^16.8",
+    "html-webpack-plugin": "^4.5.1",
+    "ts-loader": "^8.0.14",
+    "ts-node": "^9.1.1",
+    "typescript": "^4.1.3",
+    "webpack": "^5.12.2",
+    "webpack-cli": "^4.3.1",
+    "webpack-dev-server": "^3.11.1"
   }
 }
