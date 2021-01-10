@@ -21,6 +21,7 @@
     "@types/react-dom": "^16.8",
     "babel-loader": "^8.2.2",
     "html-webpack-plugin": "^5.0.0-beta.4",
+    "json-schema-to-typescript": "^10.1.2",
     "ts-loader": "^8.0.14",
     "ts-node": "^9.1.1",
     "typescript": "^4.1.3",
@@ -30,6 +31,7 @@
   },
   "scripts": {
     "storybook": "start-storybook -p 6006",
-    "build-storybook": "build-storybook"
+    "build-storybook": "build-storybook",
+    "gen-schema": "json2ts json-schema.draft-07.json > src/schema.ts"
   }
 }
