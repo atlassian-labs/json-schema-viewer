@@ -48,13 +48,13 @@
                     "type": "number"
                 },
                 "exclusiveMaximum": {
-                    "type": "number"
+                    "type": ["number", "boolean"]
                 },
                 "minimum": {
                     "type": "number"
                 },
                 "exclusiveMinimum": {
-                    "type": "number"
+                    "type": ["number", "boolean"]
                 },
                 "maxLength": { "$ref": "#/definitions/nonNegativeInteger" },
                 "minLength": { "$ref": "#/definitions/nonNegativeIntegerDefault0" },
@@ -110,7 +110,7 @@
                 "const": true,
                 "enum": {
                     "type": "array",
-                    "items": true,
+                    "items": {},
                     "minItems": 1,
                     "uniqueItems": true
                 },

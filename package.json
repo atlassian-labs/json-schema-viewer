@@ -6,7 +6,10 @@
   "license": "MIT",
   "private": true,
   "dependencies": {
+    "@atlaskit/code": "^13.1.1",
     "@atlaskit/css-reset": "^6.0.5",
+    "@atlaskit/lozenge": "^10.1.0",
+    "@atlaskit/tooltip": "^17.1.2",
     "jsonpointer": "^4.1.0",
     "react": "^16.8",
     "react-dom": "^16.8",

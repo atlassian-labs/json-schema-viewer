@@ -4,7 +4,7 @@ import { colors } from '@atlaskit/theme';
 import { JsonSchema, JsonSchema1 } from './schema';
 import { Lookup } from './lookup';
 import { intersperse } from './jsx-util';
-import { getOrInferType } from './type-inference';
+import { getOrInferType, isPrimitiveType } from './type-inference';
 
 export type TypeClick = (s: JsonSchema) => void;
 
@@ -115,7 +115,7 @@ const getTypeText = (s: JsonSchema | undefined, lookup: Lookup, onTypeClick: Typ
     } else if (compositeTypes.length > 1) {
       return <Plain>{intersperse(compositeTypes, ' AND ')}</Plain>;
     }
-  } else if (type === 'boolean' || type === 'string' || type === 'number' || type === 'integer' || type === 'null') {
+  } else if (isPrimitiveType(type)) {
     return <Plain>{type}</Plain>;
   } else if (type === 'array') {
     const items: Array<JsonSchema> | undefined = s.items === undefined || Array.isArray(s.items) ? s.items : [s.items];

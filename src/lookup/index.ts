@@ -1,19 +1,24 @@
-import { JsonSchema } from '../schema';
+import { JsonSchema, JsonSchema1 } from '../schema';
 import { get as pointerGet } from 'jsonpointer';
 
 export interface Lookup {
   getSchema: (s: JsonSchema) => JsonSchema | undefined;
 }
 
-function isReference(s: JsonSchema): boolean {
-  return typeof s === 'object' && s.$ref !== undefined;
+function isReference(s: JsonSchema1): boolean {
+  return s.$ref !== undefined;
 }
 
 export class IdLookup implements Lookup {
   public getSchema(s: JsonSchema): JsonSchema | undefined {
+    if (typeof s === 'boolean') {
+      return s;
+    }
+
     if (isReference(s)) {
       return undefined;
     }
+
     return s;
   }
 }

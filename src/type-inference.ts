@@ -61,3 +61,15 @@ export function getOrInferType(schema: JsonSchema1): JsonSchema1['type'] | undef
 
   return undefined;
 }
+
+const primitiveTypes: Array<JsonSchema1['type']> = [
+  'boolean',
+  'integer',
+  'null',
+  'number',
+  'string'
+]
+
+export function isPrimitiveType(type: JsonSchema1['type']): boolean {
+  return primitiveTypes.includes(type);
+}
