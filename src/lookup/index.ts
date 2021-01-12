@@ -24,7 +24,10 @@ export class IdLookup implements Lookup {
 }
 
 export class InternalLookup implements Lookup {
-  constructor(private schema: JsonSchema) {
+  private schema: JsonSchema;
+
+  constructor(schema: JsonSchema) {
+    this.schema = schema;
   }
 
   public getSchema(s: JsonSchema): JsonSchema | undefined {

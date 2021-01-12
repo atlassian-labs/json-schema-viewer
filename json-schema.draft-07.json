@@ -27,7 +27,7 @@
                 "description": {
                     "type": "string"
                 },
-                "default": true,
+                "default": {},
                 "readOnly": {
                     "type": "boolean",
                     "default": false
@@ -38,7 +38,7 @@
                 },
                 "examples": {
                     "type": "array",
-                    "items": true
+                    "items": {}
                 },
                 "multipleOf": {
                     "type": "number",

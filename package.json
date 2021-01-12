@@ -6,14 +6,22 @@
   "license": "MIT",
   "private": true,
   "dependencies": {
+    "@atlaskit/breadcrumbs": "^10.1.0",
+    "@atlaskit/button": "^15.1.4",
     "@atlaskit/code": "^13.1.1",
     "@atlaskit/css-reset": "^6.0.5",
+    "@atlaskit/icon": "^21.2.0",
     "@atlaskit/lozenge": "^10.1.0",
+    "@atlaskit/tabs": "^12.1.2",
+    "@atlaskit/theme": "^11.0.2",
     "@atlaskit/tooltip": "^17.1.2",
     "jsonpointer": "^4.1.0",
     "react": "^16.8",
+    "react-copy-to-clipboard": "^5.0.2",
     "react-dom": "^16.8",
-    "styled-components": "^3.2"
+    "react-markdown": "^5.0.3",
+    "styled-components": "^3.2",
+    "throttle-debounce": "^3.0.1"
   },
   "devDependencies": {
     "@babel/core": "^7.12.10",
@@ -22,7 +30,9 @@
     "@storybook/addon-links": "^6.1.11",
     "@storybook/react": "^6.1.11",
     "@types/react": "^16.8",
+    "@types/react-copy-to-clipboard": "^5.0.0",
     "@types/react-dom": "^16.8",
+    "@types/throttle-debounce": "^2.1.0",
     "babel-loader": "^8.2.2",
     "html-webpack-plugin": "^5.0.0-beta.4",
     "json-schema-to-typescript": "^10.1.2",
@@ -34,6 +44,7 @@
     "webpack-dev-server": "^3.11.1"
   },
   "scripts": {
+    "build": "webpack",
     "storybook": "start-storybook -p 6006",
     "build-storybook": "build-storybook",
     "gen-schema": "json2ts json-schema.draft-07.json > src/schema.ts"

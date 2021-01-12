@@ -11,12 +11,9 @@ const MetadataContainer = styled.div`
     margin: 8px 0 8px 0;
 `;
 
-export type ParameterStyle = 'matrix' | 'label' | 'simple' | 'form' | 'spaceDelimited' | 'pipeDelimited' | 'deepObject';
-
 export type ParameterMetadataProps = {
   schema: JsonSchema;
   lookup: Lookup;
-  style?: ParameterStyle;
 };
 
 function turnEnumToValues(schema: JsonSchema, lookup: Lookup): JSX.Element | undefined {
@@ -35,7 +32,7 @@ function turnEnumToValues(schema: JsonSchema, lookup: Lookup): JSX.Element | und
 }
 
 export const ParameterMetadata: React.SFC<ParameterMetadataProps> = (props) => {
-  const { schema, lookup, style } = props;
+  const { schema, lookup } = props;
 
   const restrictions: JSX.Element[] = new Array<JSX.Element>();
   const validValues = new Array<JSX.Element>();
@@ -47,10 +44,6 @@ export const ParameterMetadata: React.SFC<ParameterMetadataProps> = (props) => {
   function show(name: string, key: string, value: string | number) {
     const displayVal = typeof value === 'string' ? value : value.toString();
     return <span key={key}>{name}: <Code text={displayVal} language="text" /></span>;
-  }
-
-  if (style !== undefined) {
-    restrictions.push(show('Style', 'style', style));
   }
 
   if (typeof schema !== 'boolean') {
