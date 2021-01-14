@@ -8,15 +8,11 @@ import { SchemaReturnerLookup } from './schema-returner-lookup';
 import { IdLookup, InternalLookup } from '../lookup';
 import { Schema as PackageJson } from './package.json';
 
-const noOp = () => {
-  // noOp
-};
-
 const schemaForContext: JsonSchema = {
   type: 'object',
   properties: {
       'responseOnly': {
-          description: 'This should only show up in responses',
+          description: 'This should only show up if readOnly is true',
           type: 'string',
           readOnly: true
       },
@@ -25,7 +21,7 @@ const schemaForContext: JsonSchema = {
           type: 'string'
       },
       'requestOnly': {
-          description: 'This should only show up in requests',
+          description: 'This should only show up if writeOnly is true.',
           type: 'string',
           writeOnly: true
       }
@@ -37,9 +33,15 @@ export default {
    component: SchemaExplorer,
    argTypes: {
    },
- } as Meta;
+} as Meta;
 
- const Template: Story<SchemaExplorerProps> = (args) => <SchemaExplorer {...args} />;
+const Template: Story<SchemaExplorerProps> = (args) => <SchemaExplorer {...args} />;
+
+const defaultArgs: Partial<SchemaExplorerProps> = {
+   lookup: new IdLookup(),
+   onClose: action('on close'),
+   stage: 'both'
+};
 
 export const DefaultView = Template.bind({});
 (() => {
@@ -180,83 +182,184 @@ export const DefaultView = Template.bind({});
 })();
 
 export const PackageJsonRoot = Template.bind({});
+PackageJsonRoot.storyName = 'package.json (root)';
 PackageJsonRoot.args = {
    lookup: new InternalLookup(PackageJson),
-   schema: PackageJson
+   schema: PackageJson,
+   stage: 'both'
 };
+
+export const BothContext = Template.bind({});
+BothContext.args = {
+   lookup: new InternalLookup(schemaForContext),
+   schema: schemaForContext,
+   stage: 'both'
+};
+
+export const WriteContext = Template.bind({});
+WriteContext.args = {
+   lookup: new InternalLookup(schemaForContext),
+   schema: schemaForContext,
+   stage: 'write'
+};
+
+export const ReadContext = Template.bind({});
+ReadContext.args = {
+   lookup: new InternalLookup(schemaForContext),
+   schema: schemaForContext,
+   stage: 'read'
+};
+
+export const AdditionalPropertiesIsTrue = Template.bind({});
+AdditionalPropertiesIsTrue.storyName = 'Additional properties (true)';
+AdditionalPropertiesIsTrue.args = {
+   ...defaultArgs,
+   schema: { additionalProperties: true },
+};
+
+export const AdditionalPropertiesPrimitive = Template.bind({});
+AdditionalPropertiesPrimitive.storyName = 'Additional properties (primitive)';
+AdditionalPropertiesPrimitive.args = {
+   ...defaultArgs,
+   schema: { additionalProperties: { type: 'number' } }
+};
+
+export const AdditionalPropertiesComplex = Template.bind({});
+AdditionalPropertiesComplex.storyName = 'Additional properties (complex)';
+AdditionalPropertiesComplex.args = {
+   ...defaultArgs,
+   schema: {
+      additionalProperties: {
+         type: 'array',
+         items: {
+             anyOf: [
+                 { type: 'string' },
+                 { type: 'boolean' }
+             ]
+         }
+     }
+   }
+};
+
+export const AdditionalPropertiesClickable = Template.bind({});
+AdditionalPropertiesClickable.storyName = 'Additional properties (clickable)';
+AdditionalPropertiesClickable.args = {
+   ...defaultArgs,
+   schema: {
+      additionalProperties: {
+         type: 'object',
+         title: 'PropName',
+         properties: {
+           one: { type: 'string' },
+           two: { type: 'number' }
+         }
+       }
+   }
+};
+
+export const SingletonAllOf = Template.bind({});
+SingletonAllOf.storyName = 'Singleton allOf';
+(() => {
+   const componentSchema: JsonSchema = {
+      'type': 'object',
+      'properties': {
+        'lead': {
+          'type': 'object',
+          'description': "The user details for the component's lead user.",
+          'readOnly': true,
+          'allOf': [
+            {
+              '$ref': '#/components/schemas/User'
+            }
+          ]
+        }
+      }
+    };
+
+    const userSchema: JsonSchema = {
+      'type': 'object',
+      'properties': {
+        'self': {
+          'type': 'string',
+          'format': 'uri',
+          'description': 'The URL of the user.',
+          'readOnly': true
+        },
+        'key': {
+          'type': 'string',
+          // tslint:disable-next-line:max-line-length
+          'description': 'This property has been deprecated in favour of `accountId` due to privacy changes. See the [migration guide](https://developer.atlassian.com/cloud/jira/platform/deprecation-notice-user-privacy-api-migration-guide/) for details.  \nThe key of the user. In requests, required unless `accountId` or `key` is specified.'
+        },
+        'accountId': {
+          'type': 'string',
+          // tslint:disable-next-line:max-line-length
+          'description': 'The accountId of the user, which uniquely identifies the user across all Atlassian products. For example, _384093:32b4d9w0-f6a5-3535-11a3-9c8c88d10192_. In requests, required unless `name` or `key` is specified.'
+        },
+        'name': {
+          'type': 'string',
+          // tslint:disable-next-line:max-line-length
+          'description': 'This property has been deprecated in favour of `accountId` due to privacy changes. See the [migration guide](https://developer.atlassian.com/cloud/jira/platform/deprecation-notice-user-privacy-api-migration-guide/) for details.  \nThe username of the user. In requests, required unless `accountId` or `name` is specified.'
+        },
+        'emailAddress': {
+          'type': 'string',
+          // tslint:disable-next-line:max-line-length
+          'description': 'The email address of the user. Depending on the user’s privacy setting, this may be returned as null.',
+          'readOnly': true
+        },
+        'displayName': {
+          'type': 'string',
+          // tslint:disable-next-line:max-line-length
+          'description': 'The display name of the user. Depending on the user’s privacy setting, this may return an alternative value.',
+          'readOnly': true
+        },
+        'active': {
+          'type': 'boolean',
+          'description': 'Indicates whether the user is active.',
+          'readOnly': true
+        },
+        'timeZone': {
+          'type': 'string',
+          // tslint:disable-next-line:max-line-length
+          'description': "The time zone specified in the user's profile. Depending on the user’s privacy setting, this may be returned as null.",
+          'readOnly': true
+        },
+        'locale': {
+          'type': 'string',
+          // tslint:disable-next-line:max-line-length
+          'description': 'The locale of the user. Depending on the user’s privacy setting, this may be returned as null.',
+          'readOnly': true
+        },
+        'expand': {
+          'type': 'string',
+          'xml': {
+            'attribute': true
+          },
+          'description': 'Details of expands available for the user details.',
+          'readOnly': true
+        }
+      },
+      'xml': {
+        'name': 'user'
+      },
+      'description': 'A user.'
+    };
+
+    const lookup = new SchemaReturnerLookup({
+      '#/components/schemas/User': userSchema
+    });
+
+    SingletonAllOf.args = {
+      ...defaultArgs,
+      lookup,
+      stage: 'read',
+      schema: componentSchema
+   };
+})();
+
+
 /*
 export default function loadStories(storyFactory: PartialStoriesOf) {
   storyFactory('Schema explorer')
-
-    .add('Request context', () => (
-        <SchemaExplorer
-            schema={schemaForContext}
-            httpStage="request"
-            lookup={new SwaggerLookup.IdLookup()}
-            onClose={noOp}
-        />
-    ))
-    .add('Response context', () => (
-        <SchemaExplorer
-            schema={schemaForContext}
-            httpStage="response"
-            lookup={new SwaggerLookup.IdLookup()}
-            onClose={noOp}
-        />
-    ))
-    .add('Additional properties (true)', () => {
-        const schema: Swagger.Schema = {
-            additionalProperties: true
-        };
-
-        return (
-            <SchemaExplorer schema={schema} httpStage="request" lookup={new SwaggerLookup.IdLookup()} onClose={noOp} />
-        );
-    })
-    .add('Additional properties (primitive)', () => {
-        const schema: Swagger.Schema = {
-            additionalProperties: {
-                type: 'number'
-            }
-        };
-
-        return (
-            <SchemaExplorer schema={schema} httpStage="request" lookup={new SwaggerLookup.IdLookup()} onClose={noOp} />
-        );
-    })
-    .add('Additional properties (complex)', () => {
-        const schema: Swagger.Schema = {
-            additionalProperties: {
-                type: 'array',
-                items: {
-                    anyOf: [
-                        { type: 'string' },
-                        { type: 'boolean' }
-                    ]
-                }
-            }
-        };
-
-        return (
-            <SchemaExplorer schema={schema} httpStage="request" lookup={new SwaggerLookup.IdLookup()} onClose={noOp} />
-        );
-    })
-    .add('Additional properties (clickable)', () => {
-      const schema: Swagger.Schema = {
-        additionalProperties: {
-          type: 'object',
-          title: 'PropName',
-          properties: {
-            one: { type: 'string' },
-            two: { type: 'number' }
-          }
-        }
-      };
-
-      return (
-        <SchemaExplorer schema={schema} httpStage="request" lookup={new SwaggerLookup.IdLookup()} onClose={noOp} />
-      );
-    })
     .add('Singleton allOf', () => {
       const componentSchema: Swagger.Schema = {
         'type': 'object',

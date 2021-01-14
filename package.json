@@ -20,6 +20,7 @@
     "react-copy-to-clipboard": "^5.0.2",
     "react-dom": "^16.8",
     "react-markdown": "^5.0.3",
+    "react-router-dom": "^5.2.0",
     "styled-components": "^3.2",
     "throttle-debounce": "^3.0.1"
   },
@@ -32,6 +33,7 @@
     "@types/react": "^16.8",
     "@types/react-copy-to-clipboard": "^5.0.0",
     "@types/react-dom": "^16.8",
+    "@types/react-router-dom": "^5.1.7",
     "@types/throttle-debounce": "^2.1.0",
     "babel-loader": "^8.2.2",
     "html-webpack-plugin": "^5.0.0-beta.4",

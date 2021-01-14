@@ -196,10 +196,13 @@ export const SchemaExplorerDetails: React.FC<SchemaExplorerDetailsProps> = props
   const properties = schema.properties || {};
 
   const renderedProps = Object.keys(properties)
-    .map(propertyName => ({
-      propertyName,
-      schema: lookup.getSchema(properties[propertyName])
-    }))
+    .map(propertyName => {
+      const propertySchema = properties[propertyName];
+      return ({
+        propertyName,
+        schema: lookup.getSchema(propertySchema)
+      });
+    })
     .filter(p => {
       if (typeof p.schema === 'undefined') {
         return true;

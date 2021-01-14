@@ -47,6 +47,24 @@ const Clickable = styled.a`
 
 const Anything = () => <Plain>anything</Plain>;
 
+// function mergeCompositesWithParent(parent: JsonSchema1, children: Array<JsonSchema | undefined>): Array<JsonSchema | undefined> {
+//   return children.map(child => {
+//     if (child === undefined) {
+//       return undefined;
+//     }
+
+//     if (typeof child === 'boolean') {
+//       return child;
+//     }
+
+//     return {
+//       title: parent.title,
+//       type: parent.type,
+//       ...child
+//     };
+//   })
+// }
+
 const getTypeText = (s: JsonSchema | undefined, lookup: Lookup, onTypeClick: TypeClick): JSX.Element => {
   if (s === undefined) {
     return <Anything />;
@@ -63,6 +81,7 @@ const getTypeText = (s: JsonSchema | undefined, lookup: Lookup, onTypeClick: Typ
 
     if (s.anyOf !== undefined && s.anyOf.length > 0) {
       const schemas = s.anyOf.map(sx => lookup.getSchema(sx));
+      // const schemas = mergeCompositesWithParent(s, s.anyOf.map(sx => lookup.getSchema(sx)));
 
       if (schemas.find(sx => sx === undefined)) {
         // If you have an anything in an anyOf then you should just simplify to anything
