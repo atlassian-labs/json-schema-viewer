@@ -107,20 +107,6 @@ class SideNavGroup extends React.PureComponent<SideNavGroupProps, SideNavGroupSt
     });
   }
 
-  componentDidUpdate() {
-    // TODO fix opening if clicked on
-    /*
-    if (this.state.lastOpenReference !== 'TODO') {
-      if (this.isSelectedGroup()) {
-        this.setState({
-          open: true,
-          lastOpenReference: selectedReference
-        });
-      }
-    }
-    */
-  }
-
   render() {
     const { basePath, link } = this.props;
     const { open } = this.state;
