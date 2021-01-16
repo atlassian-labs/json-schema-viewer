@@ -13,20 +13,20 @@ export default {
 } as Meta;
 
 const Template: Story<SideNavWithRouterProps> = (args) => (
-  <DebuggingMemoryRouter initialEntries={['/']}>
+  <DebuggingMemoryRouter initialEntries={['base']}>
     <SideNavWithRouter {...args} />
   </DebuggingMemoryRouter>
 );
 
 export const NoLinks = Template.bind({});
 NoLinks.args = {
-  basePath: '/base',
+  basePathSegments: ['base'],
   links: []
 };
 
 export const SinglesExample = Template.bind({});
 SinglesExample.args = {
-  basePath: '/base',
+  basePathSegments: ['base'],
   links: [{
     title: 'One',
     reference: '#/definitions/one'
@@ -58,13 +58,13 @@ function createGroups(groupCount: number, childCount: number): SideNavLink[] {
 
 export const GroupsExample = Template.bind({});
 GroupsExample.args = {
-  basePath: '/base',
+  basePathSegments: ['base'],
   links: createGroups(3, 3)
 };
 
 export const SingleAndGroupExample = Template.bind({});
 SingleAndGroupExample.args = {
-  basePath: '/base',
+  basePathSegments: ['base'],
   links: [{
     title: 'One',
     reference: '#/one'

@@ -4,18 +4,19 @@ import ChevronRightIcon from '@atlaskit/icon/glyph/chevron-right';
 import styled from 'styled-components';
 import { forSize } from './breakpoints';
 import { NavLink } from 'react-router-dom';
+import { linkTo } from './route-path';
 
 export type SideNavLink = SingleSideNavLink | GroupSideNavLink;
 
 export type SingleSideNavLink = {
-   title: string;
-   reference: string;
+  title: string;
+  reference: string;
 };
 
 export type GroupSideNavLink = {
-   title: string;
-   reference: string;
-   children: SingleSideNavLink[];
+  title: string;
+  reference: string;
+  children: SingleSideNavLink[];
 };
 
 function isGroupSideNavLink(l: SideNavLink): l is GroupSideNavLink {
@@ -62,7 +63,7 @@ const NavItem = styled<NavItemProps, 'li'>('li')`
 `;
 
 type SideNavGroupProps = {
-  basePath: string;
+  basePathSagments: Array<string>;
   link: SideNavLink;
 };
 
@@ -108,7 +109,7 @@ class SideNavGroup extends React.PureComponent<SideNavGroupProps, SideNavGroupSt
   }
 
   render() {
-    const { basePath, link } = this.props;
+    const { basePathSagments, link } = this.props;
     const { open } = this.state;
 
     if (!isGroupSideNavLink(link) || link.children.length === 0) {
@@ -116,7 +117,7 @@ class SideNavGroup extends React.PureComponent<SideNavGroupProps, SideNavGroupSt
         <div>
           <SideNavGroup.Item>
             <SideNavGroup.SingleLinkContainer>
-              <NavLink to={`${basePath}/${encodeURIComponent(link.reference)}`}>
+              <NavLink to={linkTo(basePathSagments, [link.reference])}>
                 {link.title}
               </NavLink>
             </SideNavGroup.SingleLinkContainer>
@@ -128,7 +129,7 @@ class SideNavGroup extends React.PureComponent<SideNavGroupProps, SideNavGroupSt
     const subLinks = !isGroupSideNavLink(link) ? [] : link.children.map(childLink => {
       return (
         <NavItem key={childLink.reference} indent={true}>
-          <NavLink to={`${basePath}/${encodeURIComponent(childLink.reference)}`} >
+          <NavLink to={linkTo(basePathSagments, [childLink.reference])} >
             {childLink.title}
           </NavLink>
         </NavItem>
@@ -147,7 +148,7 @@ class SideNavGroup extends React.PureComponent<SideNavGroupProps, SideNavGroupSt
       <div>
         <SideNavGroup.Item>
           <SideNavGroup.IconWrap onClick={() => this.toggleState(!open)}>{icon}</SideNavGroup.IconWrap>
-          <NavLink to={`${basePath}/${encodeURIComponent(link.reference)}`}>
+          <NavLink to={linkTo(basePathSagments, [link.reference])}>
             {link.title}
           </NavLink>
         </SideNavGroup.Item>
@@ -165,78 +166,62 @@ class SideNavGroup extends React.PureComponent<SideNavGroupProps, SideNavGroupSt
 }
 
 type SideNavLinksProps = {
-  basePath: string;
+  basePathSegments: Array<string>;
   links: Array<SideNavLink>
 };
 
-class SideNavLinks extends React.PureComponent<SideNavLinksProps, SideNavState> {
-  private static WrappedHotKeys = styled.div`
-      display: none;
-      ${forSize('tablet-landscape-up', `
-         display: block;
-         flex: auto;
-         overflow-y: auto;
-      `)}
-      &:focus {
-         outline: 0;
-      }
-    `;
+class SideNavLinks extends React.PureComponent<SideNavLinksProps> {
+  private static Container = styled.div`
+    display: none;
+    ${forSize('tablet-landscape-up', `
+      display: block;
+      flex: auto;
+      overflow-y: auto;
+      min-width: 300px;
 
-  UNSAFE_componentWillMount() {
-    this.setState({});
-  }
+    `)}
+    &:focus {
+      outline: 0;
+    }
+  `;
 
   render() {
-    const { basePath, links } = this.props;
-    const { selectedReference } = this.state;
+    const { basePathSegments, links } = this.props;
 
     const groups = links.map(link => {
-      return <SideNavGroup basePath={basePath} key={link.title} link={link} />
+      return <SideNavGroup basePathSagments={basePathSegments} key={link.title} link={link} />
     });
 
     return (
-      <SideNavLinks.WrappedHotKeys>
+      <SideNavLinks.Container>
         <div>{groups}</div>
-      </SideNavLinks.WrappedHotKeys>
+      </SideNavLinks.Container>
     );
   }
 }
 
-// We also need to think about how scroll position affects this component
-// We also need to think about section rendering
 export type SideNavWithRouterProps = {
-  basePath: string;
+  basePathSegments: Array<string>;
   links: Array<SideNavLink>
-};
-
-export type SideNavState = {
-  selectedReference: string | undefined;
 };
 
 export class SideNavWithRouter extends React.PureComponent<SideNavWithRouterProps> {
   private static Container = styled.div`
-        display: flex;
-        flex-direction: column;
+    display: flex;
+    flex-direction: column;
 
-        ${forSize('tablet-landscape-up', `
-            height: 95vh;
-            width: 300px;
-        `)}
-    `;
-
-  private static Actions = styled.div`
-        flex: initial;
-        margin: 0 0 0 0;
-
-        padding: 0 20px 0 8px;
-    `;
+    ${forSize('tablet-landscape-up', `
+      height: 95vh;
+      width: 300px;
+    `)}
+  `;
 
   render() {
-    const { basePath, links } = this.props;
+    const { basePathSegments, links } = this.props;
 
     return (
       <SideNavWithRouter.Container>
-        <SideNavLinks basePath={basePath} links={links} />
+        <SideNavLinks basePathSegments={basePathSegments} links={links} />
       </SideNavWithRouter.Container>
     );
   }

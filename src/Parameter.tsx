@@ -6,7 +6,7 @@ import { JsonSchema } from './schema';
 import { Lookup } from './lookup';
 import { Markdown } from './markdown';
 import { ParameterMetadata } from './ParameterMetadata';
-import { Type } from './Type';
+import { ClickElement, Type } from './Type';
 
 const Wrap = styled.span`
     padding-left: 10px;
@@ -23,8 +23,9 @@ export type ParameterViewProps = {
   required?: boolean;
   deprecated?: boolean;
   schema: JsonSchema | undefined;
+  reference: string;
   lookup: Lookup;
-  onClickType?(s: JsonSchema): void;
+  clickElement: ClickElement;
 };
 
 const ParameterContainer = styled.section`
@@ -48,8 +49,9 @@ export const ParameterView: React.FC<ParameterViewProps> = (props) => (
     <ParameterTitle>{props.name} </ParameterTitle> {props.required && Required} {props.deprecated && Deprecated}
     <Type
       s={props.schema}
+      reference={props.reference}
       lookup={props.lookup}
-      onTypeClick={s => props.onClickType && props.onClickType(s)}
+      clickElement={props.clickElement}
     />
     {props.description !== undefined && (
       <Description>

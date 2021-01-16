@@ -1,5 +1,5 @@
 import { JsonSchema, JsonSchema1 } from './schema';
-import { Lookup } from './lookup';
+import { getSchemaFromResult, Lookup } from './lookup';
 import { isPrimitiveType } from './type-inference';
 
 function extractEnumDirectly(schema?: JsonSchema): JsonSchema1['enum'] {
@@ -16,7 +16,7 @@ function extractEnumDirectly(schema?: JsonSchema): JsonSchema1['enum'] {
 
 function extractArrayEnum(schema: JsonSchema, lookup: Lookup): JsonSchema1['enum'] {
   if (typeof schema !== 'boolean' && schema.type === 'array' && schema.items !== undefined && !Array.isArray(schema.items)) {
-    return extractEnumDirectly(lookup.getSchema(schema.items));
+    return extractEnumDirectly(getSchemaFromResult(lookup.getSchema(schema.items)));
   }
   return undefined;
 }

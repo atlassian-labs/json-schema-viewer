@@ -1,8 +1,25 @@
 import { JsonSchema, JsonSchema1 } from '../schema';
 import { get as pointerGet } from 'jsonpointer';
 
+export function getSchemaFromReference(reference: string, lookup: Lookup): JsonSchema | undefined {
+  return getSchemaFromResult(loadReference(reference, lookup));
+}
+
+export function loadReference(reference: string, lookup: Lookup): LookupResult {
+  return lookup.getSchema({ $ref: reference });
+}
+
+export function getSchemaFromResult(result: LookupResult): JsonSchema | undefined {
+  return result === undefined ? undefined : result.schema;
+}
+
+export type LookupResult = undefined | {
+  schema: JsonSchema;
+  baseReference?: string;
+}
+
 export interface Lookup {
-  getSchema: (s: JsonSchema) => JsonSchema | undefined;
+  getSchema: (s: JsonSchema) => LookupResult;
 }
 
 function isReference(s: JsonSchema1): boolean {
@@ -10,16 +27,16 @@ function isReference(s: JsonSchema1): boolean {
 }
 
 export class IdLookup implements Lookup {
-  public getSchema(s: JsonSchema): JsonSchema | undefined {
-    if (typeof s === 'boolean') {
-      return s;
+  public getSchema(schema: JsonSchema): LookupResult {
+    if (typeof schema === 'boolean') {
+      return { schema };
     }
 
-    if (isReference(s)) {
+    if (isReference(schema)) {
       return undefined;
     }
 
-    return s;
+    return { schema };
   }
 }
 
@@ -30,16 +47,16 @@ export class InternalLookup implements Lookup {
     this.schema = schema;
   }
 
-  public getSchema(s: JsonSchema): JsonSchema | undefined {
-    if (typeof s === 'boolean') {
-      return s;
+  public getSchema(schema: JsonSchema): LookupResult {
+    if (typeof schema === 'boolean') {
+      return { schema };
     }
 
-    if (s.$ref === undefined) {
-      return s;
+    if (schema.$ref === undefined) {
+      return { schema };
     }
 
-    const ref = s.$ref;
+    const ref = schema.$ref;
     if (!ref.startsWith('#')) {
       // This class does not support non-internal references
       return undefined;
@@ -53,6 +70,15 @@ export class InternalLookup implements Lookup {
 
     // TODO add in a type check on the result to ensure that it is of the right type
 
-    return this.getSchema(result);
+    const subResult = this.getSchema(result);
+
+    if (subResult === undefined) {
+      return undefined;
+    }
+
+    return {
+      schema: subResult.schema,
+      baseReference: subResult.baseReference || ref
+    };
   }
 }

@@ -38,8 +38,8 @@ export default {
 const Template: Story<SchemaExplorerProps> = (args) => <SchemaExplorer {...args} />;
 
 const defaultArgs: Partial<SchemaExplorerProps> = {
+   path: [{ title: 'object', reference: '#' }],
    lookup: new IdLookup(),
-   onClose: action('on close'),
    stage: 'both'
 };
 
@@ -52,6 +52,7 @@ export const DefaultView = Template.bind({});
       '$ref': '#/components/schemas/UserDetails'
   };
   const userSchema: JsonSchema = {
+      title: 'User',
       description: 'A Confluence User, that everybody wants to see.',
       type: 'object',
       required: [
@@ -174,16 +175,21 @@ export const DefaultView = Template.bind({});
   });
 
   DefaultView.args = {
+     ...defaultArgs,
+     path: [{
+        title: userSchema.title || 'object',
+        reference: userRef.$ref || ''
+     }],
      lookup,
      schema: userSchema,
-     stage: 'both',
-     onClose: action('on close')
+     stage: 'both'
   }
 })();
 
 export const PackageJsonRoot = Template.bind({});
 PackageJsonRoot.storyName = 'package.json (root)';
 PackageJsonRoot.args = {
+   ...defaultArgs,
    lookup: new InternalLookup(PackageJson),
    schema: PackageJson,
    stage: 'both'
@@ -191,6 +197,7 @@ PackageJsonRoot.args = {
 
 export const BothContext = Template.bind({});
 BothContext.args = {
+   ...defaultArgs,
    lookup: new InternalLookup(schemaForContext),
    schema: schemaForContext,
    stage: 'both'
@@ -198,6 +205,7 @@ BothContext.args = {
 
 export const WriteContext = Template.bind({});
 WriteContext.args = {
+   ...defaultArgs,
    lookup: new InternalLookup(schemaForContext),
    schema: schemaForContext,
    stage: 'write'
@@ -205,6 +213,7 @@ WriteContext.args = {
 
 export const ReadContext = Template.bind({});
 ReadContext.args = {
+   ...defaultArgs,
    lookup: new InternalLookup(schemaForContext),
    schema: schemaForContext,
    stage: 'read'
@@ -355,104 +364,3 @@ SingletonAllOf.storyName = 'Singleton allOf';
       schema: componentSchema
    };
 })();
-
-
-/*
-export default function loadStories(storyFactory: PartialStoriesOf) {
-  storyFactory('Schema explorer')
-    .add('Singleton allOf', () => {
-      const componentSchema: Swagger.Schema = {
-        'type': 'object',
-        'properties': {
-          'lead': {
-            'type': 'object',
-            'description': "The user details for the component's lead user.",
-            'readOnly': true,
-            'allOf': [
-              {
-                '$ref': '#/components/schemas/User'
-              }
-            ]
-          }
-        }
-      };
-
-      const userSchema: Swagger.Schema = {
-        'type': 'object',
-        'properties': {
-          'self': {
-            'type': 'string',
-            'format': 'uri',
-            'description': 'The URL of the user.',
-            'readOnly': true
-          },
-          'key': {
-            'type': 'string',
-            // tslint:disable-next-line:max-line-length
-            'description': 'This property has been deprecated in favour of `accountId` due to privacy changes. See the [migration guide](https://developer.atlassian.com/cloud/jira/platform/deprecation-notice-user-privacy-api-migration-guide/) for details.  \nThe key of the user. In requests, required unless `accountId` or `key` is specified.'
-          },
-          'accountId': {
-            'type': 'string',
-            // tslint:disable-next-line:max-line-length
-            'description': 'The accountId of the user, which uniquely identifies the user across all Atlassian products. For example, _384093:32b4d9w0-f6a5-3535-11a3-9c8c88d10192_. In requests, required unless `name` or `key` is specified.'
-          },
-          'name': {
-            'type': 'string',
-            // tslint:disable-next-line:max-line-length
-            'description': 'This property has been deprecated in favour of `accountId` due to privacy changes. See the [migration guide](https://developer.atlassian.com/cloud/jira/platform/deprecation-notice-user-privacy-api-migration-guide/) for details.  \nThe username of the user. In requests, required unless `accountId` or `name` is specified.'
-          },
-          'emailAddress': {
-            'type': 'string',
-            // tslint:disable-next-line:max-line-length
-            'description': 'The email address of the user. Depending on the user’s privacy setting, this may be returned as null.',
-            'readOnly': true
-          },
-          'displayName': {
-            'type': 'string',
-            // tslint:disable-next-line:max-line-length
-            'description': 'The display name of the user. Depending on the user’s privacy setting, this may return an alternative value.',
-            'readOnly': true
-          },
-          'active': {
-            'type': 'boolean',
-            'description': 'Indicates whether the user is active.',
-            'readOnly': true
-          },
-          'timeZone': {
-            'type': 'string',
-            // tslint:disable-next-line:max-line-length
-            'description': "The time zone specified in the user's profile. Depending on the user’s privacy setting, this may be returned as null.",
-            'readOnly': true
-          },
-          'locale': {
-            'type': 'string',
-            // tslint:disable-next-line:max-line-length
-            'description': 'The locale of the user. Depending on the user’s privacy setting, this may be returned as null.',
-            'readOnly': true
-          },
-          'expand': {
-            'type': 'string',
-            'xml': {
-              'attribute': true
-            },
-            'description': 'Details of expands available for the user details.',
-            'readOnly': true
-          }
-        },
-        'xml': {
-          'name': 'user'
-        },
-        'description': 'A user.'
-      };
-
-      const lookup = new SchemaReturnerLookup({
-        '#/components/schemas/User': userSchema
-      });
-
-      return (
-        <SchemaExplorer schema={componentSchema} httpStage="response" lookup={lookup} onClose={noOp} />
-      );
-    })
-    ;
-}
-*/

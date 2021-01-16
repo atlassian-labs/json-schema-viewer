@@ -3,8 +3,7 @@ import { JsonSchema, JsonSchema1 } from './schema';
 import { Lookup } from './lookup';
 import { ParameterView } from './Parameter';
 import styled from 'styled-components';
-import Button from '@atlaskit/button';
-import CrossIcon from '@atlaskit/icon/glyph/cross';
+import Button, { ButtonProps } from '@atlaskit/button';
 import ChevronLeftIcon from '@atlaskit/icon/glyph/chevron-left';
 import { Markdown } from './markdown';
 import { BreadcrumbsStateless, BreadcrumbsItem } from '@atlaskit/breadcrumbs';
@@ -13,13 +12,14 @@ import { TabData, OnSelectCallback } from '@atlaskit/tabs/types';
 import { CodeBlockWithCopy } from './code-block-with-copy';
 import { generateJsonExampleFor, isExample, Example, Errors } from './example';
 import { Stage, shouldShowInStage } from './stage';
+import { linkTo, PathElement } from './route-path';
+import { ClickElement } from './Type';
+import { Link, LinkProps } from 'react-router-dom';
 
 interface SEPHeadProps {
+  basePathSegments: Array<string>;
   path: PathElement[];
   pathExpanded: boolean;
-  setPath: (path: PathElement[]) => void;
-  onClose: () => void;
-  onBackClick: () => void;
   onExpandClick: () => void;
 }
 
@@ -37,48 +37,45 @@ const Path = styled.div`
     padding-left: 20px;
 `;
 
-function getObjectPath(
-  path: PathElement[],
-  setPath: (path: PathElement[]) => void,
-  onClick: (title: string) => void): JSX.Element[] {
+function getObjectPath(basePathSegments: Array<string>, path: PathElement[]): JSX.Element[] {
   return path.map((pe, i) => (
     <BreadcrumbsItem
       key={`${pe.title}-${i}`}
       text={pe.title}
-      onClick={e => {
-        e.preventDefault();
-        setPath(path.slice(0, i + 1));
-        onClick(pe.title);
-      }}
+      component={() => <Link to={linkTo(basePathSegments, path.slice(0, i+1).map(p => p.reference))}>{getTitleForPathElement(pe.reference, { title: pe.title !== 'object' ? pe.title : undefined })}</Link>}
     />
   ));
 }
 
+const BackButton = React.forwardRef<typeof Link, LinkProps>((props, ref) => {
+  console.log(props);
+  return (
+    <Button
+      key="backButton"
+      iconBefore={<ChevronLeftIcon label="Back" />}
+      href={props.href}
+    >Back
+    </Button>
+  );
+});
+
+function init<A>(arr: Array<A>): Array<A> {
+  if (arr.length === 0) {
+    return arr;
+  }
+
+  return arr.slice(0, arr.length - 1);
+}
+
 const SEPHead = (props: SEPHeadProps) => {
-  const onBackClick = (_e: React.MouseEvent<HTMLElement>) => {
-    props.onBackClick();
-  };
-
-  const onClose = (_e: React.MouseEvent<HTMLElement>) => {
-    props.onClose();
-  };
-
   const onExpandClick = () => {
     props.onExpandClick();
   };
 
-  const onPathClick = (title: string) => {
-  };
-
   const ActionButton = props.path.length <= 1
-    ? <Button iconBefore={<CrossIcon label="Close" />} onClick={onClose}>Close</Button>
+    ? <h1>Root</h1>
     : (
-      <Button
-        key="backButton"
-        iconBefore={<ChevronLeftIcon label="Back" />}
-        onClick={onBackClick}
-      >Back
-      </Button>
+      <Link to={linkTo(props.basePathSegments, init(props.path.map(p => p.reference)))} component={BackButton} />
     );
 
   return (
@@ -89,7 +86,7 @@ const SEPHead = (props: SEPHeadProps) => {
           isExpanded={props.pathExpanded}
           onExpand={onExpandClick}
         >
-          {getObjectPath(props.path, props.setPath, onPathClick)}
+          {getObjectPath(props.basePathSegments, props.path)}
         </BreadcrumbsStateless>
       </Path>
     </Head>
@@ -174,9 +171,10 @@ const SchemaExplorerExample: React.FC<SchemaExplorerExampleProps> = props => {
 
 export type SchemaExplorerDetailsProps = {
   schema: JsonSchema1;
+  reference: string;
   lookup: Lookup;
   stage: Stage;
-  onClickType: (propertyName: string, schema: JsonSchema1) => void;
+  clickElement: ClickElement;
 };
 
 const DescriptionContainer = styled.div`
@@ -192,38 +190,41 @@ function getDescriptionForSchema(schema: JsonSchema): string | undefined {
 }
 
 export const SchemaExplorerDetails: React.FC<SchemaExplorerDetailsProps> = props => {
-  const { schema, onClickType, lookup, stage } = props;
+  const { schema, reference, clickElement, lookup, stage } = props;
   const properties = schema.properties || {};
 
   const renderedProps = Object.keys(properties)
     .map(propertyName => {
       const propertySchema = properties[propertyName];
+      const lookupResult = lookup.getSchema(propertySchema);
       return ({
         propertyName,
-        schema: lookup.getSchema(propertySchema)
+        lookupResult,
+        propertyReference: lookupResult?.baseReference || `${reference}/properties/${propertyName}`
       });
     })
     .filter(p => {
-      if (typeof p.schema === 'undefined') {
+      if (p.lookupResult === undefined) {
         return true;
       }
-      return shouldShowInStage(stage, p.schema);
+      return shouldShowInStage(stage, p.lookupResult.schema);
     })
     .map(p => {
       const isRequired =
         typeof schema.required !== 'undefined' && !!schema.required.find(n => n === p.propertyName);
 
-      if (p.schema) {
+      if (p.lookupResult) {
         return (
           <ParameterView
             key={p.propertyName}
             name={p.propertyName}
-            description={getDescriptionForSchema(p.schema)}
+            description={getDescriptionForSchema(p.lookupResult.schema)}
             required={isRequired}
             deprecated={false}
-            schema={p.schema}
+            schema={p.lookupResult.schema}
+            reference={p.propertyReference}
             lookup={lookup}
-            onClickType={s => typeof s !== 'boolean' && onClickType(p.propertyName, s)}
+            clickElement={clickElement}
           />
         );
       } else {
@@ -233,8 +234,10 @@ export const SchemaExplorerDetails: React.FC<SchemaExplorerDetailsProps> = props
             name={p.propertyName}
             description="Could not find schema for property. Defaulting to `anything`."
             required={isRequired}
-            schema={p.schema}
+            schema={undefined}
+            reference={p.propertyReference}
             lookup={lookup}
+            clickElement={clickElement}
           />
         );
       }
@@ -250,22 +253,26 @@ export const SchemaExplorerDetails: React.FC<SchemaExplorerDetailsProps> = props
           description="Extra properties of any type may be provided to this object."
           required={false}
           schema={{}}
+          reference={`${reference}/additionalProperties`}
           lookup={lookup}
+          clickElement={clickElement}
         />
       ));
     }
   } else if (schema.additionalProperties !== undefined) {
-    const additionalPropertiesSchema = lookup.getSchema(schema.additionalProperties);
-    if (additionalPropertiesSchema !== undefined) {
+    const additionalPropertiesResult = lookup.getSchema(schema.additionalProperties);
+    if (additionalPropertiesResult !== undefined) {
+      const resolvedReference = additionalPropertiesResult.baseReference || `${reference}/additionalProperties`;
       additionalProperties.push((
         <ParameterView
           key="dac__schema-additional-properties"
           name="Additional Properties"
-          description={getDescriptionForSchema(additionalPropertiesSchema)}
+          description={getDescriptionForSchema(additionalPropertiesResult)}
           required={false}
-          schema={additionalPropertiesSchema}
+          schema={additionalPropertiesResult.schema}
+          reference={resolvedReference}
           lookup={lookup}
-          onClickType={s => typeof s !== 'boolean' && onClickType('(Additional properties)', s)}
+          clickElement={clickElement}
         />
       ));
     }
@@ -282,31 +289,51 @@ export const SchemaExplorerDetails: React.FC<SchemaExplorerDetailsProps> = props
   );
 };
 
+type JsonSchemaObjectClickProps = {
+  basePathSegments: Array<string>;
+  path: Array<PathElement>;
+};
+
+function getTitleForPathElement(reference: string, schema: JsonSchema1): string {
+  if (schema.title !== undefined) {
+    return schema.title;
+  }
+
+  const rs = reference.split('/');
+  if (rs[rs.length - 2] === 'properties') {
+    return rs[rs.length - 1];
+  } else if (rs[rs.length - 1] === 'additionalProperties') {
+    return '(Additional properties)';
+  }
+
+  return 'object';
+}
+
+function createClickElement(details: JsonSchemaObjectClickProps): ClickElement {
+  return (props) => {
+    const references = [...details.path.map(p => p.reference), props.reference];
+    return <Link to={linkTo(details.basePathSegments, references)}>{getTitleForPathElement(props.reference, props.schema)}</Link>;
+  };
+}
+
 export type SchemaExplorerProps = {
+  basePathSegments: Array<string>;
+  path: PathElement[];
   schema: JsonSchema1;
   stage: Stage;
   lookup: Lookup;
-  onClose: () => void;
 };
 
 export type SchemaExplorerState = {
-  /**
-     * We always render the latest element in the list.
-     */
-  path: PathElement[];
   pathExpanded: boolean;
   view: 'details' | 'example';
-};
-
-export type PathElement = {
-  title: string;
-  schema: JsonSchema1;
 };
 
 export class SchemaExplorer extends React.PureComponent<SchemaExplorerProps, SchemaExplorerState> {
   private static Container = styled.section`
         display: flex;
         flex-direction: column;
+        flex-grow: 1;
         padding: 24px 20px;
         margin: 0;
         max-width: 100%;
@@ -319,53 +346,31 @@ export class SchemaExplorer extends React.PureComponent<SchemaExplorerProps, Sch
         margin: 5px 8px;
     `;
 
-  private static getTitle(s: JsonSchema1): string {
-    return s.title !== undefined ? s.title : 'object';
-  }
-
   UNSAFE_componentWillMount() {
-    const { schema } = this.props;
-
-    const path: PathElement[] = [{
-      title: '#',
-      schema
-    }];
-
     this.setState({
-      path,
       pathExpanded: false,
       view: 'details'
     });
   }
 
   render() {
-    const { lookup, stage } = this.props;
-    const { path, pathExpanded } = this.state;
+    const { path, schema, lookup, stage, basePathSegments } = this.props;
+    const { pathExpanded } = this.state;
     if (path.length === 0) {
       return <div>TODO What do we do when the reference could not be found? Error maybe?</div>;
     }
-    const pe = path[path.length - 1];
-    const schema = pe.schema;
 
-    const componentPath = path.map(p => p.title).join('.');
-
-    const onClick = (propertyName: string, cSchema: JsonSchema1) => {
-      this.setState(s => ({
-        path: [...s.path, {
-          title: propertyName,
-          schema: cSchema
-        }]
-      }));
-    };
+    const currentPathElement = path[path.length - 1];
 
     const tabData: TabData[] = [{
       label: 'Details',
       content: (
         <SchemaExplorerDetails
           schema={schema}
+          reference={currentPathElement.reference}
           lookup={lookup}
           stage={stage}
-          onClickType={onClick}
+          clickElement={createClickElement({ basePathSegments, path })}
         />
       )
     }, {
@@ -384,14 +389,12 @@ export class SchemaExplorer extends React.PureComponent<SchemaExplorerProps, Sch
     return (
       <SchemaExplorer.Container>
         <SEPHead
+          basePathSegments={basePathSegments}
           path={path}
           pathExpanded={pathExpanded}
-          setPath={p => this.setPath(p)}
-          onClose={() => this.props.onClose()}
-          onBackClick={() => this.onBackClick()}
           onExpandClick={() => this.onExpandClick()}
         />
-        <SchemaExplorer.Heading>{SchemaExplorer.getTitle(schema)}</SchemaExplorer.Heading>
+        <SchemaExplorer.Heading>{getTitleForPathElement(currentPathElement.reference, schema)}</SchemaExplorer.Heading>
         <Tabs tabs={tabData} selected={this.state.view === 'details' ? 0 : 1} onSelect={onTabSelect} />
       </SchemaExplorer.Container>
     );
@@ -401,15 +404,5 @@ export class SchemaExplorer extends React.PureComponent<SchemaExplorerProps, Sch
     this.setState({
       pathExpanded: true
     });
-  }
-
-  private setPath(path: PathElement[]) {
-    this.setState({ path });
-  }
-
-  private onBackClick(): void {
-    this.setState(s => ({
-      path: s.path.slice(0, s.path.length - 1)
-    }));
   }
 }

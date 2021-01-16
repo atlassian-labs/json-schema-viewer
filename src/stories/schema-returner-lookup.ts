@@ -1,5 +1,5 @@
 import { JsonSchema } from '../schema';
-import { Lookup} from '../lookup';
+import { Lookup, LookupResult} from '../lookup';
 
 export type RefMap = {
     [path: string]: JsonSchema
@@ -11,8 +11,17 @@ export class SchemaReturnerLookup implements Lookup {
     this.map = map;
   }
 
-  public getSchema(s: JsonSchema): JsonSchema | undefined {
+  public getSchema(s: JsonSchema): LookupResult {
     console.log(this.map);
-    return typeof s === 'boolean' || s.$ref === undefined ? s : this.map[s.$ref];
+    if (typeof s === 'boolean' || s.$ref === undefined) {
+      return {
+        schema: s
+      };
+    }
+
+    return {
+      schema: this.map[s.$ref],
+      baseReference: s.$ref
+    };
   }
 }

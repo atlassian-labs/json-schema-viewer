@@ -1,5 +1,5 @@
 import { JsonSchema, JsonSchema1 } from './schema';
-import { Lookup } from './lookup';
+import { getSchemaFromResult, Lookup } from './lookup';
 import { getOrInferType } from './type-inference';
 import { Stage, shouldShowInStage } from './stage';
 
@@ -220,7 +220,7 @@ function getSchemaNameForError(schemaOrRef: JsonSchema): string {
 function generateJsonExampleForHelper(context: ChainContext, schemaOrRef: JsonSchema)
   : Example | Errors {
   const { lookup } = context;
-  const schema = lookup.getSchema(schemaOrRef);
+  const schema = getSchemaFromResult(lookup.getSchema(schemaOrRef));
   if (schema === undefined) {
     return Errors.of(missingSchema(schemaOrRef));
   }
@@ -275,7 +275,7 @@ function generateJsonExampleForHelper(context: ChainContext, schemaOrRef: JsonSc
       }
 
       const chosenItem = Array.isArray(schema.items) ? schema.items[0] : schema.items;
-      const itemSchema = schema.items === undefined ? undefined : lookup.getSchema(chosenItem);
+      const itemSchema = schema.items === undefined ? undefined : getSchemaFromResult(lookup.getSchema(chosenItem));
 
       if (itemSchema === undefined) {
         return Example.of([]);
@@ -314,7 +314,7 @@ function generateJsonExampleForHelper(context: ChainContext, schemaOrRef: JsonSc
       } else {
         const props = Object.keys(properties)
           .filter(name => {
-            const propSchema = context.lookup.getSchema(properties[name]);
+            const propSchema = getSchemaFromResult(context.lookup.getSchema(properties[name]));
             if (propSchema === undefined) {
               return true;
             }
@@ -348,7 +348,7 @@ function generateJsonExampleForHelper(context: ChainContext, schemaOrRef: JsonSc
               nextContext.registerReference(propOrRef.$ref);
             }
 
-            const prop = lookup.getSchema(propOrRef);
+            const prop = getSchemaFromResult(lookup.getSchema(propOrRef));
             if (prop === undefined) {
               return { name, example: Errors.of(missingSchema(propOrRef)) };
             }
@@ -390,7 +390,7 @@ function generateJsonExampleForHelper(context: ChainContext, schemaOrRef: JsonSc
     } else if (schema.allOf !== undefined && schema.allOf.length > 0) {
       let nextContext = context.clone(schema);
       const potentialSchemas = schema.allOf.map<JsonSchema | Error>(s => {
-        const ps = lookup.getSchema(s);
+        const ps = getSchemaFromResult(lookup.getSchema(s));
         if (typeof s !== 'boolean' && s.$ref !== undefined) {
           nextContext.registerReference(s.$ref);
         }
