@@ -3,7 +3,7 @@ import { JsonSchema, JsonSchema1 } from './schema';
 import { getSchemaFromResult, Lookup } from './lookup';
 import { ParameterView } from './Parameter';
 import styled from 'styled-components';
-import Button, { ButtonProps } from '@atlaskit/button';
+import Button from '@atlaskit/button';
 import ChevronLeftIcon from '@atlaskit/icon/glyph/chevron-left';
 import { Markdown } from './markdown';
 import { BreadcrumbsStateless, BreadcrumbsItem } from '@atlaskit/breadcrumbs';
@@ -184,7 +184,7 @@ const DescriptionContainer = styled.div`
 `;
 
 function getDescriptionForSchema(schema: JsonSchema): string | undefined {
-  if (typeof schema == 'boolean') {
+  if (typeof schema === 'boolean') {
     return schema ? 'Anything is allowed here.' : 'There is no valid value for this property.';
   }
   return schema.description;

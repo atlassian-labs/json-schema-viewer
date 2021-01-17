@@ -7,6 +7,7 @@ import { SchemaExplorer, SchemaExplorerProps } from '../SchemaExplorer';
 import { SchemaReturnerLookup } from './schema-returner-lookup';
 import { IdLookup, InternalLookup } from '../lookup';
 import { Schema as PackageJson } from './package.json';
+import { DebuggingMemoryRouter } from './DebuggingMemoryRouter';
 
 const schemaForContext: JsonSchema = {
   type: 'object',
@@ -35,9 +36,10 @@ export default {
    },
 } as Meta;
 
-const Template: Story<SchemaExplorerProps> = (args) => <SchemaExplorer {...args} />;
+const Template: Story<SchemaExplorerProps> = (args) => <DebuggingMemoryRouter><SchemaExplorer {...args} /></DebuggingMemoryRouter>;
 
 const defaultArgs: Partial<SchemaExplorerProps> = {
+   basePathSegments: ['base'],
    path: [{ title: 'object', reference: '#' }],
    lookup: new IdLookup(),
    stage: 'both'

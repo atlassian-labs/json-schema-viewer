@@ -13,14 +13,25 @@ export class SchemaReturnerLookup implements Lookup {
 
   public getSchema(s: JsonSchema): LookupResult {
     console.log(this.map);
-    if (typeof s === 'boolean' || s.$ref === undefined) {
+    if (typeof s === 'boolean') {
       return {
         schema: s
       };
     }
 
+    const ref = s.$ref;
+    if (ref === undefined) {
+      return { schema: s };
+    }
+
+    const schema = this.map[ref];
+
+    if (schema === undefined) {
+      return undefined;
+    }
+
     return {
-      schema: this.map[s.$ref],
+      schema,
       baseReference: s.$ref
     };
   }
