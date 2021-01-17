@@ -8,6 +8,7 @@ import { SchemaExplorer } from './SchemaExplorer';
 import { SideNavWithRouter } from './SideNavWithRouter';
 import { Stage } from './stage';
 import { ClickElement } from './Type';
+import { extractLinks } from './side-nav-loader';
 
 export type SchemaViewProps = RouteComponentProps & {
   basePathSegments: Array<string>;
@@ -66,7 +67,7 @@ export class SchemaViewWR extends React.PureComponent<SchemaViewProps> {
     console.log(path);
     return (
       <SchemaViewWR.Container>
-        <SideNavWithRouter basePathSegments={[]} links={[]} />
+        <SideNavWithRouter basePathSegments={basePathSegments} links={extractLinks(schema, lookup)} />
         <SchemaExplorer
           basePathSegments={basePathSegments}
           path={path}
@@ -76,16 +77,6 @@ export class SchemaViewWR extends React.PureComponent<SchemaViewProps> {
         />
       </SchemaViewWR.Container>
     );
-  }
-
-  private setPath(path: PathElement[]) {
-    this.setState({ path });
-  }
-
-  private onBackClick(): void {
-    // this.setState(s => ({
-    //   path: s.path.slice(0, s.path.length - 1)
-    // }));
   }
 
   private getPathFromRoute(lookup: Lookup): Array<PathElement> {

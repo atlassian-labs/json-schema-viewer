@@ -7,6 +7,7 @@ import { SchemaView, SchemaViewProps } from '../SchemaView';
 import { SchemaReturnerLookup } from './schema-returner-lookup';
 import { IdLookup, InternalLookup } from '../lookup';
 import { Schema as PackageJson } from './package.json';
+import { Schema as OpenAPISchema } from './openapi.json';
 import { DebuggingMemoryRouter } from './DebuggingMemoryRouter';
 
 export default {
@@ -46,4 +47,11 @@ PackageJSONStory.storyName = 'package.json';
 PackageJSONStory.args = {
    ...defaultArgs,
    schema: PackageJson
+};
+
+export const OpenAPIStory = Template.bind({});
+OpenAPIStory.storyName = 'openapi.json';
+OpenAPIStory.args = {
+   ...defaultArgs,
+   schema: OpenAPISchema
 };

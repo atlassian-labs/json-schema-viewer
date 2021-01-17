@@ -28,6 +28,7 @@ export function isClickable(s: JsonSchema): boolean {
   }
 
   return (s.properties && Object.keys(s.properties).length > 0) ||
+        (s.patternProperties && Object.keys(s.patternProperties).length > 0) ||
         !(typeof s.additionalProperties === 'boolean' && s.additionalProperties === false);
 }
 
@@ -178,7 +179,6 @@ const getTypeText = (s: JsonSchema | undefined, lookup: Lookup, currentReference
   } else if (type === 'object') {
     const name = s.title ? s.title : 'object';
     if (isClickable(s)) {
-      <p></p>
       return <Click schema={s} reference={currentReference} />;
     } else {
       return <Plain>{name}</Plain>;

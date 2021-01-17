@@ -6,7 +6,7 @@ import { forSize } from './breakpoints';
 import { NavLink } from 'react-router-dom';
 import { linkTo } from './route-path';
 
-export type SideNavLink = SingleSideNavLink | GroupSideNavLink;
+export type SideNavLink = SingleSideNavLink | GroupSideNavLink | SideNavSpace;
 
 export type SingleSideNavLink = {
   title: string;
@@ -15,12 +15,20 @@ export type SingleSideNavLink = {
 
 export type GroupSideNavLink = {
   title: string;
-  reference: string;
+  reference: string | undefined;
   children: SingleSideNavLink[];
 };
 
+export type SideNavSpace = { type: 'space' };
+
+export const Spacer: SideNavSpace = { type: 'space' };
+
 function isGroupSideNavLink(l: SideNavLink): l is GroupSideNavLink {
   return 'children' in l;
+}
+
+function isSideNavSpace(l: SideNavLink): l is SideNavSpace {
+  return 'type' in l && l.type === 'space';
 }
 
 interface NavItemProps {
@@ -64,7 +72,7 @@ const NavItem = styled<NavItemProps, 'li'>('li')`
 
 type SideNavGroupProps = {
   basePathSagments: Array<string>;
-  link: SideNavLink;
+  link: GroupSideNavLink | SingleSideNavLink;
 };
 
 type SideNavGroupState = {
@@ -112,9 +120,9 @@ class SideNavGroup extends React.PureComponent<SideNavGroupProps, SideNavGroupSt
     const { basePathSagments, link } = this.props;
     const { open } = this.state;
 
-    if (!isGroupSideNavLink(link) || link.children.length === 0) {
+    if (!isGroupSideNavLink(link)) {
       return (
-        <div>
+        <>
           <SideNavGroup.Item>
             <SideNavGroup.SingleLinkContainer>
               <NavLink to={linkTo(basePathSagments, [link.reference])}>
@@ -122,8 +130,12 @@ class SideNavGroup extends React.PureComponent<SideNavGroupProps, SideNavGroupSt
               </NavLink>
             </SideNavGroup.SingleLinkContainer>
           </SideNavGroup.Item>
-        </div>
+        </>
       );
+    }
+
+    if (link.reference === undefined && link.children.length === 0) {
+      return <></>;
     }
 
     const subLinks = !isGroupSideNavLink(link) ? [] : link.children.map(childLink => {
@@ -144,16 +156,24 @@ class SideNavGroup extends React.PureComponent<SideNavGroupProps, SideNavGroupSt
         <ChevronRightIcon label="Closed" />
       );
 
+    const groupLink = link.reference !== undefined ?
+      (
+        <NavLink to={linkTo(basePathSagments, [link.reference])}>
+          {link.title}
+        </NavLink>
+      ) :
+      (
+        <span>{link.title}</span>
+      );
+
     return (
-      <div>
+      <>
         <SideNavGroup.Item>
           <SideNavGroup.IconWrap onClick={() => this.toggleState(!open)}>{icon}</SideNavGroup.IconWrap>
-          <NavLink to={linkTo(basePathSagments, [link.reference])}>
-            {link.title}
-          </NavLink>
+          {groupLink}
         </SideNavGroup.Item>
         {open && <SideNavGroup.SubItemContainer>{subLinks}</SideNavGroup.SubItemContainer>}
-      </div>
+      </>
     );
   }
 
@@ -164,6 +184,10 @@ class SideNavGroup extends React.PureComponent<SideNavGroupProps, SideNavGroupSt
     });
   }
 }
+
+const SideNavSpacerDiv = styled.div`
+  min-height: 16px;
+`;
 
 type SideNavLinksProps = {
   basePathSegments: Array<string>;
@@ -178,7 +202,7 @@ class SideNavLinks extends React.PureComponent<SideNavLinksProps> {
       flex: auto;
       overflow-y: auto;
       min-width: 300px;
-
+      padding-top: 22px;
     `)}
     &:focus {
       outline: 0;
@@ -189,12 +213,15 @@ class SideNavLinks extends React.PureComponent<SideNavLinksProps> {
     const { basePathSegments, links } = this.props;
 
     const groups = links.map(link => {
+      if (isSideNavSpace(link)) {
+        return <SideNavSpacerDiv />;
+      }
       return <SideNavGroup basePathSagments={basePathSegments} key={link.title} link={link} />
     });
 
     return (
       <SideNavLinks.Container>
-        <div>{groups}</div>
+        {groups}
       </SideNavLinks.Container>
     );
   }

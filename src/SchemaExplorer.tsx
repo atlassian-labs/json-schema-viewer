@@ -1,6 +1,6 @@
 import React from 'react';
 import { JsonSchema, JsonSchema1 } from './schema';
-import { Lookup } from './lookup';
+import { getSchemaFromResult, Lookup } from './lookup';
 import { ParameterView } from './Parameter';
 import styled from 'styled-components';
 import Button, { ButtonProps } from '@atlaskit/button';
@@ -15,6 +15,7 @@ import { Stage, shouldShowInStage } from './stage';
 import { linkTo, PathElement } from './route-path';
 import { ClickElement } from './Type';
 import { Link, LinkProps } from 'react-router-dom';
+import { getTitle } from './title';
 
 interface SEPHeadProps {
   basePathSegments: Array<string>;
@@ -42,7 +43,7 @@ function getObjectPath(basePathSegments: Array<string>, path: PathElement[]): JS
     <BreadcrumbsItem
       key={`${pe.title}-${i}`}
       text={pe.title}
-      component={() => <Link to={linkTo(basePathSegments, path.slice(0, i+1).map(p => p.reference))}>{getTitleForPathElement(pe.reference, { title: pe.title !== 'object' ? pe.title : undefined })}</Link>}
+      component={() => <Link to={linkTo(basePathSegments, path.slice(0, i+1).map(p => p.reference))}>{getTitle(pe.reference, { title: pe.title !== 'object' ? pe.title : undefined })}</Link>}
     />
   ));
 }
@@ -278,12 +279,33 @@ export const SchemaExplorerDetails: React.FC<SchemaExplorerDetailsProps> = props
     }
   }
 
+  const patternProperties = schema.patternProperties || {};
+  const renderedPatternProperties = Object.keys(patternProperties).map((pattern, i) => {
+    const lookupResult = lookup.getSchema(patternProperties[pattern]);
+    return (
+      <ParameterView
+        key={`pattern-properties-${i}`}
+        name={`/${pattern}/ (keys of pattern)`}
+        description={getDescriptionForSchema(schema)}
+        required={false}
+        schema={getSchemaFromResult(lookupResult)}
+        reference={lookupResult?.baseReference || `${reference}/patternProperties/${pattern}`}
+        lookup={lookup}
+        clickElement={clickElement}
+      />
+    )
+  })
+  if (schema.patternProperties !== undefined) {
+    schema.patternProperties
+  }
+
   return (
     <div>
       <DescriptionContainer>
         {schema.description && <Markdown source={schema.description} />}
       </DescriptionContainer>
       {renderedProps}
+      {renderedPatternProperties.length > 0 && renderedPatternProperties}
       {additionalProperties}
     </div>
   );
@@ -294,25 +316,10 @@ type JsonSchemaObjectClickProps = {
   path: Array<PathElement>;
 };
 
-function getTitleForPathElement(reference: string, schema: JsonSchema1): string {
-  if (schema.title !== undefined) {
-    return schema.title;
-  }
-
-  const rs = reference.split('/');
-  if (rs[rs.length - 2] === 'properties') {
-    return rs[rs.length - 1];
-  } else if (rs[rs.length - 1] === 'additionalProperties') {
-    return '(Additional properties)';
-  }
-
-  return 'object';
-}
-
 function createClickElement(details: JsonSchemaObjectClickProps): ClickElement {
   return (props) => {
     const references = [...details.path.map(p => p.reference), props.reference];
-    return <Link to={linkTo(details.basePathSegments, references)}>{getTitleForPathElement(props.reference, props.schema)}</Link>;
+    return <Link to={linkTo(details.basePathSegments, references)}>{getTitle(props.reference, props.schema)}</Link>;
   };
 }
 
@@ -394,7 +401,7 @@ export class SchemaExplorer extends React.PureComponent<SchemaExplorerProps, Sch
           pathExpanded={pathExpanded}
           onExpandClick={() => this.onExpandClick()}
         />
-        <SchemaExplorer.Heading>{getTitleForPathElement(currentPathElement.reference, schema)}</SchemaExplorer.Heading>
+        <SchemaExplorer.Heading>{getTitle(currentPathElement.reference, schema)}</SchemaExplorer.Heading>
         <Tabs tabs={tabData} selected={this.state.view === 'details' ? 0 : 1} onSelect={onTabSelect} />
       </SchemaExplorer.Container>
     );
