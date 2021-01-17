@@ -14,7 +14,7 @@ import { generateJsonExampleFor, isExample, Example, Errors } from './example';
 import { Stage, shouldShowInStage } from './stage';
 import { linkTo, PathElement } from './route-path';
 import { ClickElement } from './Type';
-import { Link, LinkProps } from 'react-router-dom';
+import { Link, LinkProps, useHistory } from 'react-router-dom';
 import { getTitle } from './title';
 import { LinkPreservingSearch } from './search-preserving-link';
 
@@ -49,17 +49,21 @@ function getObjectPath(basePathSegments: Array<string>, path: PathElement[]): JS
   ));
 }
 
-const BackButton = React.forwardRef<typeof Link, LinkProps>((props, ref) => {
-  console.log(props);
+const BackButton: React.FC<LinkProps> = props => {
+  const history = useHistory();
   return (
     <Button
       key="backButton"
       iconBefore={<ChevronLeftIcon label="Back" />}
       href={props.href}
+      onClick={e => {
+        e.preventDefault();
+        history.push(props.href || '');
+      }}
     >Back
     </Button>
   );
-});
+}
 
 function init<A>(arr: Array<A>): Array<A> {
   if (arr.length === 0) {

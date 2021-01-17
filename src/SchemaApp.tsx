@@ -1,7 +1,7 @@
 import { AtlassianNavigation, Create, ProductHome } from '@atlaskit/atlassian-navigation';
 import { AtlassianIcon, AtlassianLogo } from '@atlaskit/logo';
 import React from 'react';
-import { Redirect, Route, RouteComponentProps, Switch, withRouter } from 'react-router-dom';
+import { Redirect, Route, RouteComponentProps, Switch, useHistory, withRouter } from 'react-router-dom';
 import { LoadSchema } from './LoadSchema';
 import { JsonSchema } from './schema';
 import { SchemaView, SchemaViewProps } from './SchemaView';
@@ -11,14 +11,17 @@ const ProductHomeExample = () => (
   <ProductHome icon={AtlassianIcon} logo={AtlassianLogo} />
 );
 
-const CreateButton = () => (
-  <Create
-    buttonTooltip="Render a new JSON Schema"
-    iconButtonTooltip="Render a new JSON Schema"
-    text="New schema"
-    onClick={console.log}
-  />
-);
+const NewSchema: React.FC = () => {
+  const history = useHistory();
+  return (
+    <Create
+      buttonTooltip="Render a new JSON Schema"
+      iconButtonTooltip="Render a new JSON Schema"
+      text="New schema"
+      onClick={() => history.push('/start')}
+    />
+  );
+};
 
 export type SchemaAppProps = RouteComponentProps & {
 
@@ -47,7 +50,7 @@ export class SchemaAppWR extends React.PureComponent<SchemaAppProps, SchemaAppSt
         <AtlassianNavigation
           label="Json schema viewer header"
           primaryItems={[]}
-          renderCreate={CreateButton}
+          renderCreate={NewSchema}
           renderProductHome={ProductHomeExample}
         />
         <Switch>
