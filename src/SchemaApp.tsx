@@ -1,10 +1,10 @@
 import { AtlassianNavigation, Create, ProductHome } from '@atlaskit/atlassian-navigation';
 import { AtlassianIcon, AtlassianLogo } from '@atlaskit/logo';
 import React from 'react';
-import { Redirect, Route, RouteComponentProps, Switch, useHistory, withRouter } from 'react-router-dom';
+import { Redirect, Route, Switch, useHistory } from 'react-router-dom';
 import { LoadSchema } from './LoadSchema';
 import { JsonSchema } from './schema';
-import { SchemaView, SchemaViewProps } from './SchemaView';
+import { SchemaView } from './SchemaView';
 import { Start } from './Start';
 
 const ProductHomeExample = () => (
@@ -23,10 +23,6 @@ const NewSchema: React.FC = () => {
   );
 };
 
-export type SchemaAppProps = RouteComponentProps & {
-
-};
-
 export type LoadedState = {
   schemaUrl: string;
   loadedSchema: JsonSchema;
@@ -36,15 +32,12 @@ export type SchemaAppState = {
   loadedState?: LoadedState;
 }
 
-export class SchemaAppWR extends React.PureComponent<SchemaAppProps, SchemaAppState> {
+export class SchemaApp extends React.PureComponent<{}, SchemaAppState> {
   state: SchemaAppState = {
 
   };
 
    render() {
-    const { history } = this.props;
-    const { loadedState } = this.state;
-
     return (
       <div>
         <AtlassianNavigation
@@ -74,5 +67,3 @@ export class SchemaAppWR extends React.PureComponent<SchemaAppProps, SchemaAppSt
     );
   }
 }
-
-export const SchemaApp = withRouter<SchemaAppProps, typeof SchemaAppWR>(SchemaAppWR);

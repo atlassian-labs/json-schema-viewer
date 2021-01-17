@@ -203,7 +203,7 @@ class SideNavLinks extends React.PureComponent<SideNavLinksProps> {
       flex: auto;
       overflow-y: auto;
       min-width: 300px;
-      padding-top: 22px;
+      padding-top: 24px;
     `)}
     &:focus {
       outline: 0;
