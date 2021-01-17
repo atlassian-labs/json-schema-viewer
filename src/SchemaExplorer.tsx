@@ -16,6 +16,7 @@ import { linkTo, PathElement } from './route-path';
 import { ClickElement } from './Type';
 import { Link, LinkProps } from 'react-router-dom';
 import { getTitle } from './title';
+import { LinkPreservingSearch } from './search-preserving-link';
 
 interface SEPHeadProps {
   basePathSegments: Array<string>;
@@ -43,7 +44,7 @@ function getObjectPath(basePathSegments: Array<string>, path: PathElement[]): JS
     <BreadcrumbsItem
       key={`${pe.title}-${i}`}
       text={pe.title}
-      component={() => <Link to={linkTo(basePathSegments, path.slice(0, i+1).map(p => p.reference))}>{getTitle(pe.reference, { title: pe.title !== 'object' ? pe.title : undefined })}</Link>}
+      component={() => <LinkPreservingSearch to={linkTo(basePathSegments, path.slice(0, i+1).map(p => p.reference))}>{getTitle(pe.reference, { title: pe.title !== 'object' ? pe.title : undefined })}</LinkPreservingSearch>}
     />
   ));
 }
@@ -76,7 +77,7 @@ const SEPHead = (props: SEPHeadProps) => {
   const ActionButton = props.path.length <= 1
     ? <h1>Root</h1>
     : (
-      <Link to={linkTo(props.basePathSegments, init(props.path.map(p => p.reference)))} component={BackButton} />
+      <LinkPreservingSearch to={linkTo(props.basePathSegments, init(props.path.map(p => p.reference)))} component={BackButton} />
     );
 
   return (
@@ -319,7 +320,7 @@ type JsonSchemaObjectClickProps = {
 function createClickElement(details: JsonSchemaObjectClickProps): ClickElement {
   return (props) => {
     const references = [...details.path.map(p => p.reference), props.reference];
-    return <Link to={linkTo(details.basePathSegments, references)}>{getTitle(props.reference, props.schema)}</Link>;
+    return <LinkPreservingSearch to={linkTo(details.basePathSegments, references)}>{getTitle(props.reference, props.schema)}</LinkPreservingSearch>;
   };
 }
 

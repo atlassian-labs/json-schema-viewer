@@ -1,13 +1,12 @@
 import React from 'react';
 import styled from 'styled-components';
-import { NavLink, RouteComponentProps, withRouter } from 'react-router-dom';
-import { getSchemaFromReference, getSchemaFromResult, InternalLookup, loadReference, Lookup } from './lookup';
-import { linkTo, PathElement } from './route-path';
-import { JsonSchema, JsonSchema1 } from './schema';
+import { RouteComponentProps, withRouter } from 'react-router-dom';
+import { getSchemaFromReference, InternalLookup, Lookup } from './lookup';
+import { PathElement } from './route-path';
+import { JsonSchema } from './schema';
 import { SchemaExplorer } from './SchemaExplorer';
 import { SideNavWithRouter } from './SideNavWithRouter';
 import { Stage } from './stage';
-import { ClickElement } from './Type';
 import { extractLinks } from './side-nav-loader';
 
 export type SchemaViewProps = RouteComponentProps & {

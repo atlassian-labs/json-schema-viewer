@@ -5,6 +5,7 @@ import styled from 'styled-components';
 import { forSize } from './breakpoints';
 import { NavLink } from 'react-router-dom';
 import { linkTo } from './route-path';
+import { NavLinkPreservingSearch } from './search-preserving-link';
 
 export type SideNavLink = SingleSideNavLink | GroupSideNavLink | SideNavSpace;
 
@@ -125,9 +126,9 @@ class SideNavGroup extends React.PureComponent<SideNavGroupProps, SideNavGroupSt
         <>
           <SideNavGroup.Item>
             <SideNavGroup.SingleLinkContainer>
-              <NavLink to={linkTo(basePathSagments, [link.reference])}>
+              <NavLinkPreservingSearch to={linkTo(basePathSagments, [link.reference])}>
                 {link.title}
-              </NavLink>
+              </NavLinkPreservingSearch>
             </SideNavGroup.SingleLinkContainer>
           </SideNavGroup.Item>
         </>
@@ -141,9 +142,9 @@ class SideNavGroup extends React.PureComponent<SideNavGroupProps, SideNavGroupSt
     const subLinks = !isGroupSideNavLink(link) ? [] : link.children.map(childLink => {
       return (
         <NavItem key={childLink.reference} indent={true}>
-          <NavLink to={linkTo(basePathSagments, [childLink.reference])} >
+          <NavLinkPreservingSearch to={linkTo(basePathSagments, [childLink.reference])} >
             {childLink.title}
-          </NavLink>
+          </NavLinkPreservingSearch>
         </NavItem>
       );
     });
@@ -158,9 +159,9 @@ class SideNavGroup extends React.PureComponent<SideNavGroupProps, SideNavGroupSt
 
     const groupLink = link.reference !== undefined ?
       (
-        <NavLink to={linkTo(basePathSagments, [link.reference])}>
+        <NavLinkPreservingSearch to={linkTo(basePathSagments, [link.reference])}>
           {link.title}
-        </NavLink>
+        </NavLinkPreservingSearch>
       ) :
       (
         <span>{link.title}</span>
