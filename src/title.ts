@@ -14,7 +14,7 @@ export function getTitle(reference: string, schema: JsonSchema1): string {
   } else if (last === 'additionalProperties') {
     return '(Additional properties)';
   } else if (last === 'items' && ['properties', 'definitions'].includes(thirdLast)) {
-    return secondLast;
+    return secondLast + ' items';
   }
 
   return 'object';
