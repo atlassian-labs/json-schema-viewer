@@ -126,7 +126,7 @@ class SideNavGroup extends React.PureComponent<SideNavGroupProps, SideNavGroupSt
         <>
           <SideNavGroup.Item>
             <SideNavGroup.SingleLinkContainer>
-              <NavLinkPreservingSearch to={linkTo(basePathSagments, [link.reference])}>
+              <NavLinkPreservingSearch to={linkTo(basePathSagments, [link.reference])} exact={true}>
                 {link.title}
               </NavLinkPreservingSearch>
             </SideNavGroup.SingleLinkContainer>
@@ -142,7 +142,7 @@ class SideNavGroup extends React.PureComponent<SideNavGroupProps, SideNavGroupSt
     const subLinks = !isGroupSideNavLink(link) ? [] : link.children.map(childLink => {
       return (
         <NavItem key={childLink.reference} indent={true}>
-          <NavLinkPreservingSearch to={linkTo(basePathSagments, [childLink.reference])} >
+          <NavLinkPreservingSearch to={linkTo(basePathSagments, [childLink.reference])} exact={true}>
             {childLink.title}
           </NavLinkPreservingSearch>
         </NavItem>
@@ -159,7 +159,7 @@ class SideNavGroup extends React.PureComponent<SideNavGroupProps, SideNavGroupSt
 
     const groupLink = link.reference !== undefined ?
       (
-        <NavLinkPreservingSearch to={linkTo(basePathSagments, [link.reference])}>
+        <NavLinkPreservingSearch to={linkTo(basePathSagments, [link.reference])} exact={true}>
           {link.title}
         </NavLinkPreservingSearch>
       ) :

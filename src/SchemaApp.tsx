@@ -1,7 +1,7 @@
 import { AtlassianNavigation, Create, ProductHome } from '@atlaskit/atlassian-navigation';
 import { AtlassianIcon, AtlassianLogo } from '@atlaskit/logo';
 import React from 'react';
-import { Redirect, Route, Switch, useHistory } from 'react-router-dom';
+import { Redirect, Route, RouteComponentProps, Switch, useHistory, withRouter } from 'react-router-dom';
 import { LoadSchema } from './LoadSchema';
 import { JsonSchema } from './schema';
 import { SchemaView } from './SchemaView';
@@ -13,6 +13,11 @@ const ProductHomeExample = () => (
 
 const NewSchema: React.FC = () => {
   const history = useHistory();
+  const isStart = history.location.pathname === '/start';
+  if (isStart) {
+    return <></>;
+  }
+
   return (
     <Create
       buttonTooltip="Render a new JSON Schema"
@@ -32,7 +37,7 @@ export type SchemaAppState = {
   loadedState?: LoadedState;
 }
 
-export class SchemaApp extends React.PureComponent<{}, SchemaAppState> {
+class SchemaAppWR extends React.PureComponent<RouteComponentProps, SchemaAppState> {
   state: SchemaAppState = {
 
   };
@@ -67,3 +72,5 @@ export class SchemaApp extends React.PureComponent<{}, SchemaAppState> {
     );
   }
 }
+
+export const SchemaApp = withRouter<RouteComponentProps, typeof SchemaAppWR>(SchemaAppWR);

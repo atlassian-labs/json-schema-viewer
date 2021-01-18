@@ -14,9 +14,9 @@ import { generateJsonExampleFor, isExample, Example, Errors } from './example';
 import { Stage, shouldShowInStage } from './stage';
 import { linkTo, PathElement } from './route-path';
 import { ClickElement } from './Type';
-import { Link, LinkProps, useHistory } from 'react-router-dom';
+import { LinkProps, useHistory } from 'react-router-dom';
 import { getTitle } from './title';
-import { LinkPreservingSearch } from './search-preserving-link';
+import { LinkPreservingSearch, NavLinkPreservingSearch } from './search-preserving-link';
 
 interface SEPHeadProps {
   basePathSegments: Array<string>;
@@ -37,6 +37,15 @@ const Head = styled.div`
 
 const Path = styled.div`
     padding-left: 20px;
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    a.active {
+      color: #0057d8;
+    }
 `;
 
 function getObjectPath(basePathSegments: Array<string>, path: PathElement[]): JSX.Element[] {
@@ -44,7 +53,11 @@ function getObjectPath(basePathSegments: Array<string>, path: PathElement[]): JS
     <BreadcrumbsItem
       key={`${pe.title}-${i}`}
       text={pe.title}
-      component={() => <LinkPreservingSearch to={linkTo(basePathSegments, path.slice(0, i+1).map(p => p.reference))}>{getTitle(pe.reference, { title: pe.title !== 'object' ? pe.title : undefined })}</LinkPreservingSearch>}
+      component={() => (
+        <NavLinkPreservingSearch to={linkTo(basePathSegments, path.slice(0, i+1).map(p => p.reference))}  exact={true}>
+          {getTitle(pe.reference, { title: pe.title !== 'object' ? pe.title : undefined })}
+        </NavLinkPreservingSearch>
+      )}
     />
   ));
 }

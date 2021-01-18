@@ -17,7 +17,7 @@ export type LoadSchemaState = {
 };
 
 function isLoadSchemaError(e: JsonSchema | LoadSchemaError): e is LoadSchemaError {
-   return 'message' in e;
+   return typeof e !== 'boolean' && 'message' in e;
 }
 
 class LoadSchemaWR extends React.PureComponent<LoadSchemaProps, LoadSchemaState> {
