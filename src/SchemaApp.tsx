@@ -17,7 +17,7 @@ const NewSchema: React.FC = () => {
     <Create
       buttonTooltip="Render a new JSON Schema"
       iconButtonTooltip="Render a new JSON Schema"
-      text="New schema"
+      text="Load new schema"
       onClick={() => history.push('/start')}
     />
   );

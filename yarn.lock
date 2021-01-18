@@ -198,7 +198,7 @@
     exenv "^1.2.2"
     tiny-invariant "^0.0.3"
 
-"@atlaskit/spinner@^15.0.0":
+"@atlaskit/spinner@^15.0.0", "@atlaskit/spinner@^15.0.6":
   version "15.0.6"
   resolved "https://registry.yarnpkg.com/@atlaskit/spinner/-/spinner-15.0.6.tgz#3b8d95fcdba196e28ca712002f9ac3b81fc6e4f5"
   integrity sha512-yi/32OT8cU0HRywjgw2EAvdb+ILt+9lopY4B61F/pdlZCra45srAHTM3Wj4KvqhCLeZ5UNiBaSPFC21G6UZjVA==
