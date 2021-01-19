@@ -1,8 +1,8 @@
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const path = require('path');
 const webpack = require('webpack');
-const WebpackCdnPlugin = require('webpack-cdn-plugin');
 const CspHtmlWebpackPlugin = require('csp-html-webpack-plugin');
+const FaviconsWebpackPlugin = require('favicons-webpack-plugin')
 
 module.exports = {
   entry: './src/index.ts',
@@ -46,16 +46,10 @@ module.exports = {
       ANALYTICS_NEXT_MODERN_CONTEXT: true,
       NODE_ENV: 'development'
     }),
-    /*new WebpackCdnPlugin({
-      modules: [
-        {
-          name: '@atlaskit/css-reset',
-          var: 'atlaskit-css-reset',
-          style: 'dist/bundle.css',
-          cssOnly: true
-        }
-      ],
-      publicPath: '/node_modules'
-    })*/
+    new FaviconsWebpackPlugin({
+      logo: './src/logo.svg',
+      publicPath: '/',
+      prefix: 'auto/[contenthash]'
+    })
   ]
 };
