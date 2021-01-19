@@ -41,7 +41,7 @@ export class StartWR extends React.PureComponent<StartProps, StartState> {
         description={`Put in the url to the JSON schema that you want to see documented here.`}
         primaryAction={(
           <StartWR.InputWidth>
-            <TextField isCompact={false} value={this.state.urlInput || ''} onChangeCapture={onTextChange} />
+            <TextField isCompact={false} value={this.state.urlInput || ''} onChange={onTextChange} />
             <Button label="submit" onClick={handleOnClick}>Load Schema</Button>
           </StartWR.InputWidth>
         )}

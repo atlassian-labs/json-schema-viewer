@@ -2,18 +2,21 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const path = require('path');
 const webpack = require('webpack');
 const WebpackCdnPlugin = require('webpack-cdn-plugin');
+const CspHtmlWebpackPlugin = require('csp-html-webpack-plugin');
 
 module.exports = {
   entry: './src/index.ts',
-  devtool: 'inline-source-map',
   target: 'web',
-  mode: 'development',
   module: {
     rules: [
       {
         test: /\.tsx?$/,
         use: 'babel-loader',
         exclude: /node_modules/,
+      },
+      {
+        test: /\.css$/i,
+        use: ["style-loader", "css-loader"],
       },
     ],
   },
@@ -26,8 +29,13 @@ module.exports = {
   },
   plugins: [
     new HtmlWebpackPlugin({
-      title: '(Development) JSON Schema Viewer',
-
+      title: 'JSON Schema Viewer',
+      template: 'index.html',
+      publicPath: '/'
+    }),
+    new CspHtmlWebpackPlugin({
+      'script-src': ["'strict-dynamic'"],
+      'style-src': ["'unsafe-inline'", "'self'"]
     }),
     new webpack.DefinePlugin({
       'process': undefined,
@@ -37,7 +45,7 @@ module.exports = {
       ANALYTICS_NEXT_MODERN_CONTEXT: true,
       NODE_ENV: 'development'
     }),
-    new WebpackCdnPlugin({
+    /*new WebpackCdnPlugin({
       modules: [
         {
           name: '@atlaskit/css-reset',
@@ -47,6 +55,6 @@ module.exports = {
         }
       ],
       publicPath: '/node_modules'
-    })
+    })*/
   ]
 };
