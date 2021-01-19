@@ -114,8 +114,8 @@ Resources:
             ResponsePagePath: '/index.html'
           - ErrorCachingMinTTL: 60
             ErrorCode: 403
-            ResponseCode: 403
-            ResponsePagePath: '/403.html'
+            ResponseCode: 200
+            ResponsePagePath: '/index.html'
         Enabled: true
         HttpVersion: 'http2'
         DefaultRootObject: 'index.html'

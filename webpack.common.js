@@ -24,14 +24,15 @@ module.exports = {
     extensions: [ '.tsx', '.ts', '.js' ],
   },
   output: {
-    filename: 'bundle.js',
+    filename: 'bundle.[chunkhash].js',
     path: path.resolve(__dirname, 'dist'),
   },
   plugins: [
     new HtmlWebpackPlugin({
       title: 'JSON Schema Viewer',
       template: 'index.html',
-      publicPath: '/'
+      publicPath: '/',
+      filename: 'index.html'
     }),
     new CspHtmlWebpackPlugin({
       'script-src': ["'strict-dynamic'"],
