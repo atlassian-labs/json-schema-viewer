@@ -3,6 +3,7 @@ import { RouteComponentProps, withRouter } from 'react-router-dom';
 import { JsonSchema } from './schema';
 import Spinner from '@atlaskit/spinner';
 import EmptyState from '@atlaskit/empty-state';
+import memoize from 'memoize-one';
 
 export type LoadSchemaProps = RouteComponentProps & {
    children: (schema: JsonSchema) => ReactNode;
@@ -13,8 +14,13 @@ export type LoadSchemaError = {
 };
 
 export type LoadSchemaState = {
-   schema?: JsonSchema | LoadSchemaError;
+   result?: ResultState;
 };
+
+export type ResultState = {
+   currentUrl: string;
+   schema: JsonSchema | LoadSchemaError;
+}
 
 function isLoadSchemaError(e: JsonSchema | LoadSchemaError): e is LoadSchemaError {
    return typeof e !== 'boolean' && 'message' in e;
@@ -25,20 +31,35 @@ class LoadSchemaWR extends React.PureComponent<LoadSchemaProps, LoadSchemaState>
 
    };
 
-   componentDidMount() {
-      const urlToFetch = new URLSearchParams(this.props.location.search);
-      const url = urlToFetch.get('url') ;
-      if (url) {
-         fetch(url)
-            .then(resp => resp.json())
-            .then(result => this.setState({ schema: result }))
-            .catch(e => this.setState({ schema: { message: e.message }}));
+   componentDidUpdate(prevProps: LoadSchemaProps, prevState: LoadSchemaState) {
+      const url = this.getUrlFromProps();
+      if (prevState.result !== undefined && prevState.result.currentUrl !== url && url !== null) {
+         this.loadUrl(url);
       }
    }
 
+   componentDidMount() {
+      const url = this.getUrlFromProps();
+      if (url !== null) {
+         this.loadUrl(url);
+      }
+   }
+
+   private getUrlFromProps(): string | null {
+      const urlToFetch = new URLSearchParams(this.props.location.search);
+      return urlToFetch.get('url') ;
+   }
+
+   private loadUrl(url: string): void {
+      fetch(url)
+         .then(resp => resp.json())
+         .then(schema => this.setState({ result: { schema, currentUrl: url } }))
+         .catch(e => this.setState({ result: { currentUrl: url, schema: { message: e.message }}}));
+   }
+
    render() {
-      const { schema } = this.state;
-      if (schema === undefined) {
+      const { result } = this.state;
+      if (result === undefined) {
          return (
             <EmptyState
                header="Loading schema..."
@@ -50,13 +71,13 @@ class LoadSchemaWR extends React.PureComponent<LoadSchemaProps, LoadSchemaState>
          );
       }
 
-      if (isLoadSchemaError(schema)) {
+      if (isLoadSchemaError(result.schema)) {
          return (
             <EmptyState
                header="Schema load failed"
                description="Attempted to pull the JSON Schema down from the public internet."
                primaryAction={(
-                  <p>Error: ${schema.message}</p>
+                  <p>Error: ${result.schema.message}</p>
                )}
             />
          );
@@ -66,7 +87,7 @@ class LoadSchemaWR extends React.PureComponent<LoadSchemaProps, LoadSchemaState>
       if (typeof children !== 'function') {
          throw new Error('The children of the LoadSchema must be a function to accept the schema.')
       }
-      return <>{children(schema)}</>;
+      return <>{children(result.schema)}</>;
    }
 }
 

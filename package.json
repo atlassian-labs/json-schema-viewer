@@ -15,6 +15,8 @@
     "@atlaskit/icon": "^21.2.0",
     "@atlaskit/logo": "^13.0.7",
     "@atlaskit/lozenge": "^10.1.0",
+    "@atlaskit/menu": "^0.7.0",
+    "@atlaskit/popup": "^1.0.6",
     "@atlaskit/spinner": "^15.0.6",
     "@atlaskit/tabs": "^12.1.2",
     "@atlaskit/textfield": "^5.0.0",
@@ -31,6 +33,7 @@
   },
   "devDependencies": {
     "@babel/core": "^7.12.10",
+    "@babel/plugin-transform-runtime": "^7.12.10",
     "@babel/preset-typescript": "^7.12.7",
     "@compiled/babel-plugin": "^0.6.0",
     "@storybook/addon-actions": "^6.1.11",
