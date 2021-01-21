@@ -21,7 +21,19 @@ format, we realised that we could probably open source the Schema Explorer and m
 available to everybody. It would act as a reusable component that everybody could enjoy.
 
 Robert Massaioli took this realisation and created JSON Schema Viewer to externalise this
-JSON Schema Viewer.
+JSON Schema Viewer. Atlassian agreed, as part of its [open source program][3], that this would 
+be an excellent project to Open Source and [so it was][4] as part of the Labs project.
 
 I hope that you get great usage from the JSON Schema Viewer and that it helps you consume or 
 share JSON Schemas.
+
+## Original Authors
+
+The developer that release JSON Schema Viewer to the world was [Robert Massaioli][2], however
+the code that made up JSON Schema Viewer was developed by the [developer.atlassian.com][1] team
+at Atlassian.
+
+ [1]: https://developer.atlassian.com
+ [2]: https://keybase.io/robertmassaioli
+ [3]: https://developer.atlassian.com/platform/open-source/
+ [4]: https://github.com/atlassian-labs/json-schema-viewer

@@ -2,8 +2,8 @@ import EmptyState from '@atlaskit/empty-state';
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { useParams } from 'react-router-dom';
-import introduction from './introduction.md';
-import usage from './usage.md';
+import introduction from './docs/introduction.md';
+import usage from './docs/usage.md';
 import { Markdown } from './markdown';
 import Spinner from '@atlaskit/spinner';
 
