@@ -3,7 +3,6 @@ import { RouteComponentProps, withRouter } from 'react-router-dom';
 import { JsonSchema } from './schema';
 import Spinner from '@atlaskit/spinner';
 import EmptyState from '@atlaskit/empty-state';
-import memoize from 'memoize-one';
 
 export type LoadSchemaProps = RouteComponentProps & {
    children: (schema: JsonSchema) => ReactNode;

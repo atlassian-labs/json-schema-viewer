@@ -6,10 +6,9 @@ import { LoadSchema } from './LoadSchema';
 import { JsonSchema } from './schema';
 import { SchemaView } from './SchemaView';
 import { Start } from './Start';
-import { PopupMenuGroup, Section, ButtonItem } from '@atlaskit/menu';
+import { PopupMenuGroup, Section, ButtonItem, LinkItem } from '@atlaskit/menu';
 import { linkToRoot } from './route-path';
 import { ContentPropsWithClose, PrimaryDropdown } from './PrimaryDropdown';
-import { ContentProps } from '@atlaskit/popup';
 
 const JsonSchemaHome = () => (
   <ProductHome icon={AtlassianIcon} logo={AtlassianLogo} siteTitle="JSON Schema Viewer" />
@@ -39,24 +38,25 @@ const ExampleMenu: React.FC<ContentPropsWithClose> = (props) => (
       <NavigationButtonItem onClick={props.closePopup} exampleUrl="https://json.schemastore.org/swagger-2.0">Swagger (v2)</NavigationButtonItem>
       <NavigationButtonItem onClick={props.closePopup} exampleUrl="https://json.schemastore.org/package">package.json</NavigationButtonItem>
     </Section>
+    <Section title="Schema repositories">
+      <LinkItem href="https://www.schemastore.org/" target="_blank" onClick={props.closePopup}>Schemastore Repository</LinkItem>
+    </Section>
   </PopupMenuGroup>
 );
 
-
-/*
-Menus:
-
- - Examples
-   - Atlassian Forge
-   - OpenAPI v3
-   - Swagger v2
-   - package.json
-   -
- - Learn JSON Schema
- - Raise issue
- - Visit repository
- - About
-*/
+const HelpMenu: React.FC<ContentPropsWithClose> = (props) => (
+  <PopupMenuGroup>
+    <Section title="Learn">
+      <ButtonItem>Introduction</ButtonItem>
+      <ButtonItem>Linking your schema</ButtonItem>
+      <LinkItem href="http://json-schema.org/understanding-json-schema/" target="_blank" onClick={props.closePopup}>Understanding JSON Schema</LinkItem>
+    </Section>
+    <Section title="Contribute">
+      <LinkItem href="https://github.com/atlassian-labs/json-schema-viewer/issues/new" target="_blank" onClick={props.closePopup}>Raise issue</LinkItem>
+      <LinkItem href="https://github.com/atlassian-labs/json-schema-viewer" target="_blank" onClick={props.closePopup}>View source code</LinkItem>
+    </Section>
+  </PopupMenuGroup>
+)
 
 const NewSchema: React.FC = () => {
   const history = useHistory();
@@ -91,7 +91,8 @@ class SchemaAppWR extends React.PureComponent<RouteComponentProps, SchemaAppStat
 
    render() {
     const primaryItems = [
-      <PrimaryDropdown content={props => <ExampleMenu {...props} />} text="Examples" />
+      <PrimaryDropdown content={props => <ExampleMenu {...props} />} text="Examples" />,
+      <PrimaryDropdown content={props => <HelpMenu {...props} />} text="Help" />
     ];
 
     return (
