@@ -18,6 +18,7 @@ import { ClickElement } from './Type';
 import { LinkProps, useHistory, useLocation } from 'react-router-dom';
 import { getTitle } from './title';
 import { LinkPreservingSearch, NavLinkPreservingSearch } from './search-preserving-link';
+import { dump } from 'js-yaml';
 
 interface SEPHeadProps {
   basePathSegments: Array<string>;
@@ -161,6 +162,7 @@ type SchemaExplorerExampleProps = {
   schema: JsonSchema;
   lookup: Lookup;
   stage: Stage;
+  format: 'json' | 'yaml';
 };
 
 const FullWidth = styled.div`
@@ -176,9 +178,10 @@ const SchemaExplorerExample: React.FC<SchemaExplorerExampleProps> = props => {
   const potentialExample = generateJsonExampleFor(props.schema, props.lookup, props.stage);
 
   if (isExample(potentialExample)) {
+    const renderedOutput = props.format === 'json' ? JSON.stringify(potentialExample.value, null, 2) : dump(potentialExample.value);
     return (
       <FullWidth>
-        <CodeBlockWithCopy text={JSON.stringify(potentialExample.value, null, 2)} language="json" />
+        <CodeBlockWithCopy text={renderedOutput} language={props.format} />
       </FullWidth>
     );
   }
@@ -362,9 +365,23 @@ export type SchemaExplorerProps = {
   lookup: Lookup;
 };
 
+export type ViewType = 'details' | 'example-json' | 'example-yaml';
+
 export type SchemaExplorerState = {
   pathExpanded: boolean;
-  view: 'details' | 'example';
+  view: ViewType;
+};
+
+const LabelToViewType: { [label: string]: ViewType } = {
+  'Details': 'details',
+  'Example (JSON)': 'example-json',
+  'Example (YAML)': 'example-yaml'
+};
+
+const ViewTypeToTab: { [viewType: string]: number } = {
+  'details': 0,
+  'example-json': 1,
+  'example-yaml': 2
 };
 
 export class SchemaExplorer extends React.PureComponent<SchemaExplorerProps, SchemaExplorerState> {
@@ -418,15 +435,20 @@ export class SchemaExplorer extends React.PureComponent<SchemaExplorerProps, Sch
         />
       )
     }, {
-      label: 'Example',
+      label: 'Example (JSON)',
       content: (
-        <SchemaExplorerExample schema={schema} lookup={lookup} stage={stage} />
+        <SchemaExplorerExample schema={schema} lookup={lookup} stage={stage} format="json" />
+      )
+    }, {
+      label: 'Example (YAML)',
+      content: (
+        <SchemaExplorerExample schema={schema} lookup={lookup} stage={stage} format="yaml" />
       )
     }];
 
     const onTabSelect: OnSelectCallback = tab => {
       this.setState({
-        view: tab.label === 'Details' ? 'details' : 'example'
+        view: LabelToViewType[tab.label || 'Details']
       });
     };
 
@@ -442,7 +464,7 @@ export class SchemaExplorer extends React.PureComponent<SchemaExplorerProps, Sch
           <SchemaExplorer.Heading>{getTitle(currentPathElement.reference, schema)}</SchemaExplorer.Heading>
           <Permalink />
         </SchemaExplorer.HeadingContainer>
-        <Tabs tabs={tabData} selected={this.state.view === 'details' ? 0 : 1} onSelect={onTabSelect} />
+        <Tabs tabs={tabData} selected={ViewTypeToTab[this.state.view || 'details']} onSelect={onTabSelect} />
       </SchemaExplorer.Container>
     );
   }
