@@ -9,6 +9,7 @@ import { Start } from './Start';
 import { PopupMenuGroup, Section, ButtonItem, LinkItem } from '@atlaskit/menu';
 import { linkToRoot } from './route-path';
 import { ContentPropsWithClose, PrimaryDropdown } from './PrimaryDropdown';
+import { Docs } from './Docs';
 
 const JsonSchemaHome = () => (
   <ProductHome icon={AtlassianIcon} logo={AtlassianLogo} siteTitle="JSON Schema Viewer" />
@@ -21,13 +22,13 @@ type NavigationButtonItemProps = {
 
 const NavigationButtonItem: React.FC<NavigationButtonItemProps> = (props) => {
   const history = useHistory();
-  const onClick = () => {
-    history.push(
-      linkToRoot(['view'], props.exampleUrl)
-    );
+  const linkLocation = linkToRoot(['view'], props.exampleUrl);
+  const onClick = (e: React.MouseEvent | React.KeyboardEvent) => {
+    e.preventDefault();
+    history.push(linkLocation);
     props.onClick();
   };
-  return <ButtonItem onClick={onClick}>{props.children}</ButtonItem>
+  return <LinkItem href={linkLocation} onClick={onClick}>{props.children}</LinkItem>
 }
 
 const ExampleMenu: React.FC<ContentPropsWithClose> = (props) => (
@@ -44,19 +45,31 @@ const ExampleMenu: React.FC<ContentPropsWithClose> = (props) => (
   </PopupMenuGroup>
 );
 
-const HelpMenu: React.FC<ContentPropsWithClose> = (props) => (
-  <PopupMenuGroup>
-    <Section title="Learn">
-      <ButtonItem>Introduction</ButtonItem>
-      <ButtonItem>Linking your schema</ButtonItem>
-      <LinkItem href="http://json-schema.org/understanding-json-schema/" target="_blank" onClick={props.closePopup}>Understanding JSON Schema</LinkItem>
-    </Section>
-    <Section title="Contribute">
-      <LinkItem href="https://github.com/atlassian-labs/json-schema-viewer/issues/new" target="_blank" onClick={props.closePopup}>Raise issue</LinkItem>
-      <LinkItem href="https://github.com/atlassian-labs/json-schema-viewer" target="_blank" onClick={props.closePopup}>View source code</LinkItem>
-    </Section>
-  </PopupMenuGroup>
-)
+const HelpMenu: React.FC<ContentPropsWithClose> = (props) => {
+  const history = useHistory();
+
+  const goTo = (location: string) => {
+    return (e: React.MouseEvent | React.KeyboardEvent) => {
+      e.preventDefault();
+      history.push(location);
+      props.closePopup();
+    };
+  };
+
+  return (
+    <PopupMenuGroup>
+      <Section title="Learn">
+        <LinkItem href="/docs/introduction" onClick={goTo('/docs/introduction')}>Introduction</LinkItem>
+        <ButtonItem onClick={goTo('/docs/usage')}>Linking your schema</ButtonItem>
+        <LinkItem href="http://json-schema.org/understanding-json-schema/" target="_blank" onClick={props.closePopup}>Understanding JSON Schema</LinkItem>
+      </Section>
+      <Section title="Contribute">
+        <LinkItem href="https://github.com/atlassian-labs/json-schema-viewer/issues/new" target="_blank" onClick={props.closePopup}>Raise issue</LinkItem>
+        <LinkItem href="https://github.com/atlassian-labs/json-schema-viewer" target="_blank" onClick={props.closePopup}>View source code</LinkItem>
+      </Section>
+    </PopupMenuGroup>
+  );
+};
 
 const NewSchema: React.FC = () => {
   const history = useHistory();
@@ -120,6 +133,7 @@ class SchemaAppWR extends React.PureComponent<RouteComponentProps, SchemaAppStat
               )}
             </LoadSchema>
           </Route>
+          <Route path="/docs/:id"><Docs /></Route>
         </Switch>
       </div>
     );
