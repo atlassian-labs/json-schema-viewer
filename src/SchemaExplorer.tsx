@@ -5,16 +5,17 @@ import { ParameterView } from './Parameter';
 import styled from 'styled-components';
 import Button from '@atlaskit/button';
 import ChevronLeftIcon from '@atlaskit/icon/glyph/chevron-left';
+import LinkIcon from '@atlaskit/icon/glyph/link';
 import { Markdown } from './markdown';
 import { BreadcrumbsStateless, BreadcrumbsItem } from '@atlaskit/breadcrumbs';
 import Tabs from '@atlaskit/tabs';
 import { TabData, OnSelectCallback } from '@atlaskit/tabs/types';
 import { CodeBlockWithCopy } from './code-block-with-copy';
-import { generateJsonExampleFor, isExample, Example, Errors } from './example';
+import { generateJsonExampleFor, isExample } from './example';
 import { Stage, shouldShowInStage } from './stage';
 import { linkTo, PathElement } from './route-path';
 import { ClickElement } from './Type';
-import { LinkProps, useHistory } from 'react-router-dom';
+import { LinkProps, useHistory, useLocation } from 'react-router-dom';
 import { getTitle } from './title';
 import { LinkPreservingSearch, NavLinkPreservingSearch } from './search-preserving-link';
 
@@ -86,7 +87,7 @@ function init<A>(arr: Array<A>): Array<A> {
   return arr.slice(0, arr.length - 1);
 }
 
-const SEPHead = (props: SEPHeadProps) => {
+const SEPHead: React.FC<SEPHeadProps> = (props) => {
   const onExpandClick = () => {
     props.onExpandClick();
   };
@@ -109,6 +110,18 @@ const SEPHead = (props: SEPHeadProps) => {
         </BreadcrumbsStateless>
       </Path>
     </Head>
+  );
+};
+
+const Permalink: React.FC = () => {
+  const location = useLocation();
+  return (
+    <Button
+        appearance="link"
+        href={location.pathname + location.search}
+        iconBefore={<LinkIcon label="permalink" />}
+      >Permalink
+    </Button>
   );
 };
 
@@ -356,20 +369,26 @@ export type SchemaExplorerState = {
 
 export class SchemaExplorer extends React.PureComponent<SchemaExplorerProps, SchemaExplorerState> {
   private static Container = styled.section`
-        display: flex;
-        flex-direction: column;
-        flex-grow: 1;
-        padding: 24px 20px;
-        margin: 0;
-        max-width: 100%;
-    `;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    padding: 24px 20px;
+    margin: 0;
+    max-width: 100%;
+  `;
+
+  private static HeadingContainer = styled.div`
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+  `;
 
   private static Heading = styled.h1`
-        font-size: 16px;
-        font-weight: 600;
-        padding-top: 24px;
-        margin: 5px 8px;
-    `;
+    font-size: 16px;
+    font-weight: 600;
+    padding-top: 24px;
+    margin: 5px 8px;
+  `;
 
   UNSAFE_componentWillMount() {
     this.setState({
@@ -419,7 +438,10 @@ export class SchemaExplorer extends React.PureComponent<SchemaExplorerProps, Sch
           pathExpanded={pathExpanded}
           onExpandClick={() => this.onExpandClick()}
         />
-        <SchemaExplorer.Heading>{getTitle(currentPathElement.reference, schema)}</SchemaExplorer.Heading>
+        <SchemaExplorer.HeadingContainer>
+          <SchemaExplorer.Heading>{getTitle(currentPathElement.reference, schema)}</SchemaExplorer.Heading>
+          <Permalink />
+        </SchemaExplorer.HeadingContainer>
         <Tabs tabs={tabData} selected={this.state.view === 'details' ? 0 : 1} onSelect={onTabSelect} />
       </SchemaExplorer.Container>
     );
