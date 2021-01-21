@@ -19,10 +19,12 @@ const docsMap: { [key: string]: string } = {
 type LoadResult = FileLoaded | FileLoadedFailed | undefined;
 
 type FileLoaded = {
+   loadId: string;
    fileContents: string;
 };
 
 type FileLoadedFailed = {
+   loadId: string;
    message: string;
 };
 
@@ -44,19 +46,21 @@ export const Docs: React.FC = () => {
       const docsUrl = docsMap[id];
 
       if (docsUrl === undefined) {
-         setLoadResult({ message: 'There are no docs at this URL.' });
+         setLoadResult({ message: 'There are no docs at this URL.', loadId: id });
       } else {
          try {
             const fileContents = await fetch(docsUrl).then(r => r.text());
-            setLoadResult({ fileContents });
+            setLoadResult({ fileContents, loadId: id });
          } catch (e) {
-            setLoadResult({ message: e.message });
+            setLoadResult({ message: e.message, loadId: id });
          }
       }
    };
 
    useEffect(() => {
-      loadFileContents();
+      if (loadResult === undefined || loadResult.loadId !== id) {
+         loadFileContents();
+      }
    });
 
    if (loadResult === undefined) {
