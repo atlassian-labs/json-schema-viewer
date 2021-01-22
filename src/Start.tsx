@@ -42,7 +42,7 @@ export class StartWR extends React.PureComponent<StartProps, StartState> {
         primaryAction={(
           <StartWR.InputWidth>
             <TextField isCompact={false} value={this.state.urlInput || ''} onChange={onTextChange} />
-            <Button label="submit" onClick={handleOnClick}>Load Schema</Button>
+            <Button label="submit" onClick={handleOnClick} appearance="primary">Load Schema</Button>
           </StartWR.InputWidth>
         )}
       />

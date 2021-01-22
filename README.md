@@ -26,14 +26,18 @@ Now open: http://localhost:8080 to see the site and develop it live.
 
 ## Deployment
 
-To deploy this project:
+To publish new SPA website resources to this AWS stack (this is the most common operation you will perform):
 
 ``` shell
 nix-shell -p awscli2
-yarn build
-yarn package-build
-yarn aws-package
-yarn aws-deploy
+yarn build-and-upload
+```
+
+To deploy this project in a way that updates the AWS Configuration via Cloud Formation:
+
+``` shell
+nix-shell -p awscli2
+yarn build-and-deploy
 ```
 
 ## Documentation
