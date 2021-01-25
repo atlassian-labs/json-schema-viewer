@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { JsonSchema } from './schema';
 import { Lookup } from './lookup';
 import styled from 'styled-components';
@@ -16,8 +16,8 @@ export type ParameterMetadataProps = {
   lookup: Lookup;
 };
 
-function turnEnumToValues(schema: JsonSchema, lookup: Lookup): JSX.Element | undefined {
-  const potentialEnum = extractEnum(schema, lookup);
+async function turnEnumToValues(schema: JsonSchema, lookup: Lookup): Promise<JSX.Element | undefined> {
+  const potentialEnum = await extractEnum(schema, lookup);
 
   if (potentialEnum === undefined) {
     return undefined;
@@ -31,8 +31,16 @@ function turnEnumToValues(schema: JsonSchema, lookup: Lookup): JSX.Element | und
   );
 }
 
-export const ParameterMetadata: React.SFC<ParameterMetadataProps> = (props) => {
+export const ParameterMetadata: React.FC<ParameterMetadataProps> = (props) => {
   const { schema, lookup } = props;
+
+  const [potentialEnum, setPotentialEnum] = useState<JSX.Element | undefined>(undefined);
+
+  useEffect(() => {
+    (async () => {
+      setPotentialEnum(await turnEnumToValues(schema, lookup));
+    })();
+  });
 
   const restrictions: JSX.Element[] = new Array<JSX.Element>();
   const validValues = new Array<JSX.Element>();
@@ -101,7 +109,6 @@ export const ParameterMetadata: React.SFC<ParameterMetadataProps> = (props) => {
       restrictions.push(show('Format', 'format', schema.format));
     }
 
-    let potentialEnum = turnEnumToValues(schema, lookup);
     if (potentialEnum !== undefined) {
       validValues.push(potentialEnum);
     }

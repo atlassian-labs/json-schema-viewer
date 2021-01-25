@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { JsonSchema, JsonSchema1 } from './schema';
-import { getSchemaFromResult, Lookup } from './lookup';
+import { getSchemaFromResult, Lookup, LookupResult } from './lookup';
 import { ParameterView } from './Parameter';
 import styled from 'styled-components';
 import Button from '@atlaskit/button';
@@ -224,26 +224,102 @@ function getDescriptionForSchema(schema: JsonSchema): string | undefined {
   return schema.description;
 }
 
+type LoadPropertiesContext<A> = {
+  reference: string;
+  lookup: Lookup;
+  stage: Stage;
+  callback: (results: A) => void;
+};
+
+type PropertiesState = {
+  propertyName: string;
+  lookupResult: LookupResult;
+  propertyReference: string;
+}
+
+type PatternPropertiesState = {
+  pattern: string;
+  index: number;
+  lookupResult: LookupResult;
+  propertyReference: string;
+};
+
+async function loadProperties(properties: NonNullable<JsonSchema1['properties']>, context: LoadPropertiesContext<Array<PropertiesState>>): Promise<void> {
+  const { reference, lookup, stage, callback } = context;
+
+  const lookups = await Promise.all(Object.keys(properties)
+  .map(async propertyName => {
+    const propertySchema = properties[propertyName];
+    const lookupResult = await lookup.getSchema(propertySchema);
+    return ({
+      propertyName,
+      lookupResult,
+      propertyReference: lookupResult?.baseReference || `${reference}/properties/${propertyName}`
+    });
+  }));
+
+  callback(lookups.filter(p => {
+    if (p.lookupResult === undefined) {
+      return true;
+    }
+    return shouldShowInStage(stage, p.lookupResult.schema);
+  }));
+}
+
+async function loadPatternProperties(patternProperties: NonNullable<JsonSchema1['patternProperties']>, context: LoadPropertiesContext<Array<PatternPropertiesState>>): Promise<void> {
+  const { reference, lookup, stage, callback } = context;
+
+  const results = await Promise.all(Object.keys(patternProperties).map(async (pattern, index) => {
+    const lookupResult = await lookup.getSchema(patternProperties[pattern]);
+
+    return {
+      pattern,
+      index,
+      lookupResult,
+      propertyReference: lookupResult?.baseReference || `${reference}/patternProperties/${pattern}`
+    };
+  }));
+
+  callback(results.filter(p => {
+    if (p.lookupResult === undefined) {
+      return true;
+    }
+
+    return shouldShowInStage(stage, p.lookupResult.schema);
+  }));
+}
+
 export const SchemaExplorerDetails: React.FC<SchemaExplorerDetailsProps> = props => {
   const { schema, reference, clickElement, lookup, stage } = props;
-  const properties = schema.properties || {};
 
-  const renderedProps = Object.keys(properties)
-    .map(propertyName => {
-      const propertySchema = properties[propertyName];
-      const lookupResult = lookup.getSchema(propertySchema);
-      return ({
-        propertyName,
-        lookupResult,
-        propertyReference: lookupResult?.baseReference || `${reference}/properties/${propertyName}`
-      });
-    })
-    .filter(p => {
-      if (p.lookupResult === undefined) {
-        return true;
+  const [propertiesState, setPropertiesState] = useState<Array<PropertiesState> | undefined>(undefined);
+  const [additionalPropertiesResult, setAdditionalPropertiesResult] = useState<LookupResult | undefined>(undefined);
+  const [patternProperties, setPatternProperties] = useState<Array<PatternPropertiesState> | undefined>(undefined);
+
+  useEffect(() => {
+    // Load the properties
+    loadProperties(schema.properties || {}, {
+      reference,
+      lookup,
+      stage,
+      callback: setPropertiesState
+    });
+
+    (async () => {
+      if (schema.additionalProperties !== undefined) {
+        setAdditionalPropertiesResult(await lookup.getSchema(schema.additionalProperties));
       }
-      return shouldShowInStage(stage, p.lookupResult.schema);
+    })();
+
+    loadPatternProperties(schema.patternProperties || {}, {
+      reference,
+      lookup,
+      stage,
+      callback: setPatternProperties
     })
+  });
+
+  const renderedProps = (propertiesState || [])
     .map(p => {
       const isRequired =
         typeof schema.required !== 'undefined' && !!schema.required.find(n => n === p.propertyName);
@@ -294,44 +370,37 @@ export const SchemaExplorerDetails: React.FC<SchemaExplorerDetailsProps> = props
         />
       ));
     }
-  } else if (schema.additionalProperties !== undefined) {
-    const additionalPropertiesResult = lookup.getSchema(schema.additionalProperties);
-    if (additionalPropertiesResult !== undefined) {
-      const resolvedReference = additionalPropertiesResult.baseReference || `${reference}/additionalProperties`;
-      additionalProperties.push((
-        <ParameterView
-          key="dac__schema-additional-properties"
-          name="Additional Properties"
-          description={getDescriptionForSchema(additionalPropertiesResult)}
-          required={false}
-          schema={additionalPropertiesResult.schema}
-          reference={resolvedReference}
-          lookup={lookup}
-          clickElement={clickElement}
-        />
-      ));
-    }
+  } else if (schema.additionalProperties !== undefined && additionalPropertiesResult !== undefined) {
+    const resolvedReference = additionalPropertiesResult.baseReference || `${reference}/additionalProperties`;
+    additionalProperties.push((
+      <ParameterView
+        key="dac__schema-additional-properties"
+        name="Additional Properties"
+        description={getDescriptionForSchema(additionalPropertiesResult)}
+        required={false}
+        schema={additionalPropertiesResult.schema}
+        reference={resolvedReference}
+        lookup={lookup}
+        clickElement={clickElement}
+      />
+    ));
   }
 
-  const patternProperties = schema.patternProperties || {};
-  const renderedPatternProperties = Object.keys(patternProperties).map((pattern, i) => {
-    const lookupResult = lookup.getSchema(patternProperties[pattern]);
+  const renderedPatternProperties = (patternProperties || []).map(patternPropertyState => {
+    const { pattern, index, lookupResult, propertyReference } = patternPropertyState;
     return (
       <ParameterView
-        key={`pattern-properties-${i}`}
+        key={`pattern-properties-${index}`}
         name={`/${pattern}/ (keys of pattern)`}
         description={getDescriptionForSchema(schema)}
         required={false}
         schema={getSchemaFromResult(lookupResult)}
-        reference={lookupResult?.baseReference || `${reference}/patternProperties/${pattern}`}
+        reference={propertyReference}
         lookup={lookup}
         clickElement={clickElement}
       />
     )
   })
-  if (schema.patternProperties !== undefined) {
-    schema.patternProperties
-  }
 
   return (
     <div>

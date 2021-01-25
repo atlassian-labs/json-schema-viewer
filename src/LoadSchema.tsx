@@ -5,7 +5,7 @@ import Spinner from '@atlaskit/spinner';
 import EmptyState from '@atlaskit/empty-state';
 
 export type LoadSchemaProps = RouteComponentProps & {
-   children: (schema: JsonSchema) => ReactNode;
+   children: (schema: JsonSchema, url: string) => ReactNode;
 };
 
 export type LoadSchemaError = {
@@ -86,7 +86,7 @@ class LoadSchemaWR extends React.PureComponent<LoadSchemaProps, LoadSchemaState>
       if (typeof children !== 'function') {
          throw new Error('The children of the LoadSchema must be a function to accept the schema.')
       }
-      return <>{children(result.schema)}</>;
+      return <>{children(result.schema, this.getUrlFromProps())}</>;
    }
 }
 

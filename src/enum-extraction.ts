@@ -2,7 +2,7 @@ import { JsonSchema, JsonSchema1 } from './schema';
 import { getSchemaFromResult, Lookup } from './lookup';
 import { isPrimitiveType } from './type-inference';
 
-function extractEnumDirectly(schema?: JsonSchema): JsonSchema1['enum'] {
+async function extractEnumDirectly(schema?: JsonSchema): Promise<JsonSchema1['enum']> {
   if (schema === undefined || typeof schema === 'boolean') {
     return undefined;
   }
@@ -14,17 +14,17 @@ function extractEnumDirectly(schema?: JsonSchema): JsonSchema1['enum'] {
   return undefined;
 }
 
-function extractArrayEnum(schema: JsonSchema, lookup: Lookup): JsonSchema1['enum'] {
+async function extractArrayEnum(schema: JsonSchema, lookup: Lookup): Promise<JsonSchema1['enum']> {
   if (typeof schema !== 'boolean' && schema.type === 'array' && schema.items !== undefined && !Array.isArray(schema.items)) {
-    return extractEnumDirectly(getSchemaFromResult(lookup.getSchema(schema.items)));
+    return extractEnumDirectly(getSchemaFromResult(await lookup.getSchema(schema.items)));
   }
   return undefined;
 }
 
-function runUntilFirstResult<A, B>(inputFunctions: ((a: A) => B | undefined)[], value: A): B | undefined {
+async function runUntilFirstResult<A, B>(inputFunctions: ((a: A) => Promise<B | undefined>)[], value: A): Promise<B | undefined> {
   for (let i = 0; i < inputFunctions.length; i++) {
-    const potentialResult = inputFunctions[i](value);
-    if (typeof potentialResult !== 'undefined') {
+    const potentialResult = await inputFunctions[i](value);
+    if (potentialResult !== undefined) {
       return potentialResult;
     }
   }
@@ -32,8 +32,8 @@ function runUntilFirstResult<A, B>(inputFunctions: ((a: A) => B | undefined)[], 
   return undefined;
 }
 
-export function extractEnum(schema: JsonSchema, lookup: Lookup): JsonSchema1['enum'] {
-  const extractors: ((s: JsonSchema) => JsonSchema1['enum'])[] = [
+export async function extractEnum(schema: JsonSchema, lookup: Lookup): Promise<JsonSchema1['enum']> {
+  const extractors: ((s: JsonSchema) => Promise<JsonSchema1['enum']>)[] = [
     extractEnumDirectly,
     s => extractArrayEnum(s, lookup)
   ];

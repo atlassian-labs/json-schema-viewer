@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
-import { getSchemaFromReference, InternalLookup, Lookup } from './lookup';
+import { getSchemaFromReference, Lookup } from './lookup';
 import { PathElement } from './route-path';
 import { JsonSchema } from './schema';
 import { SchemaExplorer } from './SchemaExplorer';
@@ -13,6 +13,14 @@ export type SchemaViewProps = RouteComponentProps & {
   basePathSegments: Array<string>;
   schema: JsonSchema;
   stage: Stage;
+  lookup: Lookup;
+};
+
+export type SchemaViewState = {
+  loadedState?: {
+    path: Array<PathElement>;
+    currentSchema: JsonSchema | undefined;
+  }
 };
 
 // TODO we need to reverse engineer the schema explorer to show based on the path
@@ -36,24 +44,30 @@ function removeLeadingSlash(v: string): string {
   return v;
 }
 
-export class SchemaViewWR extends React.PureComponent<SchemaViewProps> {
+export class SchemaViewWR extends React.PureComponent<SchemaViewProps, SchemaViewState> {
   private static Container = styled.div`
     display: flex;
   `;
 
+  constructor(props: SchemaViewProps) {
+    super(props);
+    this.setState({});
+  }
+
+  componentDidMount() {
+    this.loadState(this.props.lookup);
+  }
+
+
+
   public render() {
-    const { schema, basePathSegments } = this.props;
+    const { schema, basePathSegments, lookup } = this.props;
 
-    const lookup = new InternalLookup(schema);
-    const path = this.getPathFromRoute(lookup);
-
-    if (path.length === 0) {
-      return <div>Error: Could not work out what to load from the schema.</div>
+    if (this.state.loadedState === undefined) {
+      return <div>TODO put in a loading state here</div>;
     }
 
-    const currentPathElement = path[path.length - 1];
-    console.log('loading', currentPathElement.reference);
-    const currentSchema = getSchemaFromReference(currentPathElement.reference, lookup);
+    const { path, currentSchema } = this.state.loadedState;
 
     if (currentSchema === undefined) {
       return <div>ERROR: Could not look up the schema that was requested in the URL.</div>;
@@ -78,7 +92,31 @@ export class SchemaViewWR extends React.PureComponent<SchemaViewProps> {
     );
   }
 
-  private getPathFromRoute(lookup: Lookup): Array<PathElement> {
+  private async loadState(lookup: Lookup): Promise<void> {
+    const path = await this.getPathFromRoute(lookup);
+
+    if (path.length === 0) {
+      this.setState({
+        loadedState: {
+          path,
+          currentSchema: undefined
+        }
+      });
+    } else {
+      const currentPathElement = path[path.length - 1];
+      console.log('loading', currentPathElement.reference);
+      const currentSchema = await getSchemaFromReference(currentPathElement.reference, lookup);
+
+      this.setState({
+        loadedState: {
+          path,
+          currentSchema
+        }
+      });
+    }
+  }
+
+  private async getPathFromRoute(lookup: Lookup): Promise<Array<PathElement>> {
     const { basePathSegments } = this.props;
     const { pathname } = this.props.location;
     const pathSegments = removeLeadingSlash(pathname).split('/');
@@ -90,7 +128,7 @@ export class SchemaViewWR extends React.PureComponent<SchemaViewProps> {
     if (iterator === pathSegments.length) {
       console.log('render root');
       const reference = '#';
-      const title = getTitle(getSchemaFromReference(reference, lookup));
+      const title = getTitle(await getSchemaFromReference(reference, lookup));
       return [{
         title,
         reference
@@ -98,13 +136,13 @@ export class SchemaViewWR extends React.PureComponent<SchemaViewProps> {
     }
 
     console.log('render latest');
-    return pathSegments.slice(iterator).map(decodeURIComponent).map(reference => {
-      const title = getTitle(getSchemaFromReference(reference, lookup));
+    return Promise.all(pathSegments.slice(iterator).map(decodeURIComponent).map(async reference => {
+      const title = getTitle(await getSchemaFromReference(reference, lookup));
       return {
         title,
         reference
       };
-    });
+    }));
   }
 }
 
