@@ -39,8 +39,8 @@ module.exports = {
       filename: 'index.html'
     }),
     new CspHtmlWebpackPlugin({
-      'script-src': ["'strict-dynamic'"],
-      'style-src': ["'unsafe-inline'", "'self'"]
+      'script-src': ["'strict-dynamic'", "cdn.jsdelivr.net"],
+      'style-src': ["'unsafe-inline'", "'self'", "cdn.jsdelivr.net"]
     }),
     new webpack.DefinePlugin({
       'process': undefined,
