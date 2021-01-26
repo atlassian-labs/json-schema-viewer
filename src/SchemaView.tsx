@@ -61,6 +61,12 @@ export class SchemaViewWR extends React.PureComponent<SchemaViewProps> {
     }
   `;
 
+  private static EditorContainerHeading = styled.h3`
+    position: fixed;
+    top: 0px;
+    z-index: -100;
+  `;
+
   public render() {
     const { schema, basePathSegments } = this.props;
 
@@ -100,6 +106,7 @@ export class SchemaViewWR extends React.PureComponent<SchemaViewProps> {
             initialContent={fullExample}
             schema={schema}
           />
+          <SchemaViewWR.EditorContainerHeading>Editor and Validator</SchemaViewWR.EditorContainerHeading>
         </SchemaViewWR.EditorContainer>
       </SchemaViewWR.Container>
     );
