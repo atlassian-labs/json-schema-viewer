@@ -19,15 +19,16 @@ export const SchemaEditor: React.FC<SchemaEditorProps> = (props) => {
              schema: props.schema
          }]
      });
-   }, [monaco]);
+   }, [monaco, props.schema]);
 
    return (
       <Editor
          height="100vh"
          defaultLanguage="json"
-         defaultValue={JSON.stringify(props.initialContent, null, 2)}
+         value={JSON.stringify(props.initialContent, null, 2)}
          path="a://b/example.json"
          theme="vs-dark"
+         saveViewState={false}
       />
    );
 };

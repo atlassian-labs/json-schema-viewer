@@ -10,6 +10,7 @@ import { Stage } from './stage';
 import { extractLinks } from './side-nav-loader';
 import { SchemaEditor } from './SchemaEditor';
 import { generateJsonExampleFor, isErrors } from './example';
+import { forSize } from './breakpoints';
 
 export type SchemaViewProps = RouteComponentProps & {
   basePathSegments: Array<string>;
@@ -46,6 +47,11 @@ export class SchemaViewWR extends React.PureComponent<SchemaViewProps> {
   private static EditorContainer = styled.div`
     min-width: 500px;
     max-width: 500px;
+
+    display: none;
+    ${forSize('tablet-landscape-up', `
+      display: block;
+    `)}
 
     section {
       padding: 0;
