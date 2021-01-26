@@ -1893,6 +1893,22 @@
   resolved "https://registry.yarnpkg.com/@mdx-js/util/-/util-1.6.22.tgz#219dfd89ae5b97a8801f015323ffa4b62f45718b"
   integrity sha512-H1rQc1ZOHANWBvPcW+JpGwr+juXSxM8Q8YCkm3GhZd8REu1fHR3z99CErO1p9pkcfcxZnMdIZdIsXkOHY0NilA==
 
+"@monaco-editor/loader@^1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@monaco-editor/loader/-/loader-1.0.0.tgz#c7ea78ef07cebcae83d92bbfe2bddab563468102"
+  integrity sha512-CA35bf5Y7wFWfeJZfkLslOxiatln3oTBKkfbdo+TF5H+UdPP96qHvhOUjjd1DeQ2NWsRkVPSnoSYek7NE5B26w==
+  dependencies:
+    state-local "^1.0.6"
+
+"@monaco-editor/react@^4.0.7":
+  version "4.0.7"
+  resolved "https://registry.yarnpkg.com/@monaco-editor/react/-/react-4.0.7.tgz#cc57e4fde2df773720eafaedeb2327b689880cd8"
+  integrity sha512-R/FAcVveST+VGaWfTtnMyyB01hDc3U8GQgV4KFDd/6o7FbItXHh8ShLn9otudz5/hTZiRhXZrEg7p3q4fkO0hg==
+  dependencies:
+    "@monaco-editor/loader" "^1.0.0"
+    prop-types "^15.7.2"
+    state-local "^1.0.7"
+
 "@mrmlnc/readdir-enhanced@^2.2.1":
   version "2.2.1"
   resolved "https://registry.yarnpkg.com/@mrmlnc/readdir-enhanced/-/readdir-enhanced-2.2.1.tgz#524af240d1a360527b730475ecfa1344aa540dde"
@@ -5015,12 +5031,7 @@ core-js@^2.4.0:
   resolved "https://registry.yarnpkg.com/core-js/-/core-js-2.6.12.tgz#d9333dfa7b065e347cc5682219d6f690859cc2ec"
   integrity sha512-Kb2wC0fvsWfQrgk8HU5lW6U/Lcs8+9aaYcy4ZFc6DDlo4nZ7n70dEgE5rtR0oG6ufKDUnrwfWL1mXR5ljDatrQ==
 
-core-js@^3.0.1, core-js@^3.0.4, core-js@^3.6.5:
-  version "3.8.2"
-  resolved "https://registry.yarnpkg.com/core-js/-/core-js-3.8.2.tgz#0a1fd6709246da9ca8eff5bb0cbd15fba9ac7044"
-  integrity sha512-FfApuSRgrR6G5s58casCBd9M2k+4ikuu4wbW6pJyYU7bd9zvFc9qf7vr5xmrZOhT9nn+8uwlH1oRR9jTnFoA3A==
-
-core-js@^3.4.1:
+core-js@^3.0.1, core-js@^3.0.4, core-js@^3.4.1, core-js@^3.6.5:
   version "3.8.3"
   resolved "https://registry.yarnpkg.com/core-js/-/core-js-3.8.3.tgz#c21906e1f14f3689f93abcc6e26883550dd92dd0"
   integrity sha512-KPYXeVZYemC2TkNEkX/01I+7yd+nX3KddKwZ1Ww7SKWdI2wQprSgLmrTddT8nw92AjEklTsPBoSdQBhbI1bQ6Q==
@@ -7351,7 +7362,7 @@ html-void-elements@^1.0.0:
   resolved "https://registry.yarnpkg.com/html-void-elements/-/html-void-elements-1.0.5.tgz#ce9159494e86d95e45795b166c2021c2cfca4483"
   integrity sha512-uE/TxKuyNIcx44cIWnjr/rfIATDH7ZaOMmstu0CwhFG1Dunhlp4OC6/NMbhiwoq5BpW0ubi303qnEk/PZj614w==
 
-"html-webpack-plugin@>=5.0.0 || ^5.0.0-beta.3":
+"html-webpack-plugin@>=5.0.0 || ^5.0.0-beta.3", html-webpack-plugin@^5.0.0-beta.4:
   version "5.0.0-beta.5"
   resolved "https://registry.yarnpkg.com/html-webpack-plugin/-/html-webpack-plugin-5.0.0-beta.5.tgz#a5f03394996c2cbb5b587f424556ff938f06decb"
   integrity sha512-5zxdMIutk7qnqYxZYf8B+0IQVqa/AvYX9dEXKq90Uw0/svWergof10vBPsckCkXhUdo9nst9FE/Uf+WIUyVUsw==
@@ -7377,18 +7388,6 @@ html-webpack-plugin@^4.2.1:
     pretty-error "^2.1.1"
     tapable "^1.1.3"
     util.promisify "1.0.0"
-
-html-webpack-plugin@^5.0.0-beta.4:
-  version "5.0.0-beta.4"
-  resolved "https://registry.yarnpkg.com/html-webpack-plugin/-/html-webpack-plugin-5.0.0-beta.4.tgz#b07f76a546f7423fe057af7dce3fa983f774f581"
-  integrity sha512-4CWq246BVHfS2l8Ni68q/oWquwJuaHs5s2Z+yVCmKNWadxS28RAqZo98hMtpnTLwhbhIg04psduDMcUr9JJpXg==
-  dependencies:
-    "@types/html-minifier-terser" "^5.0.0"
-    html-minifier-terser "^5.0.1"
-    loader-utils "^2.0.0"
-    lodash "^4.17.20"
-    pretty-error "^2.1.1"
-    tapable "^2.0.0"
 
 htmlparser2@^3.10.1:
   version "3.10.1"
@@ -9177,6 +9176,11 @@ mkdirp@^1.0.3, mkdirp@^1.0.4:
   version "1.0.4"
   resolved "https://registry.yarnpkg.com/mkdirp/-/mkdirp-1.0.4.tgz#3eb5ed62622756d79a5f0e2a221dfebad75c2f7e"
   integrity sha512-vVqVZQyf3WLx2Shd0qJ9xuvqgAyKPLAiqITEtqW0oIUjzo3PePDd6fW9iFz30ef7Ysp/oiWqbhszeGWW2T6Gzw==
+
+monaco-editor@^0.21.3:
+  version "0.21.3"
+  resolved "https://registry.yarnpkg.com/monaco-editor/-/monaco-editor-0.21.3.tgz#3381b66614b64d1c5e3b77dd5564ad496d1b4e5d"
+  integrity sha512-9N7wATLpi+googstvtm6IKg97vPQ77FDYEpkow5tLriM/VJ0DaTRyUP4UVzcoH7KlPDX+e/rE7/imcOUeGkT6g==
 
 move-concurrently@^1.0.1:
   version "1.0.1"
@@ -12121,6 +12125,11 @@ stackframe@^1.1.1:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/stackframe/-/stackframe-1.2.0.tgz#52429492d63c62eb989804c11552e3d22e779303"
   integrity sha512-GrdeshiRmS1YLMYgzF16olf2jJ/IzxXY9lhKOskuVziubpTYcYqyOwYeJKzQkwy7uN0fYSsbsC4RQaXf9LCrYA==
+
+state-local@^1.0.6, state-local@^1.0.7:
+  version "1.0.7"
+  resolved "https://registry.yarnpkg.com/state-local/-/state-local-1.0.7.tgz#da50211d07f05748d53009bee46307a37db386d5"
+  integrity sha512-HTEHMNieakEnoe33shBYcZ7NX83ACUjCu8c40iOGEZsngj9zRnkqS9j1pqQPXwobB0ZcVTk27REb7COQ0UR59w==
 
 state-toggle@^1.0.0:
   version "1.0.3"
