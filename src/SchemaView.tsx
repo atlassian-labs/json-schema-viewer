@@ -49,11 +49,13 @@ export class SchemaViewWR extends React.PureComponent<SchemaViewProps> {
     max-width: 500px;
 
     display: none;
+    position: relative;
     ${forSize('tablet-landscape-up', `
       display: block;
     `)}
 
     section {
+      position: sticky !important;
       padding: 0;
       margin: 0;
     }

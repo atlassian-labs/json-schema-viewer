@@ -33,7 +33,7 @@ export const SchemaEditor: React.FC<SchemaEditorProps> = (props) => {
 
    return (
       <Editor
-         height="100vh"
+         height="97vh"
          defaultLanguage="json"
          value={editorPreamble + '\n' + JSON.stringify(props.initialContent, null, 2)}
          path="a://b/example.json"
