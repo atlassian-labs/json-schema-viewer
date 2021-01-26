@@ -55,7 +55,7 @@ export class SchemaViewWR extends React.PureComponent<SchemaViewProps> {
     `)}
 
     section {
-      position: sticky !important;
+      position: fixed !important;
       padding: 0;
       margin: 0;
     }
