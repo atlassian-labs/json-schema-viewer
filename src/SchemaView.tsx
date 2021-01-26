@@ -8,6 +8,8 @@ import { SchemaExplorer } from './SchemaExplorer';
 import { SideNavWithRouter } from './SideNavWithRouter';
 import { Stage } from './stage';
 import { extractLinks } from './side-nav-loader';
+import { SchemaEditor } from './SchemaEditor';
+import { generateJsonExampleFor, isErrors } from './example';
 
 export type SchemaViewProps = RouteComponentProps & {
   basePathSegments: Array<string>;
@@ -41,6 +43,16 @@ export class SchemaViewWR extends React.PureComponent<SchemaViewProps> {
     display: flex;
   `;
 
+  private static EditorContainer = styled.div`
+    min-width: 500px;
+    max-width: 500px;
+
+    section {
+      padding: 0;
+      margin: 0;
+    }
+  `;
+
   public render() {
     const { schema, basePathSegments } = this.props;
 
@@ -52,7 +64,6 @@ export class SchemaViewWR extends React.PureComponent<SchemaViewProps> {
     }
 
     const currentPathElement = path[path.length - 1];
-    console.log('loading', currentPathElement.reference);
     const currentSchema = getSchemaFromReference(currentPathElement.reference, lookup);
 
     if (currentSchema === undefined) {
@@ -63,7 +74,9 @@ export class SchemaViewWR extends React.PureComponent<SchemaViewProps> {
       return <div>TODO: Implement anything or nothing schema once clicked on.</div>
     }
 
-    console.log(path);
+    const generatedExample = generateJsonExampleFor(schema, lookup, 'both');
+    const fullExample: unknown = isErrors(generatedExample) ? {} : generatedExample.value;
+
     return (
       <SchemaViewWR.Container>
         <SideNavWithRouter basePathSegments={basePathSegments} links={extractLinks(schema, lookup)} />
@@ -74,6 +87,12 @@ export class SchemaViewWR extends React.PureComponent<SchemaViewProps> {
           lookup={lookup}
           stage="both"
         />
+        <SchemaViewWR.EditorContainer>
+          <SchemaEditor
+            initialContent={fullExample}
+            schema={schema}
+          />
+        </SchemaViewWR.EditorContainer>
       </SchemaViewWR.Container>
     );
   }
