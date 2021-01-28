@@ -39,8 +39,8 @@ module.exports = {
       filename: 'index.html'
     }),
     new CspHtmlWebpackPlugin({
-      'script-src': ["'strict-dynamic'", "cdn.jsdelivr.net"],
-      'style-src': ["'unsafe-inline'", "'self'", "cdn.jsdelivr.net"]
+      'script-src': ["'strict-dynamic'", "https://cdn.jsdelivr.net/npm/monaco-editor@0.21.2/"],
+      'style-src': ["'unsafe-inline'", "'self'", "https://cdn.jsdelivr.net/npm/monaco-editor@0.21.2/"]
     }),
     new webpack.DefinePlugin({
       'process': undefined,
