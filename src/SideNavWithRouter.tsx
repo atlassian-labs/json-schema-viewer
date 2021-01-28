@@ -213,11 +213,11 @@ class SideNavLinks extends React.PureComponent<SideNavLinksProps> {
   render() {
     const { basePathSegments, links } = this.props;
 
-    const groups = links.map(link => {
+    const groups = links.map((link, index) => {
       if (isSideNavSpace(link)) {
-        return <SideNavSpacerDiv />;
+        return <SideNavSpacerDiv key={`${index}-spacer`} />;
       }
-      return <SideNavGroup basePathSagments={basePathSegments} key={link.title} link={link} />
+      return <SideNavGroup basePathSagments={basePathSegments} key={`${index}-${link.title}`} link={link} />
     });
 
     return (

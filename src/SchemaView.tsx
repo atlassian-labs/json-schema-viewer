@@ -122,7 +122,6 @@ export class SchemaViewWR extends React.PureComponent<SchemaViewProps> {
     }
 
     if (iterator === pathSegments.length) {
-      console.log('render root');
       const reference = '#';
       const title = getTitle(getSchemaFromReference(reference, lookup));
       return [{
@@ -131,8 +130,8 @@ export class SchemaViewWR extends React.PureComponent<SchemaViewProps> {
       }];
     }
 
-    console.log('render latest');
-    return pathSegments.slice(iterator).map(decodeURIComponent).map(reference => {
+    return pathSegments.slice(iterator).map(decodeURIComponent).map(userProvidedReference => {
+      const reference = userProvidedReference.startsWith('#') ? userProvidedReference : '#/invalid-reference';
       const title = getTitle(getSchemaFromReference(reference, lookup));
       return {
         title,

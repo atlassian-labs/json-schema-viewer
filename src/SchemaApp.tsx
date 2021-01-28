@@ -6,7 +6,7 @@ import { LoadSchema } from './LoadSchema';
 import { JsonSchema } from './schema';
 import { SchemaView } from './SchemaView';
 import { Start } from './Start';
-import { PopupMenuGroup, Section, ButtonItem, LinkItem } from '@atlaskit/menu';
+import { PopupMenuGroup, Section, ButtonItem, LinkItem, LinkItemProps } from '@atlaskit/menu';
 import { linkToRoot } from './route-path';
 import { ContentPropsWithClose, PrimaryDropdown } from './PrimaryDropdown';
 import { Docs } from './Docs';
@@ -31,6 +31,8 @@ const NavigationButtonItem: React.FC<NavigationButtonItemProps> = (props) => {
   return <LinkItem href={linkLocation} onClick={onClick}>{props.children}</LinkItem>
 }
 
+const NewTabLinkItem: React.FC<LinkItemProps> = (props) => <LinkItem target="_blank" rel="noopener noreferrer" {...props} />;
+
 const ExampleMenu: React.FC<ContentPropsWithClose> = (props) => (
   <PopupMenuGroup>
     <Section title="Schema examples">
@@ -40,7 +42,7 @@ const ExampleMenu: React.FC<ContentPropsWithClose> = (props) => (
       <NavigationButtonItem onClick={props.closePopup} exampleUrl="https://json.schemastore.org/package">package.json</NavigationButtonItem>
     </Section>
     <Section title="Schema repositories">
-      <LinkItem href="https://www.schemastore.org/" target="_blank" onClick={props.closePopup}>Schemastore Repository</LinkItem>
+      <NewTabLinkItem href="https://www.schemastore.org/" onClick={props.closePopup}>Schemastore Repository</NewTabLinkItem>
     </Section>
   </PopupMenuGroup>
 );
@@ -61,11 +63,11 @@ const HelpMenu: React.FC<ContentPropsWithClose> = (props) => {
       <Section title="Learn">
         <LinkItem href="/docs/introduction" onClick={goTo('/docs/introduction')}>Introduction</LinkItem>
         <ButtonItem onClick={goTo('/docs/usage')}>Linking your schema</ButtonItem>
-        <LinkItem href="http://json-schema.org/understanding-json-schema/" target="_blank" onClick={props.closePopup}>Understanding JSON Schema</LinkItem>
+        <NewTabLinkItem href="http://json-schema.org/understanding-json-schema/" onClick={props.closePopup}>Understanding JSON Schema</NewTabLinkItem>
       </Section>
       <Section title="Contribute">
-        <LinkItem href="https://github.com/atlassian-labs/json-schema-viewer/issues/new" target="_blank" onClick={props.closePopup}>Raise issue</LinkItem>
-        <LinkItem href="https://github.com/atlassian-labs/json-schema-viewer" target="_blank" onClick={props.closePopup}>View source code</LinkItem>
+        <NewTabLinkItem href="https://github.com/atlassian-labs/json-schema-viewer/issues/new" onClick={props.closePopup}>Raise issue</NewTabLinkItem>
+        <NewTabLinkItem href="https://github.com/atlassian-labs/json-schema-viewer" onClick={props.closePopup}>View source code</NewTabLinkItem>
       </Section>
     </PopupMenuGroup>
   );
