@@ -14,7 +14,7 @@ import { CodeBlockWithCopy } from './code-block-with-copy';
 import { generateJsonExampleFor, isExample } from './example';
 import { Stage, shouldShowInStage } from './stage';
 import { linkTo, PathElement } from './route-path';
-import { ClickElement } from './Type';
+import { ClickElement, Type } from './Type';
 import { LinkProps, useHistory, useLocation } from 'react-router-dom';
 import { getTitle } from './title';
 import { LinkPreservingSearch, NavLinkPreservingSearch } from './search-preserving-link';
@@ -329,8 +329,41 @@ export const SchemaExplorerDetails: React.FC<SchemaExplorerDetailsProps> = props
       />
     )
   })
-  if (schema.patternProperties !== undefined) {
-    schema.patternProperties
+
+  const hasProperties = renderedProps.length > 0 || renderedPatternProperties.length > 0 || additionalProperties.length > 0;
+
+  const { anyOf, allOf, oneOf, not } = schema;
+  const compositeOnlyType: JsonSchema1 = { anyOf, allOf, oneOf, not };
+  let mixinProps = <></>;
+  if (Object.keys(compositeOnlyType).some(key => compositeOnlyType[key] !== undefined)) {
+    mixinProps = (
+      <>
+        <h3 key="mixins-header">Mixins</h3>
+        {hasProperties
+          ? <p key="mixins-description">This type has all of the properties below, but must also match this type:</p>
+          : <p key="mixins-description">This object must match the following conditions:</p>
+        }
+        <Type
+          key="mixins-type"
+          s={compositeOnlyType}
+          clickElement={clickElement}
+          lookup={lookup}
+          reference={reference}
+        />
+      </>
+    );
+  }
+
+  let allRenderedProperties = <></>;
+  if (hasProperties) {
+    allRenderedProperties = (
+      <>
+        <h3 key="properties-header">Properties</h3>
+        {renderedProps}
+        {renderedPatternProperties}
+        {additionalProperties}
+      </>
+    )
   }
 
   return (
@@ -338,9 +371,8 @@ export const SchemaExplorerDetails: React.FC<SchemaExplorerDetailsProps> = props
       <DescriptionContainer>
         {schema.description && <Markdown source={schema.description} />}
       </DescriptionContainer>
-      {renderedProps}
-      {renderedPatternProperties.length > 0 && renderedPatternProperties}
-      {additionalProperties}
+      {mixinProps}
+      {allRenderedProperties}
     </div>
   );
 };
