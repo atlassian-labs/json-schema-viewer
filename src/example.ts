@@ -27,7 +27,8 @@ export type ErrorReason
   | 'schema-not-supported'
   | 'infinite-prop-loop'
   | 'all-of-mismatched-types'
-  | 'example-of-nothing-is-impossible';
+  | 'example-of-nothing-is-impossible'
+  | 'type-array-was-empty';
 
 export class Error {
   private _reason: ErrorReason;
@@ -243,7 +244,15 @@ function generateJsonExampleForHelper(context: ChainContext, schemaOrRef: JsonSc
     return Example.of({});
   }
 
-  const type = getOrInferType(schema);
+  let type = getOrInferType(schema);
+
+  if (Array.isArray(type)) {
+    if (type.length >= 1) {
+      type = type[0];
+    } else {
+      return Errors.of(new Error('type-array-was-empty', `The type was an empty array for: ${JSON.stringify(schemaOrRef)}`));
+    }
+  }
 
   if (type !== undefined) {
     if (type === 'boolean') {
@@ -323,7 +332,7 @@ function generateJsonExampleForHelper(context: ChainContext, schemaOrRef: JsonSc
           .map<NameAndExample | IgnoredProperty>(name => {
             const propOrRef = properties[name];
 
-            if (context.depth >= 3 && !requiredPropNames.has(name)) {
+            if (context.depth >= 1 && !requiredPropNames.has(name)) {
               return { name };
             }
 

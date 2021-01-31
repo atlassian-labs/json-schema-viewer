@@ -1,4 +1,5 @@
-import { JsonSchema1 } from './schema';
+import { JsonSchema1, SimpleTypes } from './schema';
+import { isPresent } from 'ts-is-present';
 
 function hasNumericalRestrictor(s: JsonSchema1): boolean {
   return [
@@ -36,6 +37,34 @@ function hasArrayRestrictor(s: JsonSchema1): boolean {
   ].some(v => v !== undefined);
 }
 
+function jsonTypeToSchemaType(someType: unknown): SimpleTypes | undefined {
+  switch (typeof someType) {
+    case 'boolean':
+      return 'boolean';
+    case 'string':
+      return 'string';
+    case 'number':
+      return 'number';
+    case 'bigint':
+      return 'integer';
+    case 'object':
+      return 'object';
+    default:
+      return undefined;
+  }
+}
+
+export function getTypesFromEnum(enumValue: NonNullable<JsonSchema1['enum']>): JsonSchema1['type'] | undefined {
+  const types = Array.from(new Set(enumValue.map(jsonTypeToSchemaType).filter(isPresent)));
+  if (types.length === 0) {
+    return undefined;
+  } else if (types.length === 1) {
+    return types[0];
+  }
+
+  return [types[0], ...types.slice(1)];
+}
+
 export function getOrInferType(schema: JsonSchema1): JsonSchema1['type'] | undefined {
   // If the type exists, then just get it
   if (schema.type !== undefined) {
@@ -59,6 +88,13 @@ export function getOrInferType(schema: JsonSchema1): JsonSchema1['type'] | undef
     return 'string';
   }
 
+  if (schema.enum !== undefined) {
+    const enumType = getTypesFromEnum(schema.enum);
+    if (enumType !== undefined) {
+      return enumType;
+    }
+  }
+
   return undefined;
 }
 
@@ -71,5 +107,8 @@ const primitiveTypes: Array<JsonSchema1['type']> = [
 ]
 
 export function isPrimitiveType(type: JsonSchema1['type']): boolean {
+  if (Array.isArray(type)) {
+    return type.every(t => primitiveTypes.includes(t));
+  }
   return primitiveTypes.includes(type);
 }

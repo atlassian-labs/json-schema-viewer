@@ -1,14 +1,17 @@
 import { JsonSchema, JsonSchema1 } from './schema';
 import { getSchemaFromResult, Lookup } from './lookup';
-import { isPrimitiveType } from './type-inference';
+import { getTypesFromEnum, isPrimitiveType } from './type-inference';
 
 function extractEnumDirectly(schema?: JsonSchema): JsonSchema1['enum'] {
   if (schema === undefined || typeof schema === 'boolean') {
     return undefined;
   }
 
-  if (typeof schema.enum !== 'undefined' && typeof schema.type !== 'undefined' && isPrimitiveType(schema.type)) {
-    return schema.enum;
+  if (schema.enum !== undefined) {
+    const enumTypes = getTypesFromEnum(schema.enum);
+    if (enumTypes !== undefined && isPrimitiveType(enumTypes)) {
+      return schema.enum;
+    }
   }
 
   return undefined;
