@@ -22,14 +22,33 @@ export type TypeProps = {
   clickElement: ClickElement;
 };
 
+function hasCompositeDefinition(s: JsonSchema1): boolean {
+  return (s.anyOf !== undefined && s.anyOf.length > 0) ||
+    (s.oneOf !== undefined && s.oneOf.length > 0) ||
+    (s.allOf !== undefined && s.allOf.length > 0) ||
+    (s.not !== undefined);
+}
+
+function hasProperties(s: JsonSchema1): boolean {
+  return s.properties !== undefined && Object.keys(s.properties).length > 0;
+}
+
+function hasPatternProperties(s: JsonSchema1): boolean {
+  return s.patternProperties !== undefined && Object.keys(s.patternProperties).length > 0;
+}
+
+function hasAdditionalProperties(s: JsonSchema1): boolean {
+  return !(typeof s.additionalProperties === 'boolean' && s.additionalProperties === false);
+}
+
 export function isClickable(s: JsonSchema): boolean {
   if (typeof s === 'boolean') {
     return false;
   }
 
-  return (s.properties && Object.keys(s.properties).length > 0) ||
-        (s.patternProperties && Object.keys(s.patternProperties).length > 0) ||
-        !(typeof s.additionalProperties === 'boolean' && s.additionalProperties === false);
+  const type = getOrInferType(s);
+
+  return hasProperties(s) || hasPatternProperties(s) || (type === 'object' && hasAdditionalProperties(s));
 }
 
 function schemaHasCompositeType(s: JsonSchema1): boolean {
@@ -48,31 +67,7 @@ const Plain = styled.span`
   color: ${colors.G400};
 `;
 
-const Clickable = styled.a`
-  margin: 0px;
-  color: rgb(7, 71, 166);
-  cursor: pointer;
-`;
-
 const Anything = () => <Plain>anything</Plain>;
-
-// function mergeCompositesWithParent(parent: JsonSchema1, children: Array<JsonSchema | undefined>): Array<JsonSchema | undefined> {
-//   return children.map(child => {
-//     if (child === undefined) {
-//       return undefined;
-//     }
-
-//     if (typeof child === 'boolean') {
-//       return child;
-//     }
-
-//     return {
-//       title: parent.title,
-//       type: parent.type,
-//       ...child
-//     };
-//   })
-// }
 
 type SchemaAndReference = {
   schema: JsonSchema | undefined;
@@ -89,16 +84,36 @@ function extractSchemaAndReference(propertyName: string, lookup: Lookup, current
   };
 }
 
-const getTypeText = (s: JsonSchema | undefined, lookup: Lookup, currentReference: string, Click: ClickElement): JSX.Element => {
-  if (s === undefined) {
+function onlyKeyPresent(schema: JsonSchema1, key: keyof JsonSchema1): boolean {
+  return Object.keys(schema).every(schemaKey => schemaKey !== key || schema[schemaKey] !== undefined);
+}
+
+const getTypeText = (initialSchema: JsonSchema | undefined, lookup: Lookup, initialReference: string, Click: ClickElement): JSX.Element => {
+  if (initialSchema === undefined) {
     return <Anything />;
   }
 
+  if (typeof initialSchema === 'boolean') {
+     return <Plain>{initialSchema === true ? 'anything' : 'nothing'}</Plain>
+  }
+
+  const lookupResult = lookup.getSchema(initialSchema);
+  if (lookupResult === undefined) {
+    return <Anything />;
+  }
+
+  const s = lookupResult.schema;
+  const currentReference = lookupResult.baseReference || initialReference;
+
   if (typeof s === 'boolean') {
-     return <Plain>{s === true ? 'anything' : 'nothing'}</Plain>
+    return getTypeText(s, lookup, currentReference, Click);
   }
 
   const type = getOrInferType(s);
+
+  if (isClickable(s)) {
+    return <Click schema={s} reference={currentReference} />;
+  }
 
   if (schemaHasCompositeType(s)) {
     const compositeTypes: JSX.Element[] = new Array<JSX.Element>();
@@ -160,6 +175,9 @@ const getTypeText = (s: JsonSchema | undefined, lookup: Lookup, currentReference
       return <Plain>{intersperse(compositeTypes, ' AND ')}</Plain>;
     }
   } else if (isPrimitiveType(type)) {
+    if (Array.isArray(type)) {
+      return <Plain>{type.join(' ∪ ')}</Plain>
+    }
     return <Plain>{type}</Plain>;
   } else if (type === 'array') {
     if (s.items === undefined) {
@@ -196,6 +214,8 @@ const getTypeText = (s: JsonSchema | undefined, lookup: Lookup, currentReference
 
       return <Plain>anyOf [{joined}]</Plain>;
     }
+  } else if (s.required !== undefined && onlyKeyPresent(s, 'required')) {
+    return <Plain>required: {s.required.join(' ∩ ')}</Plain>
   }
 
   return <Anything />;
