@@ -5,10 +5,13 @@ import { JsonSchema, JsonSchema1 } from './schema';
 import { getSchemaFromResult, Lookup } from './lookup';
 import { intersperse } from './jsx-util';
 import { getOrInferType, isPrimitiveType } from './type-inference';
+import { findDiscriminant } from './discriminant';
+import { isPresent } from 'ts-is-present';
 
 export type TypeClick = (s: JsonSchema) => void;
 
 export type ClickElementProps = {
+  fallbackTitle: string;
   schema: JsonSchema1;
   reference: string;
 }
@@ -21,6 +24,29 @@ export type TypeProps = {
   lookup: Lookup;
   clickElement: ClickElement;
 };
+
+class LookupContext {
+  readonly lookup: Lookup;
+  readonly clickElement: ClickElement;
+  readonly discriminate: string | undefined;
+
+  private constructor(lookup: Lookup, clickElement: ClickElement, discriminate: string | undefined) {
+    this.lookup = lookup;
+    this.clickElement = clickElement;
+    this.discriminate = discriminate;
+  }
+
+  public static root(lookup: Lookup, clickElement: ClickElement): LookupContext {
+    return new LookupContext(lookup, clickElement, undefined);
+  }
+
+  public clone(discriminate: string | undefined): LookupContext {
+    if (this.discriminate === discriminate) {
+      return this;
+    }
+    return new LookupContext(this.lookup, this.clickElement, discriminate);
+  }
+}
 
 function hasCompositeDefinition(s: JsonSchema1): boolean {
   return (s.anyOf !== undefined && s.anyOf.length > 0) ||
@@ -88,7 +114,34 @@ function onlyKeyPresent(schema: JsonSchema1, key: keyof JsonSchema1): boolean {
   return Object.keys(schema).every(schemaKey => schemaKey !== key || schema[schemaKey] !== undefined);
 }
 
-const getTypeText = (initialSchema: JsonSchema | undefined, lookup: Lookup, initialReference: string, Click: ClickElement): JSX.Element => {
+function getObjectName(s: JsonSchema1, context: LookupContext): string {
+  if (s.title !== undefined) {
+    return s.title;
+  }
+
+  if (context.discriminate !== undefined && s.properties !== undefined) {
+    const propertyName = context.discriminate;
+    const propertyLookupResult = context.lookup.getSchema(s.properties[propertyName]);
+    if (propertyLookupResult !== undefined) {
+      const property = propertyLookupResult.schema;
+
+      if (property !== undefined && typeof property !== 'boolean' && property.enum !== undefined && property.enum.length === 1) {
+        return `${propertyName}: ${property.enum[0]}`;
+      }
+    }
+  }
+
+  return 'object';
+}
+
+function findDis(sr: Array<SchemaAndReference>, context: LookupContext): string | undefined {
+  return findDiscriminant(sr.map(s => s.schema).filter(isPresent), context.lookup);
+}
+
+const getTypeText = (initialSchema: JsonSchema | undefined, initialReference: string, context: LookupContext): JSX.Element => {
+  const lookup = context.lookup;
+  const Click = context.clickElement;
+
   if (initialSchema === undefined) {
     return <Anything />;
   }
@@ -106,13 +159,13 @@ const getTypeText = (initialSchema: JsonSchema | undefined, lookup: Lookup, init
   const currentReference = lookupResult.baseReference || initialReference;
 
   if (typeof s === 'boolean') {
-    return getTypeText(s, lookup, currentReference, Click);
+    return getTypeText(s, currentReference, context.clone(undefined));
   }
 
   const type = getOrInferType(s);
 
   if (isClickable(s)) {
-    return <Click schema={s} reference={currentReference} />;
+    return <Click schema={s} reference={currentReference} fallbackTitle={getObjectName(s, context)} />;
   }
 
   if (schemaHasCompositeType(s)) {
@@ -126,7 +179,7 @@ const getTypeText = (initialSchema: JsonSchema | undefined, lookup: Lookup, init
         // If you have an anything in an anyOf then you should just simplify to anything
         return <Anything />;
       } else {
-        const renderedSchemas = schemas.map(sx => getTypeText(sx.schema, lookup, sx.reference, Click));
+        const renderedSchemas = schemas.map(sx => getTypeText(sx.schema, sx.reference, context.clone(undefined)));
         if (renderedSchemas.length === 1) {
           compositeTypes.push(renderedSchemas[0]);
         } else {
@@ -140,7 +193,7 @@ const getTypeText = (initialSchema: JsonSchema | undefined, lookup: Lookup, init
     if (s.oneOf !== undefined && s.oneOf.length > 0) {
       const schemas = s.oneOf.map(extractSchemaAndReference('oneOf', lookup, currentReference));
 
-      const renderedSchemas = schemas.map(sx => getTypeText(sx.schema, lookup, sx.reference, Click));
+      const renderedSchemas = schemas.map(sx => getTypeText(sx.schema, sx.reference, context.clone(findDis(schemas, context))));
       if (renderedSchemas.length === 1) {
         compositeTypes.push(renderedSchemas[0]);
       } else {
@@ -153,7 +206,7 @@ const getTypeText = (initialSchema: JsonSchema | undefined, lookup: Lookup, init
     if (s.allOf !== undefined && s.allOf.length > 0) {
       const schemas = s.allOf.map(extractSchemaAndReference('allOf', lookup, currentReference));
 
-      const renderedSchemas = schemas.map(sx => getTypeText(sx.schema, lookup, sx.reference, Click));
+      const renderedSchemas = schemas.map(sx => getTypeText(sx.schema, sx.reference, context.clone(findDis(schemas, context))));
       if (renderedSchemas.length === 1) {
         compositeTypes.push(renderedSchemas[0]);
       } else {
@@ -165,7 +218,7 @@ const getTypeText = (initialSchema: JsonSchema | undefined, lookup: Lookup, init
 
     if (s.not !== undefined) {
       const lookupResult = lookup.getSchema(s.not);
-      const inside = getTypeText(lookupResult?.schema, lookup, lookupResult?.baseReference || `${currentReference}/not`, Click);
+      const inside = getTypeText(lookupResult?.schema, lookupResult?.baseReference || `${currentReference}/not`, context.clone(undefined));
       compositeTypes.push(<Plain>not ({inside})</Plain>);
     }
 
@@ -183,19 +236,20 @@ const getTypeText = (initialSchema: JsonSchema | undefined, lookup: Lookup, init
     if (s.items === undefined) {
       return <Plain>Array&lt;anything&gt;</Plain>;
     } else if (!Array.isArray(s.items)) {
-      return <Plain>Array&lt;{getTypeText(s.items, lookup, `${currentReference}/items`, Click)}&gt;</Plain>;
+      return <Plain>Array&lt;{getTypeText(s.items, `${currentReference}/items`, context.clone(undefined))}&gt;</Plain>;
     } else if (s.items.length === 0) {
       return <Plain>Array&lt;anything&gt;</Plain>;
     } else if (s.items.length === 1) {
-      return <Plain>Array&lt;{getTypeText(s.items[0], lookup, `${currentReference}/items/0`, Click)}&gt;</Plain>;
+      return <Plain>Array&lt;{getTypeText(s.items[0], `${currentReference}/items/0`, context.clone(undefined))}&gt;</Plain>;
     } else {
-      const renderedItems = s.items.map((item, i) => getTypeText(item, lookup, `${currentReference}/items/${i}`, Click));
+      const items = s.items;
+      const renderedItems = items.map((item, i) => getTypeText(item, `${currentReference}/items/${i}`, context.clone(findDiscriminant(items, lookup))));
       const joined = intersperse(renderedItems, ', ');
 
       return <Plain>Array&lt;anyOf [{joined}]&gt;</Plain>;
     }
   } else if (type === 'object') {
-    const name = s.title ? s.title : 'object';
+    const name = getObjectName(s, context);
     if (isClickable(s)) {
       return <Click schema={s} reference={currentReference} />;
     } else {
@@ -205,11 +259,11 @@ const getTypeText = (initialSchema: JsonSchema | undefined, lookup: Lookup, init
     if (type.length === 0) {
       return <Anything />;
     } else if (type.length === 1) {
-      return getTypeText({ ...s, type: type[0] }, lookup, currentReference, Click);
+      return getTypeText({ ...s, type: type[0] }, currentReference, context.clone(undefined));
     } else {
       const splitSchemas = type.map(t => ({...s, type: t}));
 
-      const renderedSchemas = splitSchemas.map(splitSchema => getTypeText(splitSchema, lookup, currentReference, Click));
+      const renderedSchemas = splitSchemas.map(splitSchema => getTypeText(splitSchema, currentReference, context.clone(findDiscriminant(splitSchemas, lookup))));
       const joined = intersperse(renderedSchemas, ', ');
 
       return <Plain>anyOf [{joined}]</Plain>;
@@ -222,5 +276,5 @@ const getTypeText = (initialSchema: JsonSchema | undefined, lookup: Lookup, init
 };
 
 export const Type: React.FunctionComponent<TypeProps> = ({ s, lookup, reference, clickElement }) => {
-  return <Container>{getTypeText(s, lookup, reference, clickElement)}</Container>;
+  return <Container>{getTypeText(s, reference, LookupContext.root(lookup, clickElement))}</Container>;
 };
