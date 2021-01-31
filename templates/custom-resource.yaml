@@ -62,7 +62,7 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       CodeUri: s3://binxio-public-us-east-1/lambdas/cfn-certificate-provider-0.2.4.zip
-      Description: CFN Certificate Domain Resource Record Provider
+      Description: CFN Certificate Domain Resource Record Provider (v1)
       MemorySize: 128
       Handler: provider.handler
       Timeout: 300

@@ -54,6 +54,7 @@ Resources:
     DeletionPolicy: Retain
     Type: AWS::Serverless::Function
     Properties:
+      Description: The custom headers lambda function.
       Handler: index.handler
       Role: !GetAtt LambdaEdgeFunctionRole.Arn
       CodeUri: ../s-headers.zip
