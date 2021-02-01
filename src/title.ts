@@ -1,6 +1,10 @@
 import { JsonSchema1 } from "./schema";
 
 export function getTitle(reference: string, schema: JsonSchema1): string {
+  return findTitle(reference, schema) || 'object';
+}
+
+export function findTitle(reference: string, schema: JsonSchema1): string | undefined {
   if (schema.title !== undefined) {
     return schema.title;
   }
@@ -17,5 +21,5 @@ export function getTitle(reference: string, schema: JsonSchema1): string {
     return secondLast + ' items';
   }
 
-  return 'object';
+  return undefined;
 }

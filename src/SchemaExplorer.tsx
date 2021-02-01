@@ -16,7 +16,7 @@ import { Stage, shouldShowInStage } from './stage';
 import { linkTo, PathElement } from './route-path';
 import { ClickElement, Type } from './Type';
 import { LinkProps, useHistory, useLocation } from 'react-router-dom';
-import { getTitle } from './title';
+import { getTitle, findTitle } from './title';
 import { LinkPreservingSearch, NavLinkPreservingSearch } from './search-preserving-link';
 import { dump } from 'js-yaml';
 
@@ -385,7 +385,7 @@ type JsonSchemaObjectClickProps = {
 function createClickElement(details: JsonSchemaObjectClickProps): ClickElement {
   return (props) => {
     const references = [...details.path.map(p => p.reference), props.reference];
-    return <LinkPreservingSearch to={linkTo(details.basePathSegments, references)}>{getTitle(props.reference, props.schema)}</LinkPreservingSearch>;
+    return <LinkPreservingSearch to={linkTo(details.basePathSegments, references)}>{findTitle(props.reference, props.schema) || props.fallbackTitle}</LinkPreservingSearch>;
   };
 }
 

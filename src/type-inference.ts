@@ -37,7 +37,7 @@ function hasArrayRestrictor(s: JsonSchema1): boolean {
   ].some(v => v !== undefined);
 }
 
-function jsonTypeToSchemaType(someType: unknown): SimpleTypes | undefined {
+export function jsonTypeToSchemaType(someType: unknown): SimpleTypes | undefined {
   switch (typeof someType) {
     case 'boolean':
       return 'boolean';
