@@ -251,7 +251,7 @@ const getTypeText = (initialSchema: JsonSchema | undefined, initialReference: st
   } else if (type === 'object') {
     const name = getObjectName(s, context);
     if (isClickable(s)) {
-      return <Click schema={s} reference={currentReference} />;
+      return <Click schema={s} reference={currentReference} fallbackTitle={name} />;
     } else {
       return <Plain>{name}</Plain>;
     }
