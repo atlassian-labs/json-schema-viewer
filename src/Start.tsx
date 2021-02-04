@@ -22,8 +22,8 @@ JSON Schema Viewer then you have a few options.
 
 ### Using a locally running server
 
-JSON Schema Viewer will work so long as your tool You could just host the file on your own machine and edit it from there.
-To test this out:
+JSON Schema Viewer will work so long as your JSON Schema is accessible via a HTTP Get request from your web browser.
+This means that you can just host the file on your own machine and edit it from there. For example:
 
 1. In a terminal, go to the directory on your local filesystem that contains your JSON Schema.
 1. In that directory on your local machine, type in:
