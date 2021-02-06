@@ -3,6 +3,7 @@ import { RouteComponentProps, withRouter } from 'react-router-dom';
 import { JsonSchema } from './schema';
 import Spinner from '@atlaskit/spinner';
 import EmptyState from '@atlaskit/empty-state';
+import { addRecentlyViewedLink } from './recently-viewed';
 
 export type LoadSchemaProps = RouteComponentProps & {
    children: (schema: JsonSchema) => ReactNode;
@@ -85,6 +86,12 @@ class LoadSchemaWR extends React.PureComponent<LoadSchemaProps, LoadSchemaState>
       const { children } = this.props;
       if (typeof children !== 'function') {
          throw new Error('The children of the LoadSchema must be a function to accept the schema.')
+      }
+      if (typeof result.schema !== 'boolean') {
+         addRecentlyViewedLink({
+            title: result.schema.title || result.currentUrl,
+            url: result.currentUrl
+         });
       }
       return <>{children(result.schema)}</>;
    }

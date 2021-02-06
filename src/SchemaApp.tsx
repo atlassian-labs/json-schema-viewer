@@ -1,6 +1,6 @@
 import { AtlassianNavigation, Create, ProductHome } from '@atlaskit/atlassian-navigation';
 import { AtlassianIcon, AtlassianLogo } from '@atlaskit/logo';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Redirect, Route, RouteComponentProps, Switch, useHistory, withRouter } from 'react-router-dom';
 import { LoadSchema } from './LoadSchema';
 import { JsonSchema } from './schema';
@@ -10,6 +10,8 @@ import { PopupMenuGroup, Section, ButtonItem, LinkItem, LinkItemProps } from '@a
 import { linkToRoot } from './route-path';
 import { ContentPropsWithClose, PrimaryDropdown } from './PrimaryDropdown';
 import { Docs } from './Docs';
+import { getRecentlyViewedLinks, RecentlyViewedLink } from './recently-viewed';
+import { isPresent } from 'ts-is-present';
 
 const JsonSchemaHome = () => (
   <ProductHome icon={AtlassianIcon} logo={AtlassianLogo} siteTitle="JSON Schema Viewer" />
@@ -32,6 +34,39 @@ const NavigationButtonItem: React.FC<NavigationButtonItemProps> = (props) => {
 }
 
 const NewTabLinkItem: React.FC<LinkItemProps> = (props) => <LinkItem target="_blank" rel="noopener noreferrer" {...props} />;
+
+type RecentlyViewedMenuProps = ContentPropsWithClose & {
+  recentlyViewed: Array<RecentlyViewedLink>;
+};
+
+const RecentlyViewedMenu: React.FC<RecentlyViewedMenuProps> = (props) => {
+  const [recentlyViewed, updateRecentlyViewed] = useState<Array<RecentlyViewedLink>>(props.recentlyViewed);
+
+  const handleStorageUpdated = () => {
+    const currentLinks = getRecentlyViewedLinks();
+    if (isPresent(currentLinks)) {
+      updateRecentlyViewed(currentLinks);
+    }
+  };
+
+  useEffect(() => {
+    window.addEventListener('storage', handleStorageUpdated)
+
+    return () => {
+      window.removeEventListener('keydown', handleStorageUpdated);
+    };
+  }, [handleStorageUpdated]);
+
+  return (
+    <PopupMenuGroup>
+      <Section title="Recently viewed">
+        {recentlyViewed.map(link => (
+          <NavigationButtonItem key={link.url} onClick={props.closePopup} exampleUrl={link.url}>{link.title}</NavigationButtonItem>
+        ))}
+      </Section>
+    </PopupMenuGroup>
+  );
+};
 
 const ExampleMenu: React.FC<ContentPropsWithClose> = (props) => (
   <PopupMenuGroup>
@@ -105,10 +140,19 @@ class SchemaAppWR extends React.PureComponent<RouteComponentProps, SchemaAppStat
   };
 
    render() {
+     // When we are rendereing, load local storage and pass it to the header
+     // If there are no links
     const primaryItems = [
       <PrimaryDropdown content={props => <ExampleMenu {...props} />} text="Examples" />,
       <PrimaryDropdown content={props => <HelpMenu {...props} />} text="Help" />
     ];
+
+    const recentlyViewed = getRecentlyViewedLinks();
+    if (recentlyViewed !== undefined) {
+      primaryItems.unshift(
+        <PrimaryDropdown content={props => <RecentlyViewedMenu recentlyViewed={recentlyViewed} {...props} />} text="Recently viewed" />
+      );
+    }
 
     return (
       <div>
@@ -117,7 +161,6 @@ class SchemaAppWR extends React.PureComponent<RouteComponentProps, SchemaAppStat
           primaryItems={primaryItems}
           renderCreate={NewSchema}
           renderProductHome={JsonSchemaHome}
-
         />
         <Switch>
           <Route exact={true} path="/"><Redirect to="/start" /></Route>
