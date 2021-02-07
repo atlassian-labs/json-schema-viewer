@@ -1,6 +1,6 @@
 import { AtlassianNavigation, Create, ProductHome } from '@atlaskit/atlassian-navigation';
 import { AtlassianIcon, AtlassianLogo } from '@atlaskit/logo';
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { Redirect, Route, RouteComponentProps, Switch, useHistory, withRouter } from 'react-router-dom';
 import { LoadSchema } from './LoadSchema';
 import { JsonSchema } from './schema';
@@ -11,7 +11,6 @@ import { linkToRoot } from './route-path';
 import { ContentPropsWithClose, PrimaryDropdown } from './PrimaryDropdown';
 import { Docs } from './Docs';
 import { getRecentlyViewedLinks, RecentlyViewedLink } from './recently-viewed';
-import { isPresent } from 'ts-is-present';
 
 const JsonSchemaHome = () => (
   <ProductHome icon={AtlassianIcon} logo={AtlassianLogo} siteTitle="JSON Schema Viewer" />
@@ -40,22 +39,7 @@ type RecentlyViewedMenuProps = ContentPropsWithClose & {
 };
 
 const RecentlyViewedMenu: React.FC<RecentlyViewedMenuProps> = (props) => {
-  const [recentlyViewed, updateRecentlyViewed] = useState<Array<RecentlyViewedLink>>(props.recentlyViewed);
-
-  const handleStorageUpdated = () => {
-    const currentLinks = getRecentlyViewedLinks();
-    if (isPresent(currentLinks)) {
-      updateRecentlyViewed(currentLinks);
-    }
-  };
-
-  useEffect(() => {
-    window.addEventListener('storage', handleStorageUpdated)
-
-    return () => {
-      window.removeEventListener('keydown', handleStorageUpdated);
-    };
-  }, [handleStorageUpdated]);
+  const recentlyViewed = getRecentlyViewedLinks() || [];
 
   return (
     <PopupMenuGroup>
