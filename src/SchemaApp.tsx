@@ -60,6 +60,10 @@ const ExampleMenu: React.FC<ContentPropsWithClose> = (props) => (
       <NavigationButtonItem onClick={props.closePopup} exampleUrl="https://json.schemastore.org/swagger-2.0">Swagger (v2)</NavigationButtonItem>
       <NavigationButtonItem onClick={props.closePopup} exampleUrl="https://json.schemastore.org/package">package.json</NavigationButtonItem>
     </Section>
+    <Section title="JSON Schema Meta Schemas">
+      <NavigationButtonItem onClick={props.closePopup} exampleUrl="https://json-schema.org/draft-07/schema">Draft-07</NavigationButtonItem>
+      <NavigationButtonItem onClick={props.closePopup} exampleUrl="https://json-schema.org/draft-04/schema">Draft-04</NavigationButtonItem>
+    </Section>
     <Section title="Schema repositories">
       <NewTabLinkItem href="https://www.schemastore.org/" onClick={props.closePopup}>Schemastore Repository</NewTabLinkItem>
     </Section>

@@ -28,7 +28,8 @@ export type ErrorReason
   | 'infinite-prop-loop'
   | 'all-of-mismatched-types'
   | 'example-of-nothing-is-impossible'
-  | 'type-array-was-empty';
+  | 'type-array-was-empty'
+  | 'ran-out-of-memory';
 
 export class Error {
   private _reason: ErrorReason;
@@ -445,5 +446,11 @@ export function generateJsonExampleFor(
   schemaOrRef: JsonSchema,
   lookup: Lookup,
   stage: Stage): Example | Errors {
-  return generateJsonExampleForHelper(new ChainContext(new Set<string>(), lookup, 0, stage, undefined), schemaOrRef);
+  try {
+    return generateJsonExampleForHelper(new ChainContext(new Set<string>(), lookup, 0, stage, undefined), schemaOrRef);
+  } catch(e) {
+    return Errors.of(
+      new Error('ran-out-of-memory', `Ran out of memory: ${e}`)
+    );
+  }
 }
