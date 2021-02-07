@@ -87,12 +87,11 @@ class LoadSchemaWR extends React.PureComponent<LoadSchemaProps, LoadSchemaState>
       if (typeof children !== 'function') {
          throw new Error('The children of the LoadSchema must be a function to accept the schema.')
       }
-      if (typeof result.schema !== 'boolean') {
-         addRecentlyViewedLink({
-            title: result.schema.title || result.currentUrl,
-            url: result.currentUrl
-         });
-      }
+      const linkTitle = typeof result.schema !== 'boolean' ? result.schema.title || result.currentUrl : result.currentUrl;
+      addRecentlyViewedLink({
+         title: linkTitle,
+         url: result.currentUrl
+      });
       return <>{children(result.schema)}</>;
    }
 }
