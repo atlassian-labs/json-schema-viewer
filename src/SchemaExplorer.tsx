@@ -11,7 +11,7 @@ import { BreadcrumbsStateless, BreadcrumbsItem } from '@atlaskit/breadcrumbs';
 import Tabs from '@atlaskit/tabs';
 import { TabData, OnSelectCallback } from '@atlaskit/tabs/types';
 import { CodeBlockWithCopy } from './code-block-with-copy';
-import { Error, generateJsonExampleFor, isExample } from './example';
+import { generateJsonExampleFor, isExample } from './example';
 import { Stage, shouldShowInStage } from './stage';
 import { linkTo, PathElement } from './route-path';
 import { ClickElement, Type } from './Type';
@@ -175,7 +175,7 @@ const ErrorHeading = styled.h3`
 `;
 
 const SchemaExplorerExample: React.FC<SchemaExplorerExampleProps> = props => {
-  let potentialExample = generateJsonExampleFor(props.schema, props.lookup, props.stage);
+  const potentialExample = generateJsonExampleFor(props.schema, props.lookup, props.stage);
 
   if (isExample(potentialExample)) {
     const renderedOutput = props.format === 'json' ? JSON.stringify(potentialExample.value, null, 2) : dump(potentialExample.value);
