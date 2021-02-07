@@ -124,8 +124,6 @@ class SchemaAppWR extends React.PureComponent<RouteComponentProps, SchemaAppStat
   };
 
    render() {
-     // When we are rendereing, load local storage and pass it to the header
-     // If there are no links
     const primaryItems = [
       <PrimaryDropdown content={props => <ExampleMenu {...props} />} text="Examples" />,
       <PrimaryDropdown content={props => <HelpMenu {...props} />} text="Help" />
