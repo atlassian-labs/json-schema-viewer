@@ -4,7 +4,7 @@ import { colors } from '@atlaskit/theme';
 import { JsonSchema, JsonSchema1 } from './schema';
 import { getSchemaFromResult, Lookup } from './lookup';
 import { intersperse } from './jsx-util';
-import { getOrInferType, isPrimitiveType } from './type-inference';
+import { getOrInferType, isExternalReference, isPrimitiveType } from './type-inference';
 import { findDiscriminant } from './discriminant';
 import { isPresent } from 'ts-is-present';
 
@@ -93,7 +93,7 @@ const Plain = styled.span`
   color: ${colors.G400};
 `;
 
-const Anything = () => <Plain>anything</Plain>;
+export const Anything = () => <Plain>anything</Plain>;
 
 type SchemaAndReference = {
   schema: JsonSchema | undefined;
@@ -148,6 +148,10 @@ const getTypeText = (initialSchema: JsonSchema | undefined, initialReference: st
 
   if (typeof initialSchema === 'boolean') {
      return <Plain>{initialSchema === true ? 'anything' : 'nothing'}</Plain>
+  }
+
+  if (isExternalReference(initialSchema)) {
+    return <Click fallbackTitle="anything" reference={initialReference} schema={initialSchema} />;
   }
 
   const lookupResult = lookup.getSchema(initialSchema);
