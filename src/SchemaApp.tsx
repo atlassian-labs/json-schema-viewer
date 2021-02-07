@@ -10,6 +10,7 @@ import { PopupMenuGroup, Section, ButtonItem, LinkItem, LinkItemProps } from '@a
 import { linkToRoot } from './route-path';
 import { ContentPropsWithClose, PrimaryDropdown } from './PrimaryDropdown';
 import { Docs } from './Docs';
+import { getRecentlyViewedLinks, RecentlyViewedLink } from './recently-viewed';
 
 const JsonSchemaHome = () => (
   <ProductHome icon={AtlassianIcon} logo={AtlassianLogo} siteTitle="JSON Schema Viewer" />
@@ -32,6 +33,24 @@ const NavigationButtonItem: React.FC<NavigationButtonItemProps> = (props) => {
 }
 
 const NewTabLinkItem: React.FC<LinkItemProps> = (props) => <LinkItem target="_blank" rel="noopener noreferrer" {...props} />;
+
+type RecentlyViewedMenuProps = ContentPropsWithClose & {
+  recentlyViewed: Array<RecentlyViewedLink>;
+};
+
+const RecentlyViewedMenu: React.FC<RecentlyViewedMenuProps> = (props) => {
+  const recentlyViewed = getRecentlyViewedLinks() || [];
+
+  return (
+    <PopupMenuGroup>
+      <Section title="Recently viewed">
+        {recentlyViewed.map(link => (
+          <NavigationButtonItem key={link.url} onClick={props.closePopup} exampleUrl={link.url}>{link.title}</NavigationButtonItem>
+        ))}
+      </Section>
+    </PopupMenuGroup>
+  );
+};
 
 const ExampleMenu: React.FC<ContentPropsWithClose> = (props) => (
   <PopupMenuGroup>
@@ -110,6 +129,13 @@ class SchemaAppWR extends React.PureComponent<RouteComponentProps, SchemaAppStat
       <PrimaryDropdown content={props => <HelpMenu {...props} />} text="Help" />
     ];
 
+    const recentlyViewed = getRecentlyViewedLinks();
+    if (recentlyViewed !== undefined) {
+      primaryItems.unshift(
+        <PrimaryDropdown content={props => <RecentlyViewedMenu recentlyViewed={recentlyViewed} {...props} />} text="Recently viewed" />
+      );
+    }
+
     return (
       <div>
         <AtlassianNavigation
@@ -117,7 +143,6 @@ class SchemaAppWR extends React.PureComponent<RouteComponentProps, SchemaAppStat
           primaryItems={primaryItems}
           renderCreate={NewSchema}
           renderProductHome={JsonSchemaHome}
-
         />
         <Switch>
           <Route exact={true} path="/"><Redirect to="/start" /></Route>
