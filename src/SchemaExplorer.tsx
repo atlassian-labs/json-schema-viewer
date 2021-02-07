@@ -13,12 +13,13 @@ import { TabData, OnSelectCallback } from '@atlaskit/tabs/types';
 import { CodeBlockWithCopy } from './code-block-with-copy';
 import { generateJsonExampleFor, isExample } from './example';
 import { Stage, shouldShowInStage } from './stage';
-import { linkTo, PathElement } from './route-path';
-import { ClickElement, Type } from './Type';
-import { LinkProps, useHistory, useLocation } from 'react-router-dom';
+import { externalLinkTo, linkTo, PathElement } from './route-path';
+import { ClickElement, Type, Anything } from './Type';
+import { Link, LinkProps, useHistory, useLocation } from 'react-router-dom';
 import { getTitle, findTitle } from './title';
 import { LinkPreservingSearch, NavLinkPreservingSearch } from './search-preserving-link';
 import { dump } from 'js-yaml';
+import { isExternalReference } from './type-inference';
 
 interface SEPHeadProps {
   basePathSegments: Array<string>;
@@ -197,7 +198,7 @@ const SchemaExplorerExample: React.FC<SchemaExplorerExampleProps> = props => {
           <ul>
             {Array.from(messages.values()).map(m => <li key={m}>{m}</li>)}
           </ul>
-                    For more information please download the JSON Schema.
+          For more information please download the JSON Schema.
         </div>
       </Expand>
     </div>
@@ -221,6 +222,12 @@ function getDescriptionForSchema(schema: JsonSchema): string | undefined {
   if (typeof schema === 'boolean') {
     return schema ? 'Anything is allowed here.' : 'There is no valid value for this property.';
   }
+  if (isExternalReference(schema)) {
+    return 'This is an external reference. Click on the reference to try and view this external JSON Schema. Use the browser back button to return here.'
+  }
+  if (Object.keys(schema).length === 0) {
+    return 'Anything is allowed here.';
+  }
   return schema.description;
 }
 
@@ -234,6 +241,7 @@ export const SchemaExplorerDetails: React.FC<SchemaExplorerDetailsProps> = props
       const lookupResult = lookup.getSchema(propertySchema);
       return ({
         propertyName,
+        initialSchema: propertySchema,
         lookupResult,
         propertyReference: lookupResult?.baseReference || `${reference}/properties/${propertyName}`
       });
@@ -267,9 +275,9 @@ export const SchemaExplorerDetails: React.FC<SchemaExplorerDetailsProps> = props
           <ParameterView
             key={p.propertyName}
             name={p.propertyName}
-            description="Could not find schema for property. Defaulting to `anything`."
+            description={getDescriptionForSchema(p.initialSchema)}
             required={isRequired}
-            schema={undefined}
+            schema={p.initialSchema}
             reference={p.propertyReference}
             lookup={lookup}
             clickElement={clickElement}
@@ -322,7 +330,7 @@ export const SchemaExplorerDetails: React.FC<SchemaExplorerDetailsProps> = props
         name={`/${pattern}/ (keys of pattern)`}
         description={getDescriptionForSchema(schema)}
         required={false}
-        schema={getSchemaFromResult(lookupResult)}
+        schema={getSchemaFromResult(lookupResult) || patternProperties[pattern]}
         reference={lookupResult?.baseReference || `${reference}/patternProperties/${pattern}`}
         lookup={lookup}
         clickElement={clickElement}
@@ -384,8 +392,21 @@ type JsonSchemaObjectClickProps = {
 
 function createClickElement(details: JsonSchemaObjectClickProps): ClickElement {
   return (props) => {
+    if (isExternalReference(props.schema) && props.schema.$ref !== undefined) {
+      const externalUrl = externalLinkTo(details.basePathSegments, props.schema.$ref);
+      if (externalUrl === null) {
+        return <Anything />;
+      } else {
+        return <Link to={externalUrl}>$ref: {props.schema.$ref}</Link>;
+      }
+    }
+
     const references = [...details.path.map(p => p.reference), props.reference];
-    return <LinkPreservingSearch to={linkTo(details.basePathSegments, references)}>{findTitle(props.reference, props.schema) || props.fallbackTitle}</LinkPreservingSearch>;
+    return (
+      <LinkPreservingSearch to={linkTo(details.basePathSegments, references)}>
+        {findTitle(props.reference, props.schema) || props.fallbackTitle}
+      </LinkPreservingSearch>
+    );
   };
 }
 
