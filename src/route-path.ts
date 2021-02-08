@@ -20,6 +20,12 @@ export function externalLinkTo(basePathSegments: Array<string>, externalRef: str
   try {
     const parsedUrl = new URL(externalRef);
 
+    if (parsedUrl.protocol === 'http:') {
+      // In production, since we host on https, without this you would get mixed content errors when attempting to
+      // fetch. This may be surprising behaviour.
+      parsedUrl.protocol = 'https:';
+    }
+
     const pathSegment = parsedUrl.hash.startsWith('#') ? parsedUrl.hash : '#';
     parsedUrl.hash = '';
     const url = parsedUrl.toString();
