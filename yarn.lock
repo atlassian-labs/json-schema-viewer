@@ -236,6 +236,13 @@
     exenv "^1.2.2"
     prop-types "^15.5.10"
 
+"@atlaskit/tokens@^0.2.1":
+  version "0.2.1"
+  resolved "https://registry.npmjs.org/@atlaskit/tokens/-/tokens-0.2.1.tgz#85b48d52d49688ebaef604949426588ba9c81892"
+  integrity sha512-Fm/F9mOC7QI5OSwvyY5N5+cvhx0lPLPAE5sE520ztb+YOaSiFxHZ13YBJkkdVTtxbGsYayYWITinGDQcCnhLog==
+  dependencies:
+    "@babel/runtime" "^7.0.0"
+
 "@atlaskit/tooltip@^17.0.0", "@atlaskit/tooltip@^17.1.2":
   version "17.1.2"
   resolved "https://registry.yarnpkg.com/@atlaskit/tooltip/-/tooltip-17.1.2.tgz#78c196957021c3bba2a8217178d0499236753924"

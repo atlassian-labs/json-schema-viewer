@@ -21,6 +21,7 @@
     "@atlaskit/tabs": "^12.1.2",
     "@atlaskit/textfield": "^5.0.0",
     "@atlaskit/theme": "^11.0.2",
+    "@atlaskit/tokens": "^0.2.1",
     "@atlaskit/tooltip": "^17.1.2",
     "@monaco-editor/react": "^4.0.7",
     "js-yaml": "^4.0.0",
@@ -74,6 +75,7 @@
   "scripts": {
     "build-dev": "webpack -c webpack.dev.js",
     "build-prod": "webpack -c webpack.prod.js",
+    "build-bundle": "webpack -c webpack.bundle.js",
     "build": "rm -fr dist && webpack -c webpack.prod.js",
     "clean": "rm -rf *.zip source/witch/nodejs/node_modules/",
     "pack-witch": "cd aws/witch && npm install --prefix nodejs mime-types && cp witch.js nodejs/node_modules/ && zip -r ../../witch.zip nodejs",
