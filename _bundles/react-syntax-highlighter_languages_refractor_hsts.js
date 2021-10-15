@@ -1,0 +1,1 @@
+(self.webpackChunkMyLib=self.webpackChunkMyLib||[]).push([[3140],{561:a=>{"use strict";function e(a){a.languages.hsts={directive:{pattern:/\b(?:max-age=|includeSubDomains|preload)/,alias:"keyword"},safe:{pattern:/\d{8,}/,alias:"selector"},unsafe:{pattern:/\d{1,7}/,alias:"function"}}}a.exports=e,e.displayName="hsts",e.aliases=[]}}]);

@@ -1,0 +1,1 @@
+(self.webpackChunkMyLib=self.webpackChunkMyLib||[]).push([[5539],{1321:e=>{"use strict";function a(e){e.languages.brainfuck={pointer:{pattern:/<|>/,alias:"keyword"},increment:{pattern:/\+/,alias:"inserted"},decrement:{pattern:/-/,alias:"deleted"},branching:{pattern:/\[|\]/,alias:"important"},operator:/[.,]/,comment:/\S+/}}e.exports=a,a.displayName="brainfuck",a.aliases=[]}}]);
