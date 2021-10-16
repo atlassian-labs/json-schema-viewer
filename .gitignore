@@ -3,6 +3,5 @@ node_modules
 
 # Built files
 /dist
-/src/schema.ts
 *.zip
 /packaged.template

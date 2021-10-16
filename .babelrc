@@ -5,8 +5,10 @@
     "@babel/preset-react"
   ],
   "plugins": [
+    ["@babel/plugin-proposal-decorators", { "legacy": true }],
     "@babel/plugin-proposal-class-properties",
     "@compiled/babel-plugin",
-    "@babel/transform-runtime"
+    "@babel/transform-runtime",
+    "@babel/plugin-syntax-import-meta"
   ]
 }

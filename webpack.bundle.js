@@ -4,14 +4,13 @@ const webpack = require('webpack');
 module.exports = {
   entry: {
     index: './src/index.ts',
-    schemaviewer: './src/SchemaView.tsx'
   },
   target: 'web',
   module: {
     rules: [
       {
         test: /\.tsx?$/,
-        use: 'babel-loader',
+        use: 'ts-loader',
         exclude: /node_modules/,
       },
       {
@@ -29,11 +28,8 @@ module.exports = {
   },
   mode: 'production',
   output: {
-    path: path.resolve(__dirname, '_bundles'),
+    path: path.resolve(__dirname, 'dist'),
     filename: '[name].js',
-    libraryTarget: 'umd',
-    library: 'MyLib',
-    umdNamedDefine: true
   },
   plugins: [
     new webpack.DefinePlugin({
