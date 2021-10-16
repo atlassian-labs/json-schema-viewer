@@ -14,5 +14,8 @@
     "skipLibCheck": true,
     "target": "es5",
     "declaration": true
-  }
+  },
+  "include": [
+    "src/**/*"
+  ]
 }

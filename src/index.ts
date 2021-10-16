@@ -4,9 +4,11 @@ import { App } from './BrowserApp';
 import './style.css';
 
 export * from './SchemaExplorer';
-export * from './stories/schema-returner-lookup';
+export * from './SchemaEditor';
+export * from './SchemaView';
 export * from './lookup';
 export * from './schema';
+export * from './example';
 
 /* global __webpack_nonce__ */ // eslint-disable-line no-unused-vars
 
