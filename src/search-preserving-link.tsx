@@ -19,10 +19,7 @@ export type NavLinkPreservingSearchProps<S = H.LocationState> = Omit<NavLinkProp
 
 export const NavLinkPreservingSearch: React.FC<NavLinkPreservingSearchProps> = props => {
    const { to, ...remainder } = props;
-   console.log('NavLinkPreservingSearch before', props);
-   const navLink = (
+   return (
       <NavLink {...remainder} to={currentLocation => ({ ...currentLocation, pathname: props.to })} />
    );
-   console.log('NavLinkPreservingSearch after', navLink);
-   return navLink;
 };
