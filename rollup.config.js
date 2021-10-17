@@ -9,16 +9,15 @@ import peerDepsExternal from 'rollup-plugin-peer-deps-external';
 import del from 'rollup-plugin-delete';
 
 const commonPlugins = [
-  ts({
-    transpiler: 'babel',
-  }),
+  ts({ transpiler: 'babel' }),
 ];
 
 export default [
   {
     input: './src/index.ts',
+    inlineDynamicImports: true,
     output: {
-      dir: 'dist',
+      file: 'dist/index.js',
       globals: {
         'react': 'React',
         'react-dom': 'ReactDOM',
