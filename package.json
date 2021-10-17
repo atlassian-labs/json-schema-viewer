@@ -1,6 +1,6 @@
 {
   "name": "@kickstartds/json-schema-viewer",
-  "version": "1.0.4",
+  "version": "1.0.6",
   "description": "A website that allows for the viewing of JSON Schemas.",
   "author": "Robert Massaioli <robertmassaioli@gmail.com>",
   "license": "MIT",
@@ -43,9 +43,9 @@
     "monaco-editor": "^0.21.3",
     "react-copy-to-clipboard": "^5.0.2",
     "react-markdown": "^5.0.3",
+    "styled-components": "^3.2",
     "throttle-debounce": "^3.0.1",
-    "ts-is-present": "^1.2.1",
-    "styled-components": "^3.2"
+    "ts-is-present": "^1.2.1"
   },
   "devDependencies": {
     "@babel/core": "^7.12.10",
