@@ -9,6 +9,7 @@ export * from './SchemaView';
 export * from './lookup';
 export * from './schema';
 export * from './example';
+export * from './breakpoints';
 
 /* global __webpack_nonce__ */ // eslint-disable-line no-unused-vars
 

@@ -1,6 +1,6 @@
 {
   "name": "@kickstartds/json-schema-viewer",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "description": "A website that allows for the viewing of JSON Schemas.",
   "author": "Robert Massaioli <robertmassaioli@gmail.com>",
   "license": "MIT",
