@@ -11,6 +11,7 @@ import { linkToRoot } from './route-path';
 import { ContentPropsWithClose, PrimaryDropdown } from './PrimaryDropdown';
 import { Docs } from './Docs';
 import { getRecentlyViewedLinks, RecentlyViewedLink } from './recently-viewed';
+import { exampleSchemas } from "./example-schemas";
 
 const JsonSchemaHome = () => (
   <ProductHome icon={AtlassianIcon} logo={AtlassianLogo} siteTitle="JSON Schema Viewer" />
@@ -54,16 +55,13 @@ const RecentlyViewedMenu: React.FC<RecentlyViewedMenuProps> = (props) => {
 
 const ExampleMenu: React.FC<ContentPropsWithClose> = (props) => (
   <PopupMenuGroup>
-    <Section title="Schema examples">
-      <NavigationButtonItem onClick={props.closePopup} exampleUrl="https://unpkg.com/@forge/manifest@latest/out/schema/manifest-schema.json">Atlassian Forge</NavigationButtonItem>
-      <NavigationButtonItem onClick={props.closePopup} exampleUrl="https://raw.githubusercontent.com/OAI/OpenAPI-Specification/3.0.3/schemas/v3.0/schema.json">OpenAPI (v3)</NavigationButtonItem>
-      <NavigationButtonItem onClick={props.closePopup} exampleUrl="https://json.schemastore.org/swagger-2.0">Swagger (v2)</NavigationButtonItem>
-      <NavigationButtonItem onClick={props.closePopup} exampleUrl="https://json.schemastore.org/package">package.json</NavigationButtonItem>
-    </Section>
-    <Section title="JSON Schema Meta Schemas">
-      <NavigationButtonItem onClick={props.closePopup} exampleUrl="https://json-schema.org/draft-07/schema">Draft-07</NavigationButtonItem>
-      <NavigationButtonItem onClick={props.closePopup} exampleUrl="https://json-schema.org/draft-04/schema">Draft-04</NavigationButtonItem>
-    </Section>
+    {Array.from(Object.entries(exampleSchemas)).map(([title, links]) => (
+      <Section title={title}>
+        {Array.from(Object.entries(links)).map(([linkTitle, url]) => (
+          <NavigationButtonItem onClick={props.closePopup} exampleUrl={url}>{linkTitle}</NavigationButtonItem>
+          ))}
+      </Section>
+    ))}
     <Section title="Schema repositories">
       <NewTabLinkItem href="https://www.schemastore.org/" onClick={props.closePopup}>Schemastore Repository</NewTabLinkItem>
     </Section>
