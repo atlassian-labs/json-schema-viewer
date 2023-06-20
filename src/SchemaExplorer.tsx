@@ -20,6 +20,8 @@ import { getTitle, findTitle } from './title';
 import { LinkPreservingSearch, NavLinkPreservingSearch } from './search-preserving-link';
 import { dump } from 'js-yaml';
 import { isExternalReference } from './type-inference';
+import { SchemaValidator } from './SchemaValidator';
+import type { editor, IRange } from 'monaco-editor';
 
 interface SEPHeadProps {
   basePathSegments: Array<string>;
@@ -416,29 +418,19 @@ export type SchemaExplorerProps = {
   schema: JsonSchema1;
   stage: Stage;
   lookup: Lookup;
+  onSelectValidationRange: (range: IRange) => void;
+  validationResults: editor.IMarker[]
 };
 
-export type ViewType = 'details' | 'example-json' | 'example-yaml';
+export type ViewType = 'details' | 'example-json' | 'example-yaml' | 'validator';
 
 export type SchemaExplorerState = {
   pathExpanded: boolean;
   view: ViewType;
 };
 
-const LabelToViewType: { [label: string]: ViewType } = {
-  'Details': 'details',
-  'Example (JSON)': 'example-json',
-  'Example (YAML)': 'example-yaml'
-};
-
-const ViewTypeToTab: { [viewType: string]: number } = {
-  'details': 0,
-  'example-json': 1,
-  'example-yaml': 2
-};
-
 export class SchemaExplorer extends React.PureComponent<SchemaExplorerProps, SchemaExplorerState> {
-  private static Container = styled.section`
+  public static Container = styled.section`
     display: flex;
     flex-direction: column;
     flex-grow: 1;
@@ -447,28 +439,29 @@ export class SchemaExplorer extends React.PureComponent<SchemaExplorerProps, Sch
     max-width: 100%;
   `;
 
-  private static HeadingContainer = styled.div`
+  public static HeadingContainer = styled.div`
     display: flex;
     flex-direction: row;
     justify-content: space-between;
   `;
 
-  private static Heading = styled.h1`
+  public static Heading = styled.h1`
     font-size: 16px;
     font-weight: 600;
     padding-top: 24px;
     margin: 5px 8px;
   `;
 
-  UNSAFE_componentWillMount() {
-    this.setState({
+  constructor(props: SchemaExplorerProps) {
+    super(props);
+    this.state = {
       pathExpanded: false,
       view: 'details'
-    });
+    }
   }
 
   render() {
-    const { path, schema, lookup, stage, basePathSegments } = this.props;
+    const { path, schema, lookup, stage, basePathSegments, validationResults, onSelectValidationRange } = this.props;
     const { pathExpanded } = this.state;
     if (path.length === 0) {
       return <div>TODO What do we do when the reference could not be found? Error maybe?</div>;
@@ -476,32 +469,49 @@ export class SchemaExplorer extends React.PureComponent<SchemaExplorerProps, Sch
 
     const currentPathElement = path[path.length - 1];
 
-    const tabData: TabData[] = [{
-      label: 'Details',
-      content: (
-        <SchemaExplorerDetails
-          schema={schema}
-          reference={currentPathElement.reference}
-          lookup={lookup}
-          stage={stage}
-          clickElement={createClickElement({ basePathSegments, path })}
-        />
-      )
-    }, {
-      label: 'Example (JSON)',
-      content: (
-        <SchemaExplorerExample schema={schema} lookup={lookup} stage={stage} format="json" />
-      )
-    }, {
-      label: 'Example (YAML)',
-      content: (
-        <SchemaExplorerExample schema={schema} lookup={lookup} stage={stage} format="yaml" />
-      )
-    }];
+    type ExtendedTabData = TabData & {
+      view: ViewType;
+    }
+    const tabData: ExtendedTabData[] = [
+      {
+        view: 'details',
+        label: 'Details',
+        content: (
+          <SchemaExplorerDetails
+            schema={schema}
+            reference={currentPathElement.reference}
+            lookup={lookup}
+            stage={stage}
+            clickElement={createClickElement({ basePathSegments, path })}
+          />
+        ),
+      },
+      {
+        view: 'example-json',
+        label: 'Example (JSON)',
+        content: (
+          <SchemaExplorerExample schema={schema} lookup={lookup} stage={stage} format="json" />
+        ),
+      },
+      {
+        view: 'example-yaml',
+        label: 'Example (YAML)',
+        content: (
+          <SchemaExplorerExample schema={schema} lookup={lookup} stage={stage} format="yaml" />
+        ),
+      },
+      {
+        view: 'validator',
+        label: `Validation results (${validationResults.length})`,
+        content: (
+          <SchemaValidator results={validationResults} onSelectRange={onSelectValidationRange} />
+        ),
+      },
+    ];
 
-    const onTabSelect: OnSelectCallback = tab => {
+    const onTabSelect: OnSelectCallback = (tab) => {
       this.setState({
-        view: LabelToViewType[tab.label || 'Details']
+        view: (tab as ExtendedTabData).view
       });
     };
 
@@ -517,7 +527,11 @@ export class SchemaExplorer extends React.PureComponent<SchemaExplorerProps, Sch
           <SchemaExplorer.Heading>{getTitle(currentPathElement.reference, schema)}</SchemaExplorer.Heading>
           <Permalink />
         </SchemaExplorer.HeadingContainer>
-        <Tabs tabs={tabData} selected={ViewTypeToTab[this.state.view || 'details']} onSelect={onTabSelect} />
+        <Tabs
+          tabs={tabData}
+          onSelect={onTabSelect}
+          selected={tabData.findIndex((tab) => tab.view === (this.state.view || 'details'))}
+        />
       </SchemaExplorer.Container>
     );
   }

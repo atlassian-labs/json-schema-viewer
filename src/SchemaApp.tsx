@@ -56,9 +56,9 @@ const RecentlyViewedMenu: React.FC<RecentlyViewedMenuProps> = (props) => {
 const ExampleMenu: React.FC<ContentPropsWithClose> = (props) => (
   <PopupMenuGroup>
     {Array.from(Object.entries(exampleSchemas)).map(([title, links]) => (
-      <Section title={title}>
+      <Section key={title} title={title}>
         {Array.from(Object.entries(links)).map(([linkTitle, url]) => (
-          <NavigationButtonItem onClick={props.closePopup} exampleUrl={url}>{linkTitle}</NavigationButtonItem>
+          <NavigationButtonItem key={url} onClick={props.closePopup} exampleUrl={url}>{linkTitle}</NavigationButtonItem>
           ))}
       </Section>
     ))}

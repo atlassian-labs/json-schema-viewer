@@ -11,12 +11,18 @@ import { extractLinks } from './side-nav-loader';
 import { SchemaEditor } from './SchemaEditor';
 import { generateJsonExampleFor, isErrors } from './example';
 import { forSize } from './breakpoints';
+import type { editor, IRange } from 'monaco-editor';
 
 export type SchemaViewProps = RouteComponentProps & {
   basePathSegments: Array<string>;
   schema: JsonSchema;
   stage: Stage;
 };
+
+type SchemaViewState = {
+  selectedValidationRange: IRange | undefined;
+  validationResults: editor.IMarker[];
+}
 
 // TODO we need to reverse engineer the schema explorer to show based on the path
 
@@ -39,7 +45,7 @@ function removeLeadingSlash(v: string): string {
   return v;
 }
 
-export class SchemaViewWR extends React.PureComponent<SchemaViewProps> {
+export class SchemaViewWR extends React.PureComponent<SchemaViewProps, SchemaViewState> {
   private static Container = styled.div`
     display: flex;
   `;
@@ -66,6 +72,14 @@ export class SchemaViewWR extends React.PureComponent<SchemaViewProps> {
     top: 0px;
     z-index: -100;
   `;
+
+  constructor(props: SchemaViewProps) {
+    super(props);
+    this.state = {
+      selectedValidationRange: undefined,
+      validationResults: []
+    }
+  }
 
   public render() {
     const { schema, basePathSegments } = this.props;
@@ -100,11 +114,15 @@ export class SchemaViewWR extends React.PureComponent<SchemaViewProps> {
           schema={currentSchema}
           lookup={lookup}
           stage="both"
+          onSelectValidationRange={(range) => this.setState({ selectedValidationRange: range })}
+          validationResults={this.state.validationResults}
         />
         <SchemaViewWR.EditorContainer>
           <SchemaEditor
             initialContent={fullExample}
             schema={schema}
+            validationRange={this.state.selectedValidationRange}
+            onValidate={(results) => this.setState({ validationResults: results })}
           />
           <SchemaViewWR.EditorContainerHeading>Editor and Validator</SchemaViewWR.EditorContainerHeading>
         </SchemaViewWR.EditorContainer>
