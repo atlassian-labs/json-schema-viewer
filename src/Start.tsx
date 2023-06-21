@@ -69,11 +69,17 @@ update the contents, re-copy the raw url (because it will have updated) and load
 `.trim();
 
 export class StartWR extends React.PureComponent<StartProps, StartState> {
-  private static InputWidth = styled.div`
+  public static InputWidth = styled.div`
     min-width: 600px;
   `;
 
-  private static Guide = styled.div`
+  public static Flex = styled.div`
+    display: flex;
+    gap: 4px;
+    align-items: center;
+  `
+
+  public static Guide = styled.div`
     max-width: 600px;
     text-align: left;
     margin-top: 100px;
@@ -102,8 +108,10 @@ export class StartWR extends React.PureComponent<StartProps, StartState> {
         description={`Put in the url to the JSON schema that you want to see documented here.`}
         primaryAction={(
           <StartWR.InputWidth>
-            <TextField isCompact={false} value={this.state.urlInput || ''} onChange={onTextChange} />
-            <Button label="submit" onClick={handleOnClick} appearance="primary">Load Schema</Button>
+            <StartWR.Flex>
+              <TextField isCompact={false} value={this.state.urlInput || ''} onChange={onTextChange} />
+              <Button label="submit" onClick={handleOnClick} appearance="primary">Load Schema</Button>
+            </StartWR.Flex>
             <StartWR.Guide><Markdown source={DevelopingSchemaInstructions} /></StartWR.Guide>
           </StartWR.InputWidth>
         )}
