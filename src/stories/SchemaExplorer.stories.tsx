@@ -1,6 +1,6 @@
 import React from 'react';
 // also exported from '@storybook/react' if you can deal with breaking changes in 6.1
-import { Story, Meta } from '@storybook/react/types-6-0';
+import { Story, Meta } from '@storybook/react';
 import { action } from '@storybook/addon-actions';
 import { JsonSchema, JsonSchema1 } from '../schema';
 import { SchemaExplorer, SchemaExplorerProps } from '../SchemaExplorer';
@@ -42,7 +42,8 @@ const defaultArgs: Partial<SchemaExplorerProps> = {
    basePathSegments: ['base'],
    path: [{ title: 'object', reference: '#' }],
    lookup: new IdLookup(),
-   stage: 'both'
+   stage: 'both',
+  validationResults: []
 };
 
 export const DefaultView = Template.bind({});

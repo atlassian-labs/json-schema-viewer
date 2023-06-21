@@ -52,7 +52,7 @@ export const Docs: React.FC = () => {
             const fileContents = await fetch(docsUrl).then(r => r.text());
             setLoadResult({ fileContents, loadId: id });
          } catch (e) {
-            setLoadResult({ message: e.message, loadId: id });
+            setLoadResult({ message: e instanceof Error ? e.message : JSON.stringify(e), loadId: id });
          }
       }
    };

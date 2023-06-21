@@ -5,9 +5,11 @@ name: Node.js CI
 
 on:
   push:
-    branches: [ $default-branch ]
+    branches:
+      - master
   pull_request:
-    branches: [ $default-branch ]
+    branches:
+      - master
 
 jobs:
   build:
@@ -28,3 +30,4 @@ jobs:
           cache: 'yarn'
       - run: yarn install --frozen-lockfile
       - run: yarn lint
+      - run: yarn build-prod
