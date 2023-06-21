@@ -7,6 +7,7 @@ import './style.css';
 
 // CSP: Set a special variable to add `nonce` attributes to all styles/script tags
 // See https://github.com/webpack/webpack/pull/3210
+// @ts-expect-error
 __webpack_nonce__ = (window as any).NONCE_ID; // eslint-disable-line no-global-assign, camelcase
 
 ReactDOM.render(React.createElement(App), document.getElementById('root'));

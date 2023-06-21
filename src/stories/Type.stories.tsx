@@ -1,6 +1,5 @@
 import React from 'react';
-// also exported from '@storybook/react' if you can deal with breaking changes in 6.1
-import { Story, Meta } from '@storybook/react/types-6-0';
+import { Story, Meta } from '@storybook/react';
 
 import { IdLookup } from '../lookup';
 import { Type, TypeProps } from '../Type';
@@ -17,9 +16,9 @@ const noOp = () => {
   // NoOp
 };
 
-const defaultProps = {
+const defaultProps: Partial<TypeProps> = {
   lookup: new IdLookup(),
-  onTypeClick: noOp
+  clickElement: (props) => <a>{props.fallbackTitle}</a>
 };
 
 const Template: Story<TypeProps> = (args) => <Type {...args} />;
