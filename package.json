@@ -86,7 +86,7 @@
     "aws-package": "aws cloudformation package --template-file templates/main.yaml --s3-bucket json-schema-viewer-cloudformation --output-template-file packaged.template",
     "aws-deploy": "aws --region us-east-1 cloudformation deploy --stack-name json-schema-viewer --template-file packaged.template --capabilities CAPABILITY_NAMED_IAM CAPABILITY_AUTO_EXPAND --parameter-overrides  DomainName=json-schema.app SubDomain=www CreateApex=yes",
     "build-and-deploy": "run-s build package-build aws-package aws-deploy",
-    "upload": "aws s3 sync --cache-control \"max-age=31536000\" --exclude 'index.html' --delete dist s3://json-schema-viewer-customresourcesta-s3bucketroot-vjmtja1bzua1 && aws s3 cp --cache-control \"max-age=300\" dist/index.html s3://json-schema-viewer-customresourcesta-s3bucketroot-vjmtja1bzua1",
+    "upload": "aws s3 sync --profile AdministratorAccess-110055367801 --cache-control \"max-age=31536000\" --exclude 'index.html' --delete dist s3://json-schema-viewer-customresourcesta-s3bucketroot-vjmtja1bzua1 && aws s3 cp --profile AdministratorAccess-110055367801 --cache-control \"max-age=300\" dist/index.html s3://json-schema-viewer-customresourcesta-s3bucketroot-vjmtja1bzua1",
     "build-and-upload": "run-s build upload",
     "cloudfront-invalidate": "aws cloudfront create-invalidation --distribution-id E2LM6EIHUKJUXG --paths '/*' | cat",
     "check-invalidate": "aws cloudfront get-invalidation --distribution-id E2LM6EIHUKJUXG --id",

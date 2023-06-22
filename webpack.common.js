@@ -47,8 +47,7 @@ module.exports = {
       'process.release': null
     }),
     new webpack.EnvironmentPlugin({
-      ANALYTICS_NEXT_MODERN_CONTEXT: true,
-      NODE_ENV: 'development'
+      ANALYTICS_NEXT_MODERN_CONTEXT: true
     }),
     new FaviconsWebpackPlugin({
       logo: './src/logo.svg',
