@@ -1,10 +1,6 @@
 import React from 'react';
 import OpenIcon from '@atlaskit/icon/glyph/open';
-
-type LinkRendererProps = {
-  children: React.ReactNode;
-  href: string;
-};
+import { Components } from "react-markdown";
 
 export const isExternalLink = (href: string): boolean => {
   return ![
@@ -14,12 +10,17 @@ export const isExternalLink = (href: string): boolean => {
   ].some(match => match());
 };
 
-export const LinkRenderer: React.SFC<LinkRendererProps> = props => {
-  const isExternal = isExternalLink(props.href);
+export const LinkRenderer: Components['a'] = ({ href, children }) => {
+  const isExternal = href ? isExternalLink(href) : false;
 
   return (
-    <a href={props.href} target={isExternal ? '_blank' : '_self'} rel={isExternal ? 'noopener noreferrer' : ''}>
-      {props.children}{isExternal && <OpenIcon label="Follow" size="small" />}
+    <a
+      href={href}
+      target={isExternal ? '_blank' : '_self'}
+      rel={isExternal ? 'noopener noreferrer' : ''}
+    >
+      {children}
+      {isExternal && <OpenIcon label="Follow" size="small" />}
     </a>
   );
 };

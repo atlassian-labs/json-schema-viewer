@@ -1,20 +1,11 @@
 import React from 'react';
-import ReactMarkdown from 'react-markdown';
+import ReactMarkdown, { Components } from 'react-markdown';
 import styled from 'styled-components';
 import { colors, gridSize } from '@atlaskit/theme';
 import { BlockCodeRenderer, InlineCodeRenderer } from './custom-renderers/Code';
-/*
-import {
-  createHeadingRenderer,
-  AddOnThisPageHeading,
-  OnHeadingVisibilityChange,
-} from './custom-renderers/Heading';
-*/
-// import TableRenderer from './custom-renderers/Table';
 import { LinkRenderer } from './custom-renderers/Link';
-//import TableCellRenderer from './custom-renderers/TableCell';
-//import TableHeadRenderer from './custom-renderers/TableHead';
-//import TableRowRenderer from './custom-renderers/TableRow';
+import rehypeSanitize from 'rehype-sanitize';
+import rehypeRaw from 'rehype-raw';
 
 export type MarkdownProps = {
   source: string;
@@ -30,26 +21,22 @@ color: ${colors.N80};
 }
 `;
 
-const StyledBlockquote = styled.blockquote`${blockQuoteStyles}`;
+const StyledBlockquote = styled.blockquote`
+  ${blockQuoteStyles}
+`;
 
-type BlockQuoteRendererProps = {
-  children: JSX.Element[];
-};
-
-const BlockQuoteRenderer: React.ElementType<BlockQuoteRendererProps> = (props) => (
+const BlockQuoteRenderer: Components['blockquote'] = (props) => (
   <StyledBlockquote>{props.children}</StyledBlockquote>
 );
 
-const StyledThematicBreak = styled.hr`
+const StyledHorizontalRule = styled.hr`
   border: 0;
   border-bottom: 1px solid ${colors.N40};
   height: 1px;
   margin: ${gridSize() * 2}px 0;
 `;
 
-const ThematicBreakRenderer: React.ElementType<{}> = () => (
-  <StyledThematicBreak />
-);
+const HorizontalRuleRenderer: React.ElementType<{}> = () => <StyledHorizontalRule />;
 
 function doesNotRequireFullBlownRenderer(input: string): boolean {
   return input.match(/^[a-zA-Z\d\s\.,\'\"\/]*$/g) !== null;
@@ -66,17 +53,15 @@ export const Markdown: React.FC<MarkdownProps> = (props: MarkdownProps) => {
 
   return (
     <ReactMarkdown
-      skipHtml={true}
-      source={source}
-      renderers={
-        {
-          code: BlockCodeRenderer,
-          inlineCode: InlineCodeRenderer,
-          link: LinkRenderer,
-          blockquote: BlockQuoteRenderer,
-          thematicBreak: ThematicBreakRenderer,
-        }
-      }
+      rehypePlugins={[rehypeRaw, rehypeSanitize]}
+      children={source}
+      components={{
+        code: (props) =>
+          props.inline ? <InlineCodeRenderer {...props} /> : <BlockCodeRenderer {...props} />,
+        a: LinkRenderer,
+        blockquote: BlockQuoteRenderer,
+        hr: HorizontalRuleRenderer,
+      }}
     />
   );
 };
