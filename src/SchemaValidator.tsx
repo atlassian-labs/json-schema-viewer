@@ -37,6 +37,12 @@ const severityDefinitions = {
 };
 
 export const SchemaValidator: FC<SchemaValidatorProps> = ({ results, onSelectRange }) => {
+  const sortedByLineNumber = results.sort((a, b) => {
+    if (a.startLineNumber !== b.startLineNumber) {
+      return a.startLineNumber - b.startLineNumber;
+    }
+    return a.startColumn - b.startColumn;
+  });
   return (
     <Table>
       <THead>
@@ -44,19 +50,19 @@ export const SchemaValidator: FC<SchemaValidatorProps> = ({ results, onSelectRan
         <SortableColumn name="message">Message</SortableColumn>
         <SortableColumn name="startLineNumber">Location</SortableColumn>
       </THead>
-      <TBody rows={results}>
+      <TBody rows={sortedByLineNumber}>
         {(row) => {
           const { label, icon: Icon, color } = severityDefinitions[row.severity];
           const {
-            modelVersionId,
             message,
             startColumn,
             startLineNumber,
             endColumn,
             endLineNumber,
           } = row;
+          const locationString = `${startLineNumber}:${startColumn}-${endLineNumber}:${endColumn}`
           return (
-            <Row key={modelVersionId}>
+            <Row key={`${locationString}-${message}`}>
               <Cell>
                 <Flex>
                   <Icon label={label} primaryColor={color} />
@@ -77,7 +83,7 @@ export const SchemaValidator: FC<SchemaValidatorProps> = ({ results, onSelectRan
                     });
                   }}
                 >
-                  {startLineNumber}:{startColumn}-{endLineNumber}:{endColumn}
+                  {locationString}
                 </a>
               </Cell>
             </Row>
