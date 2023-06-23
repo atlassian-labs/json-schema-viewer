@@ -7,6 +7,8 @@ import IconWarning from '@atlaskit/icon/glyph/warning';
 import Table, { Cell, Row, SortableColumn, TBody, THead } from '@atlaskit/table';
 import styled from 'styled-components';
 import { MarkerSeverity } from './monaco-helpers';
+import EmptyState from "@atlaskit/empty-state";
+import EditorSuccessIcon from "@atlaskit/icon/glyph/editor/success";
 
 type SchemaValidatorProps = {
   results: editor.IMarker[];
@@ -37,6 +39,14 @@ const severityDefinitions = {
 };
 
 export const SchemaValidator: FC<SchemaValidatorProps> = ({ results, onSelectRange }) => {
+  if (results.length === 0) {
+    return (
+      <EmptyState
+        header="No validation issues!"
+        renderImage={() => <EditorSuccessIcon size="xlarge" label="Success" primaryColor={colors.G300} />}
+      />
+    );
+  }
   const sortedByLineNumber = results.sort((a, b) => {
     if (a.startLineNumber !== b.startLineNumber) {
       return a.startLineNumber - b.startLineNumber;
