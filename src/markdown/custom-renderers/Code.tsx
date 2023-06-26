@@ -1,14 +1,9 @@
-import React from 'react';
-import ReactMarkdown from 'react-markdown';
+import React, { ReactNode } from 'react';
 import styled from 'styled-components';
 import { Code } from '@atlaskit/code';
 import { gridSize } from '@atlaskit/theme';
 import { CodeBlockWithCopy } from '../../code-block-with-copy';
-
-export type CodeRendererProps = {
-  value?: string;
-  language?: string;
-};
+import type { CodeComponent } from 'react-markdown/lib/ast-to-react';
 
 const CodeBlockWrapper = styled.div`
   margin: ${gridSize() * 2}px 0;
@@ -17,10 +12,34 @@ const CodeBlockWrapper = styled.div`
   overflow: auto;
 `;
 
-export const BlockCodeRenderer: React.ElementType<CodeRendererProps> = (props) => {
+const detectLanguage = (code?: string) => {
+  try {
+    JSON.parse(code || '');
+    return 'json';
+  } catch (e) {
+    return 'text';
+  }
+};
+
+function getCodeAndLanguage(
+  children: ReactNode,
+  className?: string
+): {
+  code: string;
+  language: string;
+} {
+  const code = Array.isArray(children) ? children[0] : children;
+  return {
+    code: code || '',
+    language: className ? className.replace('language-', '') : detectLanguage(code),
+  };
+}
+
+export const BlockCodeRenderer: CodeComponent = ({ children, className }) => {
+  const { code, language } = getCodeAndLanguage(children, className);
   return (
     <CodeBlockWrapper>
-      <CodeBlockWithCopy text={props.value || ''} language={props.language || 'text'} />
+      <CodeBlockWithCopy text={code} language={language} />
     </CodeBlockWrapper>
   );
 };
@@ -30,8 +49,11 @@ const BreakWord = styled.span`
   word-wrap: break-word;
 `;
 
-export const InlineCodeRenderer: React.ElementType<CodeRendererProps> = (props) => {
+export const InlineCodeRenderer: CodeComponent = ({ children, className }) => {
+  const { code, language } = getCodeAndLanguage(children, className);
   return (
-    <BreakWord><Code text={props.value || ''} language={props.language || 'text'} /></BreakWord>
+    <BreakWord>
+      <Code text={code} language={language} />
+    </BreakWord>
   );
 };

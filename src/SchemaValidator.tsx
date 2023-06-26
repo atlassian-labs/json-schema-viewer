@@ -7,6 +7,8 @@ import IconWarning from '@atlaskit/icon/glyph/warning';
 import Table, { Cell, Row, SortableColumn, TBody, THead } from '@atlaskit/table';
 import styled from 'styled-components';
 import { MarkerSeverity } from './monaco-helpers';
+import EmptyState from "@atlaskit/empty-state";
+import EditorSuccessIcon from "@atlaskit/icon/glyph/editor/success";
 
 type SchemaValidatorProps = {
   results: editor.IMarker[];
@@ -37,6 +39,20 @@ const severityDefinitions = {
 };
 
 export const SchemaValidator: FC<SchemaValidatorProps> = ({ results, onSelectRange }) => {
+  if (results.length === 0) {
+    return (
+      <EmptyState
+        header="No validation issues!"
+        renderImage={() => <EditorSuccessIcon size="xlarge" label="Success" primaryColor={colors.G300} />}
+      />
+    );
+  }
+  const sortedByLineNumber = results.sort((a, b) => {
+    if (a.startLineNumber !== b.startLineNumber) {
+      return a.startLineNumber - b.startLineNumber;
+    }
+    return a.startColumn - b.startColumn;
+  });
   return (
     <Table>
       <THead>
@@ -44,19 +60,19 @@ export const SchemaValidator: FC<SchemaValidatorProps> = ({ results, onSelectRan
         <SortableColumn name="message">Message</SortableColumn>
         <SortableColumn name="startLineNumber">Location</SortableColumn>
       </THead>
-      <TBody rows={results}>
+      <TBody rows={sortedByLineNumber}>
         {(row) => {
           const { label, icon: Icon, color } = severityDefinitions[row.severity];
           const {
-            modelVersionId,
             message,
             startColumn,
             startLineNumber,
             endColumn,
             endLineNumber,
           } = row;
+          const locationString = `${startLineNumber}:${startColumn}-${endLineNumber}:${endColumn}`
           return (
-            <Row key={modelVersionId}>
+            <Row key={`${locationString}-${message}`}>
               <Cell>
                 <Flex>
                   <Icon label={label} primaryColor={color} />
@@ -77,7 +93,7 @@ export const SchemaValidator: FC<SchemaValidatorProps> = ({ results, onSelectRan
                     });
                   }}
                 >
-                  {startLineNumber}:{startColumn}-{endLineNumber}:{endColumn}
+                  {locationString}
                 </a>
               </Cell>
             </Row>

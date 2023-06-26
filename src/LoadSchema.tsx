@@ -77,7 +77,7 @@ class LoadSchemaWR extends React.PureComponent<LoadSchemaProps, LoadSchemaState>
                header="Schema load failed"
                description="Attempted to pull the JSON Schema down from the public internet."
                primaryAction={(
-                  <p>Error: ${result.schema.message}</p>
+                  <p>Error: {result.schema.message}</p>
                )}
             />
          );
