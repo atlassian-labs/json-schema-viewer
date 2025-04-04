@@ -1,3 +1,5 @@
+<img src="src/logo.svg" alt="JSON Schema Viewer Logo" width="150" height="150" />
+
 # json-schema-viewer
 
 [![Atlassian license](https://img.shields.io/badge/license-Apache%202.0-blue.svg?style=flat-square)](LICENSE) [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](CONTRIBUTING.md)
