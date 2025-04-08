@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="240" height="60" viewBox="0 0 240 60">
+  <g id="logo-primary">
+    <!-- Icon -->
+    <g transform="translate(10,5) scale(0.7)">
+      <path d="m 122.99401,114.18985 c -4.32897,-0.9404 -7.58044,-3.47848 -8.71251,-6.80095 c -0.78921,-2.31618 -0.67682,-6.07238 0.33363,-11.150598" fill="#0052CC"/>
+      <path d="m 152.2304,112.24932 v -2.42987 l 2.04969,-0.42336 c 2.26276,-0.46736 4.054,-1.8634 4.45842,-3.47475" fill="#0052CC"/>
+      <path d="m 131.74239,108.26592 c -1.02163,-1.2988 -0.87294,-3.53652 0.38087,-5.73185 c 0.92776,-1.62446 4.80862,-6.948549 7.61066,-10.440949" fill="#0052CC"/>
+    </g>
+    <!-- Text -->
+    <text x="80" y="35" font-family="Arial, sans-serif" font-size="24" font-weight="bold" fill="#0052CC">
+      JSON Schema Viewer
+    </text>
+  </g>
+</svg>
