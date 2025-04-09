@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="240" height="60" viewBox="0 0 240 60">
+  <!-- Icon -->
+  <g transform="translate(10,10) scale(0.4)">
+    <path d="M50 10 L90 10 L90 50 L50 50 Z" fill="#000000"/>
+    <path d="M20 20 L40 20 L40 40 L20 40 Z" fill="#000000"/>
+    <rect x="60" y="20" width="20" height="20" fill="white"/>
+    <path d="M10 30 L30 30 L30 50 L10 50 Z" fill="#000000"/>
+  </g>
+  <!-- Text -->
+  <text x="100" y="35" font-family="Arial, sans-serif" font-size="24" fill="#000000">
+    JSON Schema Viewer
+  </text>
+</svg>
