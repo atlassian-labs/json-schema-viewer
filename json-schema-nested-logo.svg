@@ -1,0 +1,51 @@
+<svg width="120" height="120" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+  <!-- Nested geometric shapes representing JSON structure -->
+  <defs>
+    <linearGradient id="nestedGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#6C5CE7;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#A29BFE;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Outer container (main schema) -->
+  <rect x="15" y="15" width="90" height="90" rx="12" ry="12" 
+        fill="none" stroke="#6C5CE7" stroke-width="3"/>
+  
+  <!-- First nested level -->
+  <rect x="25" y="25" width="35" height="35" rx="6" ry="6" 
+        fill="url(#nestedGradient)" opacity="0.8"/>
+  <rect x="65" y="25" width="35" height="35" rx="6" ry="6" 
+        fill="url(#nestedGradient)" opacity="0.8"/>
+  
+  <!-- Second nested level -->
+  <rect x="30" y="30" width="12" height="12" rx="2" ry="2" 
+        fill="#FFFFFF" opacity="0.9"/>
+  <rect x="45" y="30" width="12" height="12" rx="2" ry="2" 
+        fill="#FFFFFF" opacity="0.9"/>
+  <rect x="30" y="45" width="25" height="12" rx="2" ry="2" 
+        fill="#FFFFFF" opacity="0.9"/>
+  
+  <rect x="70" y="30" width="25" height="12" rx="2" ry="2" 
+        fill="#FFFFFF" opacity="0.9"/>
+  <rect x="70" y="45" width="12" height="12" rx="2" ry="2" 
+        fill="#FFFFFF" opacity="0.9"/>
+  <rect x="85" y="45" width="12" height="12" rx="2" ry="2" 
+        fill="#FFFFFF" opacity="0.9"/>
+  
+  <!-- Bottom section -->
+  <rect x="25" y="70" width="70" height="25" rx="6" ry="6" 
+        fill="url(#nestedGradient)" opacity="0.6"/>
+  
+  <!-- Bottom nested elements -->
+  <rect x="30" y="75" width="15" height="8" rx="2" ry="2" 
+        fill="#FFFFFF" opacity="0.9"/>
+  <rect x="50" y="75" width="15" height="8" rx="2" ry="2" 
+        fill="#FFFFFF" opacity="0.9"/>
+  <rect x="70" y="75" width="20" height="8" rx="2" ry="2" 
+        fill="#FFFFFF" opacity="0.9"/>
+  
+  <rect x="30" y="85" width="25" height="6" rx="1" ry="1" 
+        fill="#FFFFFF" opacity="0.9"/>
+  <rect x="60" y="85" width="30" height="6" rx="1" ry="1" 
+        fill="#FFFFFF" opacity="0.9"/>
+</svg>

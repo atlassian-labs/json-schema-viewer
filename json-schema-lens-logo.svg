@@ -1,0 +1,57 @@
+<svg width="120" height="120" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+  <!-- Lens/eye concept representing schema viewing and understanding -->
+  <defs>
+    <radialGradient id="lensGradient" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" style="stop-color:#00CEC9;stop-opacity:1" />
+      <stop offset="70%" style="stop-color:#0984E3;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#2D3436;stop-opacity:1" />
+    </radialGradient>
+    <linearGradient id="frameGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#74B9FF;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#0984E3;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Outer lens frame -->
+  <circle cx="60" cy="60" r="45" fill="none" stroke="url(#frameGradient)" stroke-width="4"/>
+  
+  <!-- Main lens -->
+  <circle cx="60" cy="60" r="35" fill="url(#lensGradient)"/>
+  
+  <!-- Inner reflection/highlight -->
+  <circle cx="60" cy="60" r="25" fill="none" stroke="#FFFFFF" stroke-width="2" opacity="0.3"/>
+  
+  <!-- Central focus point (representing schema structure) -->
+  <circle cx="60" cy="60" r="8" fill="#FFFFFF" opacity="0.9"/>
+  
+  <!-- Schema structure lines radiating from center -->
+  <g stroke="#FFFFFF" stroke-width="2" opacity="0.6">
+    <!-- Horizontal and vertical -->
+    <line x1="45" y1="60" x2="75" y2="60"/>
+    <line x1="60" y1="45" x2="60" y2="75"/>
+    
+    <!-- Diagonal -->
+    <line x1="49" y1="49" x2="71" y2="71"/>
+    <line x1="71" y1="49" x2="49" y2="71"/>
+  </g>
+  
+  <!-- Small data points around the lens -->
+  <g fill="#74B9FF" opacity="0.8">
+    <circle cx="25" cy="35" r="3"/>
+    <circle cx="95" cy="35" r="3"/>
+    <circle cx="25" cy="85" r="3"/>
+    <circle cx="95" cy="85" r="3"/>
+    <circle cx="35" cy="20" r="2"/>
+    <circle cx="85" cy="20" r="2"/>
+    <circle cx="35" cy="100" r="2"/>
+    <circle cx="85" cy="100" r="2"/>
+  </g>
+  
+  <!-- Connecting lines to suggest data flow -->
+  <g stroke="#74B9FF" stroke-width="1" opacity="0.4">
+    <line x1="25" y1="35" x2="35" y2="45"/>
+    <line x1="95" y1="35" x2="85" y2="45"/>
+    <line x1="25" y1="85" x2="35" y2="75"/>
+    <line x1="95" y1="85" x2="85" y2="75"/>
+  </g>
+</svg>

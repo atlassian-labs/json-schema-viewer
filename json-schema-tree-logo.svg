@@ -1,0 +1,53 @@
+<svg width="120" height="120" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+  <!-- Tree-like hierarchy representing schema structure -->
+  <defs>
+    <linearGradient id="treeGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#4A90E2;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#357ABD;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Root node -->
+  <circle cx="60" cy="25" r="8" fill="#4A90E2"/>
+  
+  <!-- Main trunk -->
+  <rect x="58" y="25" width="4" height="25" fill="url(#treeGradient)"/>
+  
+  <!-- First level branches -->
+  <rect x="35" y="48" width="25" height="3" fill="url(#treeGradient)"/>
+  <rect x="60" y="48" width="25" height="3" fill="url(#treeGradient)"/>
+  
+  <!-- First level nodes -->
+  <circle cx="35" cy="50" r="6" fill="#4A90E2"/>
+  <circle cx="85" cy="50" r="6" fill="#4A90E2"/>
+  
+  <!-- Second level branches -->
+  <rect x="33" y="50" width="4" height="18" fill="url(#treeGradient)"/>
+  <rect x="83" y="50" width="4" height="18" fill="url(#treeGradient)"/>
+  
+  <rect x="20" y="66" width="17" height="3" fill="url(#treeGradient)"/>
+  <rect x="37" y="66" width="17" height="3" fill="url(#treeGradient)"/>
+  <rect x="70" y="66" width="17" height="3" fill="url(#treeGradient)"/>
+  <rect x="87" y="66" width="17" height="3" fill="url(#treeGradient)"/>
+  
+  <!-- Leaf nodes -->
+  <circle cx="20" cy="68" r="5" fill="#7BB3F0"/>
+  <circle cx="54" cy="68" r="5" fill="#7BB3F0"/>
+  <circle cx="70" cy="68" r="5" fill="#7BB3F0"/>
+  <circle cx="104" cy="68" r="5" fill="#7BB3F0"/>
+  
+  <!-- Third level for some nodes -->
+  <rect x="18" y="68" width="4" height="15" fill="url(#treeGradient)"/>
+  <rect x="68" y="68" width="4" height="15" fill="url(#treeGradient)"/>
+  
+  <rect x="10" y="81" width="12" height="2" fill="url(#treeGradient)"/>
+  <rect x="22" y="81" width="12" height="2" fill="url(#treeGradient)"/>
+  <rect x="60" y="81" width="12" height="2" fill="url(#treeGradient)"/>
+  <rect x="72" y="81" width="12" height="2" fill="url(#treeGradient)"/>
+  
+  <!-- Final leaf nodes -->
+  <circle cx="10" cy="82" r="4" fill="#A8D0F7"/>
+  <circle cx="34" cy="82" r="4" fill="#A8D0F7"/>
+  <circle cx="60" cy="82" r="4" fill="#A8D0F7"/>
+  <circle cx="84" cy="82" r="4" fill="#A8D0F7"/>
+</svg>
