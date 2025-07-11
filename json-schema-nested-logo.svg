@@ -1,0 +1,36 @@
+<svg width="64" height="64" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+  <!-- Nested geometric shapes representing JSON structure and schema layers -->
+  <defs>
+    <linearGradient id="nestedGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FF6B6B;stop-opacity:0.8" />
+      <stop offset="100%" style="stop-color:#4ECDC4;stop-opacity:0.8" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Outer container (schema boundary) -->
+  <rect x="8" y="8" width="48" height="48" rx="8" ry="8" 
+        fill="none" stroke="#FF6B6B" stroke-width="2" opacity="0.7"/>
+  
+  <!-- Middle layer (object structure) -->
+  <rect x="16" y="16" width="32" height="32" rx="6" ry="6" 
+        fill="none" stroke="#FF8E53" stroke-width="2" opacity="0.8"/>
+  
+  <!-- Inner layer (properties) -->
+  <rect x="24" y="24" width="16" height="16" rx="4" ry="4" 
+        fill="none" stroke="#4ECDC4" stroke-width="2" opacity="0.9"/>
+  
+  <!-- Core element (value) -->
+  <circle cx="32" cy="32" r="4" fill="#4ECDC4"/>
+  
+  <!-- Connection lines showing relationships -->
+  <line x1="20" y1="20" x2="24" y2="24" stroke="#FF8E53" stroke-width="1" opacity="0.6"/>
+  <line x1="44" y1="20" x2="40" y2="24" stroke="#FF8E53" stroke-width="1" opacity="0.6"/>
+  <line x1="20" y1="44" x2="24" y2="40" stroke="#FF8E53" stroke-width="1" opacity="0.6"/>
+  <line x1="44" y1="44" x2="40" y2="40" stroke="#FF8E53" stroke-width="1" opacity="0.6"/>
+  
+  <!-- Schema validation indicators -->
+  <circle cx="12" cy="12" r="2" fill="#FF6B6B" opacity="0.8"/>
+  <circle cx="52" cy="12" r="2" fill="#FF6B6B" opacity="0.8"/>
+  <circle cx="12" cy="52" r="2" fill="#FF6B6B" opacity="0.8"/>
+  <circle cx="52" cy="52" r="2" fill="#FF6B6B" opacity="0.8"/>
+</svg>

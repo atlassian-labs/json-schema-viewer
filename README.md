@@ -1,5 +1,9 @@
 # json-schema-viewer
 
+<img src="json-schema-tree-logo.svg" alt="JSON Schema Viewer Tree Logo" width="64" height="64" style="margin-right: 16px;">
+<img src="json-schema-nested-logo.svg" alt="JSON Schema Viewer Nested Logo" width="64" height="64" style="margin-right: 16px;">
+<img src="json-schema-flow-logo.svg" alt="JSON Schema Viewer Flow Logo" width="64" height="64">
+
 [![Atlassian license](https://img.shields.io/badge/license-Apache%202.0-blue.svg?style=flat-square)](LICENSE) [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](CONTRIBUTING.md)
 
 Welcome to JSON Schema Viewer!
