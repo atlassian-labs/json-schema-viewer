@@ -1,0 +1,30 @@
+<svg width="100" height="100" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+  <!-- Blueprint grid background -->
+  <defs>
+    <pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse">
+      <path d="M 10 0 L 0 0 0 10" fill="none" stroke="#E3F2FD" stroke-width="0.5"/>
+    </pattern>
+  </defs>
+  <rect width="100" height="100" fill="url(#grid)"/>
+  
+  <!-- Main schema structure -->
+  <rect x="20" y="15" width="60" height="70" rx="4" fill="none" stroke="#2684FF" stroke-width="2"/>
+  
+  <!-- Schema properties as blueprint elements -->
+  <line x1="30" y1="25" x2="70" y2="25" stroke="#36B37E" stroke-width="2"/>
+  <circle cx="75" cy="25" r="2" fill="#36B37E"/>
+  
+  <line x1="30" y1="35" x2="55" y2="35" stroke="#36B37E" stroke-width="2"/>
+  <circle cx="60" cy="35" r="2" fill="#36B37E"/>
+  
+  <!-- Nested object representation -->
+  <rect x="30" y="45" width="40" height="25" rx="2" fill="none" stroke="#2684FF" stroke-width="1" stroke-dasharray="3,2"/>
+  
+  <!-- Properties inside nested object -->
+  <line x1="35" y1="52" x2="60" y2="52" stroke="#36B37E" stroke-width="1"/>
+  <line x1="35" y1="58" x2="50" y2="58" stroke="#36B37E" stroke-width="1"/>
+  <line x1="35" y1="64" x2="65" y2="64" stroke="#36B37E" stroke-width="1"/>
+  
+  <!-- Connection lines showing relationships -->
+  <line x1="25" y1="75" x2="75" y2="75" stroke="#2684FF" stroke-width="1" stroke-dasharray="2,2"/>
+</svg>

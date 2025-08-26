@@ -1,0 +1,16 @@
+<svg width="100" height="100" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+  <!-- Outer container representing JSON object -->
+  <rect x="10" y="10" width="80" height="80" rx="8" fill="none" stroke="#2684FF" stroke-width="3"/>
+  
+  <!-- Inner nested structures representing schema hierarchy -->
+  <rect x="20" y="20" width="25" height="25" rx="4" fill="#36B37E" opacity="0.8"/>
+  <rect x="55" y="20" width="25" height="25" rx="4" fill="#36B37E" opacity="0.6"/>
+  
+  <!-- Deeper nesting -->
+  <rect x="20" y="55" width="60" height="15" rx="3" fill="#2684FF" opacity="0.4"/>
+  
+  <!-- Small elements representing properties -->
+  <circle cx="30" cy="77" r="3" fill="#2684FF"/>
+  <circle cx="42" cy="77" r="3" fill="#2684FF"/>
+  <circle cx="54" cy="77" r="3" fill="#2684FF"/>
+</svg>

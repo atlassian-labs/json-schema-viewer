@@ -1,5 +1,11 @@
 # json-schema-viewer
 
+<div align="center">
+  <img src="json-schema-viewer-geometric.svg" alt="JSON Schema Viewer - Geometric Logo" width="80" height="80" style="margin: 0 10px;">
+  <img src="json-schema-viewer-lens.svg" alt="JSON Schema Viewer - Lens Logo" width="80" height="80" style="margin: 0 10px;">
+  <img src="json-schema-viewer-blueprint.svg" alt="JSON Schema Viewer - Blueprint Logo" width="80" height="80" style="margin: 0 10px;">
+</div>
+
 [![Atlassian license](https://img.shields.io/badge/license-Apache%202.0-blue.svg?style=flat-square)](LICENSE) [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](CONTRIBUTING.md)
 
 Welcome to JSON Schema Viewer!
@@ -12,6 +18,16 @@ For example schemas, please see: https://www.schemastore.org/json/
 However, as great as the format is, without familiarity, it is often very difficult to read JSON Schema and understand exactly what JSON 
 is allowed by the schema. Well, fear not! JSON Schema Viewer to the rescue: just paste a link to your JSON Schema and it will be 
 rendered beautifully, comprehensively and with examples describing the JSON you should expect at evely level of the hierarchy.
+
+## Logo Design
+
+The three logo variations represent different aspects of JSON Schema Viewer:
+
+- **Geometric**: Nested rectangles and shapes representing the hierarchical structure of JSON objects and schemas, with clean geometric forms that scale well at any size.
+- **Lens**: A magnifying glass revealing JSON structure, symbolizing the tool's ability to make complex schemas clear and understandable.
+- **Blueprint**: Technical blueprint aesthetic with grid background and connection lines, representing schemas as architectural plans for data structures.
+
+Each design uses a minimal color palette of Atlassian blue (#2684FF) and green (#36B37E), ensuring brand consistency while maintaining clarity and modern appeal.
 
 ## Usage
 
