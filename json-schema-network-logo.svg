@@ -1,0 +1,29 @@
+<svg width="120" height="120" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background circle -->
+  <circle cx="60" cy="60" r="55" fill="#F4F5F7" stroke="none"/>
+  
+  <!-- Central node representing the root schema -->
+  <circle cx="60" cy="60" r="12" fill="#2684FF" stroke="none"/>
+  
+  <!-- Connected nodes representing schema properties -->
+  <circle cx="30" cy="30" r="8" fill="#36B37E" stroke="none"/>
+  <circle cx="90" cy="30" r="8" fill="#36B37E" stroke="none"/>
+  <circle cx="30" cy="90" r="8" fill="#36B37E" stroke="none"/>
+  <circle cx="90" cy="90" r="8" fill="#36B37E" stroke="none"/>
+  
+  <!-- Smaller nodes for nested properties -->
+  <circle cx="20" cy="60" r="6" fill="#FFAB00" stroke="none"/>
+  <circle cx="100" cy="60" r="6" fill="#FFAB00" stroke="none"/>
+  <circle cx="60" cy="20" r="6" fill="#FFAB00" stroke="none"/>
+  <circle cx="60" cy="100" r="6" fill="#FFAB00" stroke="none"/>
+  
+  <!-- Connection lines -->
+  <line x1="60" y1="60" x2="30" y2="30" stroke="#2684FF" stroke-width="2" opacity="0.6"/>
+  <line x1="60" y1="60" x2="90" y2="30" stroke="#2684FF" stroke-width="2" opacity="0.6"/>
+  <line x1="60" y1="60" x2="30" y2="90" stroke="#2684FF" stroke-width="2" opacity="0.6"/>
+  <line x1="60" y1="60" x2="90" y2="90" stroke="#2684FF" stroke-width="2" opacity="0.6"/>
+  <line x1="60" y1="60" x2="20" y2="60" stroke="#36B37E" stroke-width="2" opacity="0.4"/>
+  <line x1="60" y1="60" x2="100" y2="60" stroke="#36B37E" stroke-width="2" opacity="0.4"/>
+  <line x1="60" y1="60" x2="60" y2="20" stroke="#36B37E" stroke-width="2" opacity="0.4"/>
+  <line x1="60" y1="60" x2="60" y2="100" stroke="#36B37E" stroke-width="2" opacity="0.4"/>
+</svg>

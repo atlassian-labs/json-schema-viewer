@@ -1,0 +1,20 @@
+<svg width="120" height="120" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+  <!-- Magnifying glass handle -->
+  <line x1="85" y1="85" x2="105" y2="105" stroke="#2684FF" stroke-width="6" stroke-linecap="round"/>
+  
+  <!-- Magnifying glass lens outer ring -->
+  <circle cx="60" cy="60" r="35" fill="none" stroke="#2684FF" stroke-width="4"/>
+  
+  <!-- Inner content being "viewed" - representing JSON structure -->
+  <rect x="40" y="40" width="40" height="40" rx="4" fill="#F4F5F7" stroke="#36B37E" stroke-width="2"/>
+  
+  <!-- JSON-like structure inside the lens -->
+  <rect x="45" y="45" width="30" height="6" rx="1" fill="#36B37E"/>
+  <rect x="45" y="55" width="20" height="4" rx="1" fill="#FFAB00"/>
+  <rect x="45" y="62" width="25" height="4" rx="1" fill="#FFAB00"/>
+  <rect x="50" y="69" width="15" height="4" rx="1" fill="#2684FF"/>
+  
+  <!-- Small brackets to suggest JSON -->
+  <path d="M 42 42 L 40 42 L 40 78 L 42 78" stroke="#2684FF" stroke-width="1.5" fill="none"/>
+  <path d="M 78 42 L 80 42 L 80 78 L 78 78" stroke="#2684FF" stroke-width="1.5" fill="none"/>
+</svg>

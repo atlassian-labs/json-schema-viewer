@@ -1,0 +1,16 @@
+<svg width="120" height="120" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+  <!-- Outer container representing the main schema -->
+  <rect x="10" y="10" width="100" height="100" rx="8" fill="#2684FF" stroke="none"/>
+  
+  <!-- Nested schema elements with decreasing sizes -->
+  <rect x="20" y="20" width="80" height="80" rx="6" fill="#FFFFFF" stroke="none"/>
+  <rect x="30" y="30" width="60" height="60" rx="4" fill="#36B37E" stroke="none"/>
+  <rect x="40" y="40" width="40" height="40" rx="3" fill="#FFFFFF" stroke="none"/>
+  <rect x="50" y="50" width="20" height="20" rx="2" fill="#2684FF" stroke="none"/>
+  
+  <!-- Small accent dots representing data points -->
+  <circle cx="25" cy="25" r="2" fill="#36B37E"/>
+  <circle cx="95" cy="25" r="2" fill="#36B37E"/>
+  <circle cx="25" cy="95" r="2" fill="#36B37E"/>
+  <circle cx="95" cy="95" r="2" fill="#36B37E"/>
+</svg>
