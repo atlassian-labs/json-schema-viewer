@@ -1,0 +1,18 @@
+<svg width="128" height="128" viewBox="0 0 128 128" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="JSON Schema Viewer logo – lens and tree">
+  <defs>
+    <style>
+      .blue{stroke:#0052CC}
+      .teal{stroke:#00B8D9; fill:#00B8D9}
+    </style>
+  </defs>
+  <!-- Viewer lens -->
+  <circle cx="64" cy="60" r="30" class="blue" stroke-width="6"/>
+  <path d="M85 81L106 102" class="blue" stroke-width="6" stroke-linecap="round"/>
+
+  <!-- Schema tree inside the lens -->
+  <path d="M64 72V50M64 60H48M64 60H80" class="teal" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="64" cy="76" r="6" class="teal"/>
+  <circle cx="48" cy="60" r="5" class="teal"/>
+  <circle cx="80" cy="60" r="5" class="teal"/>
+  <circle cx="64" cy="46" r="5" class="teal"/>
+</svg>

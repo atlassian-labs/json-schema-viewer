@@ -1,0 +1,21 @@
+<svg width="128" height="128" viewBox="0 0 128 128" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="JSON Schema Viewer logo – bracketed tree">
+  <defs>
+    <style>
+      .blue{stroke:#0052CC}
+      .teal{stroke:#00B8D9; fill:#00B8D9}
+    </style>
+  </defs>
+  <!-- Minimal square bracket rails framing the schema -->
+  <path class="blue" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" d="M44 28H34a4 4 0 0 0-4 4v64a4 4 0 0 0 4 4h10M84 28h10a4 4 0 0 1 4 4v64a4 4 0 0 1-4 4H84"/>
+  <!-- Schema tree: root with two children and an example branch upward -->
+  <g fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <path class="teal" stroke-width="6" d="M64 82V52"/>
+    <path class="teal" stroke-width="6" d="M64 68H48"/>
+    <path class="teal" stroke-width="6" d="M64 68H80"/>
+  </g>
+  <!-- Nodes -->
+  <circle class="teal" cx="64" cy="88" r="6"/>
+  <circle class="teal" cx="48" cy="68" r="5"/>
+  <circle class="teal" cx="80" cy="68" r="5"/>
+  <circle class="teal" cx="64" cy="46" r="5"/>
+</svg>

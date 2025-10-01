@@ -1,3 +1,9 @@
+<p align="center">
+  <img src="json-schema-viewer-logo-1.svg" alt="JSON Schema Viewer logo variant 1" width="120" height="120"/>
+  <img src="json-schema-viewer-logo-2.svg" alt="JSON Schema Viewer logo variant 2" width="120" height="120"/>
+  <img src="json-schema-viewer-logo-3.svg" alt="JSON Schema Viewer logo variant 3" width="120" height="120"/>
+</p>
+
 # json-schema-viewer
 
 [![Atlassian license](https://img.shields.io/badge/license-Apache%202.0-blue.svg?style=flat-square)](LICENSE) [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](CONTRIBUTING.md)
@@ -12,6 +18,16 @@ For example schemas, please see: https://www.schemastore.org/json/
 However, as great as the format is, without familiarity, it is often very difficult to read JSON Schema and understand exactly what JSON 
 is allowed by the schema. Well, fear not! JSON Schema Viewer to the rescue: just paste a link to your JSON Schema and it will be 
 rendered beautifully, comprehensively and with examples describing the JSON you should expect at evely level of the hierarchy.
+
+## Logo design
+
+These minimalist marks reflect the project's purpose: a tool that makes JSON Schema structure easy to explore and understand.
+
+- Bracketed tree: schema nodes within bracket-like rails, suggesting structured JSON framed for readability.
+- Nested objects: concentric rounded squares with a highlighted path, evoking nested objects and traversal in schemas.
+- Lens and tree: a magnifying lens over a small schema tree, capturing the viewer/inspection aspect.
+
+Palette: Atlassian-inspired blue (#0052CC) paired with teal (#00B8D9). No text, simple geometry, and considered negative space ensure clarity from favicon to banner.
 
 ## Usage
 
