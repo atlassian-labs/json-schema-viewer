@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100">
+  <!-- Gradient background -->
+  <defs>
+    <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#667EEA;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#764BA2;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Rounded square background -->
+  <rect x="10" y="10" width="80" height="80" rx="16" fill="url(#grad1)"/>
+  
+  <!-- Abstract representation of nested JSON structure -->
+  <rect x="20" y="25" width="60" height="8" rx="4" fill="white" opacity="0.9"/>
+  <rect x="25" y="40" width="50" height="6" rx="3" fill="white" opacity="0.7"/>
+  <rect x="25" y="52" width="35" height="6" rx="3" fill="white" opacity="0.7"/>
+  <rect x="30" y="64" width="25" height="4" rx="2" fill="white" opacity="0.5"/>
+  <rect x="30" y="72" width="30" height="4" rx="2" fill="white" opacity="0.5"/>
+  
+  <!-- Eye icon representing "viewer" -->
+  <circle cx="75" cy="35" r="8" fill="white" opacity="0.3"/>
+  <circle cx="75" cy="35" r="4" fill="white"/>
+  <circle cx="75" cy="35" r="2" fill="#667EEA"/>
+</svg>
