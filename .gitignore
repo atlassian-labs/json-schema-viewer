@@ -3,6 +3,7 @@ node_modules
 
 # Built files
 /dist
+/coverage
 /src/schema.ts
 *.zip
 /packaged.template
