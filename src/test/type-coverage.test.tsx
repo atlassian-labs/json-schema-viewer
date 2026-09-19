@@ -75,6 +75,26 @@ describe('Type', () => {
     expect(document.body).toHaveTextContent('not (object)');
   });
 
+  test('simplifies single-member composites and unresolved anyOf schemas', () => {
+    const { rerender } = renderType({ anyOf: [{ type: 'string' }] });
+    expect(screen.getByText('string')).toBeInTheDocument();
+
+    rerender(
+      <Type
+        s={{ anyOf: [{ $ref: '#/missing' }] }}
+        reference="#"
+        lookup={new InternalLookup({})}
+        clickElement={Click}
+      />
+    );
+    expect(screen.getByText('anything')).toBeInTheDocument();
+
+    rerender(<Type s={{ oneOf: [{ type: 'integer' }] }} reference="#" lookup={new IdLookup()} clickElement={Click} />);
+    expect(screen.getByText('integer')).toBeInTheDocument();
+    rerender(<Type s={{ allOf: [{ type: 'number' }] }} reference="#" lookup={new IdLookup()} clickElement={Click} />);
+    expect(screen.getByText('number')).toBeInTheDocument();
+  });
+
   test('uses a click element for external references and navigable objects', () => {
     const { rerender } = renderType({ $ref: 'https://example.com/schema.json' });
     expect(screen.getByRole('button')).toHaveTextContent('anything (#)');
@@ -119,5 +139,33 @@ describe('Type', () => {
   test('renders schemas containing only required fields', () => {
     renderType({ required: ['id', 'name'] });
     expect(screen.getByText('required: id ∩ name')).toBeInTheDocument();
+  });
+
+  test('renders non-clickable objects, empty arrays, and tuple arrays', () => {
+    const { rerender } = renderType({ type: 'object', additionalProperties: false });
+    expect(screen.getByText('object')).toBeInTheDocument();
+
+    rerender(<Type s={{ type: 'array', items: [] as any }} reference="#" lookup={new IdLookup()} clickElement={Click} />);
+    expect(screen.getByText('Array<anything>')).toBeInTheDocument();
+    rerender(
+      <Type
+        s={{ type: 'array', items: [{ type: 'string' }] }}
+        reference="#"
+        lookup={new IdLookup()}
+        clickElement={Click}
+      />
+    );
+    expect(document.body).toHaveTextContent('Array<string>');
+  });
+
+  test('renders inferred type unions with one, many, and empty members', () => {
+    const { rerender } = renderType({ type: ['string'] as any });
+    expect(screen.getByText('string')).toBeInTheDocument();
+
+    rerender(<Type s={{ type: ['string', 'null'] as any }} reference="#" lookup={new IdLookup()} clickElement={Click} />);
+    expect(screen.getByText('string ∪ null')).toBeInTheDocument();
+
+    rerender(<Type s={({ type: [] } as unknown) as JsonSchema} reference="#" lookup={new IdLookup()} clickElement={Click} />);
+    expect(document.body.querySelector('span')).toBeEmptyDOMElement();
   });
 });

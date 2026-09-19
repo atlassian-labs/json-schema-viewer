@@ -11,10 +11,10 @@ const config = {
   ],
   coverageThreshold: {
     global: {
-      branches: 45,
-      functions: 55,
-      lines: 50,
-      statements: 80,
+      branches: 90,
+      functions: 90,
+      lines: 90,
+      statements: 90,
     },
   },
   // https://stackoverflow.com/questions/49263429/jest-gives-an-error-syntaxerror-unexpected-token-export
