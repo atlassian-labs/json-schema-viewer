@@ -6,6 +6,7 @@ import { intersperse } from './jsx-util';
 import { getOrInferType, isExternalReference, isPrimitiveType } from './type-inference';
 import { findDiscriminant } from './discriminant';
 import { isPresent } from 'ts-is-present';
+import { displaySchemaValue, getSingletonSchemaValue, isPrimitiveSchemaValue } from './schema-value';
 
 export type TypeClick = (s: JsonSchema) => void;
 
@@ -138,13 +139,11 @@ function getObjectName(s: JsonSchema1, context: LookupContext): string {
     if (propertyLookupResult !== undefined) {
       const property = propertyLookupResult.schema;
 
-      if (
-        property !== undefined &&
-        typeof property !== 'boolean' &&
-        property.enum !== undefined &&
-        property.enum.length === 1
-      ) {
-        return `${propertyName}: ${property.enum[0]}`;
+      if (property !== undefined && typeof property !== 'boolean') {
+        const singleton = getSingletonSchemaValue(property);
+        if (singleton !== undefined && isPrimitiveSchemaValue(singleton.value)) {
+          return `${propertyName}: ${displaySchemaValue(singleton.value)}`;
+        }
       }
     }
   }

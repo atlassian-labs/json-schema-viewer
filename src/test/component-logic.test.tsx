@@ -70,4 +70,20 @@ describe('ParameterMetadata', () => {
 
     expect(container.firstChild).toBeEmptyDOMElement();
   });
+
+  test('renders exact const metadata for falsy and structured values', () => {
+    const { rerender } = render(
+      <ParameterMetadata lookup={new IdLookup()} schema={{ const: false }} />
+    );
+    expect(screen.getByText('Constant:')).toBeInTheDocument();
+    expect(screen.getByText('false')).toBeInTheDocument();
+
+    rerender(<ParameterMetadata lookup={new IdLookup()} schema={{ const: null }} />);
+    expect(screen.getByText('null')).toBeInTheDocument();
+
+    rerender(
+      <ParameterMetadata lookup={new IdLookup()} schema={{ const: { state: 'fixed' } }} />
+    );
+    expect(screen.getByText('{"state":"fixed"}')).toBeInTheDocument();
+  });
 });

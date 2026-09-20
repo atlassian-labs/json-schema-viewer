@@ -245,6 +245,12 @@ function generateJsonExampleForHelper(context: ChainContext, schemaOrRef: JsonSc
     return Example.of({});
   }
 
+  // `const` is an exact assertion. It takes precedence over examples and enum
+  // fallbacks because those values may be merely illustrative or conflicting.
+  if (Object.prototype.hasOwnProperty.call(schema, 'const')) {
+    return Example.of(schema.const);
+  }
+
   let type = getOrInferType(schema);
 
   if (Array.isArray(type)) {

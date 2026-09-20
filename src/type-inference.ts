@@ -54,6 +54,18 @@ export function jsonTypeToSchemaType(someType: unknown): SimpleTypes | undefined
   }
 }
 
+export function jsonValueToSchemaType(value: unknown): SimpleTypes | undefined {
+  if (value === null) {
+    return 'null';
+  }
+
+  if (Array.isArray(value)) {
+    return 'array';
+  }
+
+  return jsonTypeToSchemaType(value);
+}
+
 export function getTypesFromEnum(enumValue: NonNullable<JsonSchema1['enum']>): JsonSchema1['type'] | undefined {
   const types = Array.from(new Set(enumValue.map(jsonTypeToSchemaType).filter(isPresent)));
   if (types.length === 0) {
@@ -93,6 +105,10 @@ export function getOrInferType(schema: JsonSchema1): JsonSchema1['type'] | undef
     if (enumType !== undefined) {
       return enumType;
     }
+  }
+
+  if (Object.prototype.hasOwnProperty.call(schema, 'const')) {
+    return jsonValueToSchemaType(schema.const);
   }
 
   return undefined;

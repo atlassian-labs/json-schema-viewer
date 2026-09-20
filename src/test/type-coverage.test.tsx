@@ -134,6 +134,22 @@ describe('Type', () => {
     );
     expect(screen.getByRole('button', { name: /kind: cat/ })).toBeInTheDocument();
     expect(screen.getByRole('button', { name: /kind: dog/ })).toBeInTheDocument();
+
+    rerender(
+      <Type
+        s={{
+          oneOf: [
+            { type: 'object', properties: { kind: { const: false } } },
+            { type: 'object', properties: { kind: { const: 0 } } },
+          ],
+        }}
+        reference="#/constants"
+        lookup={new IdLookup()}
+        clickElement={Click}
+      />
+    );
+    expect(screen.getByRole('button', { name: /kind: false/ })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /kind: 0/ })).toBeInTheDocument();
   });
 
   test('renders schemas containing only required fields', () => {
