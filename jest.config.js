@@ -3,6 +3,9 @@ const config = {
   transform: {
     '\\.[jt]sx?$': 'babel-jest',
   },
+  moduleNameMapper: {
+    '\\.(css|less|scss|sass)$': '<rootDir>/src/test/style-mock.js',
+  },
   collectCoverageFrom: [
     'src/**/*.{ts,tsx}',
     '!src/schema.ts',

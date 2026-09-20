@@ -3,10 +3,8 @@ import { act, fireEvent, render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
 
 jest.mock('@atlaskit/code', () => {
-  const MockCode = ({ text, language }: { text: string; language: string }) => (
-    <code data-testid="inline-code" data-language={language}>
-      {text}
-    </code>
+  const MockCode = ({ children }: { children: React.ReactNode }) => (
+    <code data-testid="inline-code">{children}</code>
   );
   const MockCodeBlock = ({ text, language }: { text: string; language: string }) => (
     <pre data-testid="code-block" data-language={language}>
@@ -74,12 +72,12 @@ describe('Markdown code renderers', () => {
     expect(screen.getByTestId('code-block')).toHaveAttribute('data-language', 'yaml');
   });
 
-  test('passes detected and explicit languages to inline code', () => {
+  test('renders inline code with the latest children-based component API', () => {
     const { rerender } = render(<InlineRenderer>{'{"ok": true}'}</InlineRenderer>);
-    expect(screen.getByTestId('inline-code')).toHaveAttribute('data-language', 'json');
+    expect(screen.getByTestId('inline-code')).toHaveTextContent('{"ok": true}');
 
     rerender(<InlineRenderer className="language-typescript">const ok = true;</InlineRenderer>);
-    expect(screen.getByTestId('inline-code')).toHaveAttribute('data-language', 'typescript');
+    expect(screen.getByTestId('inline-code')).toHaveTextContent('const ok = true;');
   });
 });
 

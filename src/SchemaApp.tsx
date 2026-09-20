@@ -20,6 +20,7 @@ const JsonSchemaHome = () => (
 type NavigationButtonItemProps = {
   exampleUrl: string;
   onClick: () => void;
+  children?: React.ReactNode;
 };
 
 const NavigationButtonItem: React.FC<NavigationButtonItemProps> = (props) => {

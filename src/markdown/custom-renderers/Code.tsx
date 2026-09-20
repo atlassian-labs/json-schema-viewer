@@ -1,12 +1,12 @@
 import React, { ReactNode } from 'react';
 import styled from 'styled-components';
 import { Code } from '@atlaskit/code';
-import { gridSize } from '@atlaskit/theme';
+import type { SupportedLanguages } from '@atlaskit/code';
 import { CodeBlockWithCopy } from '../../code-block-with-copy';
 import type { CodeComponent } from 'react-markdown/lib/ast-to-react';
 
 const CodeBlockWrapper = styled.div`
-  margin: ${gridSize() * 2}px 0;
+  margin: 16px 0;
   padding: 0;
   max-height: 500px;
   overflow: auto;
@@ -39,7 +39,7 @@ export const BlockCodeRenderer: CodeComponent = ({ children, className }) => {
   const { code, language } = getCodeAndLanguage(children, className);
   return (
     <CodeBlockWrapper>
-      <CodeBlockWithCopy text={code} language={language} />
+      <CodeBlockWithCopy text={code} language={language as SupportedLanguages} />
     </CodeBlockWrapper>
   );
 };
@@ -53,7 +53,7 @@ export const InlineCodeRenderer: CodeComponent = ({ children, className }) => {
   const { code, language } = getCodeAndLanguage(children, className);
   return (
     <BreakWord>
-      <Code text={code} language={language} />
+      <Code>{code}</Code>
     </BreakWord>
   );
 };

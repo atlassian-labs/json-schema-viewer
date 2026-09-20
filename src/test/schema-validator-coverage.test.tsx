@@ -11,10 +11,10 @@ jest.mock('../monaco-helpers', () => ({
 }));
 
 jest.mock('@atlaskit/empty-state', () => (props: any) => <div>{props.header}</div>);
-jest.mock('@atlaskit/icon/glyph/error', () => (props: any) => <span>{props.label}</span>);
-jest.mock('@atlaskit/icon/glyph/warning', () => (props: any) => <span>{props.label}</span>);
-jest.mock('@atlaskit/icon/glyph/info', () => (props: any) => <span>{props.label}</span>);
-jest.mock('@atlaskit/icon/glyph/editor/success', () => () => <span>success</span>);
+jest.mock('@atlaskit/icon/core/error', () => (props: any) => <span>{props.label}</span>);
+jest.mock('@atlaskit/icon/core/warning', () => (props: any) => <span>{props.label}</span>);
+jest.mock('@atlaskit/icon/core/information', () => (props: any) => <span>{props.label}</span>);
+jest.mock('@atlaskit/icon/core/success', () => () => <span>success</span>);
 
 jest.mock('@atlaskit/table', () => ({
   __esModule: true,

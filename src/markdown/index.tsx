@@ -1,7 +1,6 @@
 import React from 'react';
 import ReactMarkdown, { Components } from 'react-markdown';
 import styled from 'styled-components';
-import { colors, gridSize } from '@atlaskit/theme';
 import { BlockCodeRenderer, InlineCodeRenderer } from './custom-renderers/Code';
 import { LinkRenderer } from './custom-renderers/Link';
 import rehypeSanitize from 'rehype-sanitize';
@@ -12,10 +11,10 @@ export type MarkdownProps = {
 };
 
 export const blockQuoteStyles = `
-padding: ${gridSize()}px ${gridSize() * 2}px 0 ${gridSize() * 2}px;
-border-left: 1px solid ${colors.N50};
-margin: 0 0 ${gridSize() * 2}px;
-color: ${colors.N80};
+padding: 8px 16px 0 16px;
+border-left: 1px solid #f4f5f7;
+margin: 0 0 16px;
+color: #42526e;
 &:after, &:before {
   content: '';
 }
@@ -31,9 +30,9 @@ const BlockQuoteRenderer: Components['blockquote'] = (props) => (
 
 const StyledHorizontalRule = styled.hr`
   border: 0;
-  border-bottom: 1px solid ${colors.N40};
+  border-bottom: 1px solid #dfe1e6;
   height: 1px;
-  margin: ${gridSize() * 2}px 0;
+  margin: 16px 0;
 `;
 
 const HorizontalRuleRenderer: React.ElementType<{}> = () => <StyledHorizontalRule />;
@@ -43,9 +42,7 @@ function doesNotRequireFullBlownRenderer(input: string): boolean {
 }
 
 export const Markdown: React.FC<MarkdownProps> = (props: MarkdownProps) => {
-  const {
-    source,
-  } = props;
+  const { source } = props;
 
   if (doesNotRequireFullBlownRenderer(source)) {
     return <p>{source}</p>;

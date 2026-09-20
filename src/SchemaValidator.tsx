@@ -1,14 +1,13 @@
 import React, { FC } from 'react';
 import type { editor, IRange } from 'monaco-editor';
-import { colors } from '@atlaskit/theme';
-import IconError from '@atlaskit/icon/glyph/error';
-import IconInfo from '@atlaskit/icon/glyph/info';
-import IconWarning from '@atlaskit/icon/glyph/warning';
+import IconError from '@atlaskit/icon/core/error';
+import IconInfo from '@atlaskit/icon/core/information';
+import IconWarning from '@atlaskit/icon/core/warning';
 import Table, { Cell, Row, SortableColumn, TBody, THead } from '@atlaskit/table';
 import styled from 'styled-components';
 import { MarkerSeverity } from './monaco-helpers';
-import EmptyState from "@atlaskit/empty-state";
-import EditorSuccessIcon from "@atlaskit/icon/glyph/editor/success";
+import EmptyState from '@atlaskit/empty-state';
+import EditorSuccessIcon from '@atlaskit/icon/core/success';
 
 type SchemaValidatorProps = {
   results: editor.IMarker[];
@@ -19,22 +18,22 @@ const severityDefinitions = {
   [MarkerSeverity.Error]: {
     label: 'Error',
     icon: IconError,
-    color: colors.R500,
+    color: '#FF5630',
   },
   [MarkerSeverity.Warning]: {
     label: 'Warning',
     icon: IconWarning,
-    color: colors.Y300,
+    color: '#FFAB00',
   },
   [MarkerSeverity.Info]: {
     label: 'Info',
     icon: IconInfo,
-    color: colors.B300,
+    color: '#0065FF',
   },
   [MarkerSeverity.Hint]: {
     label: 'Hint',
     icon: IconInfo,
-    color: colors.B300,
+    color: '#0065FF',
   },
 };
 
@@ -43,7 +42,7 @@ export const SchemaValidator: FC<SchemaValidatorProps> = ({ results, onSelectRan
     return (
       <EmptyState
         header="No validation issues!"
-        renderImage={() => <EditorSuccessIcon size="xlarge" label="Success" primaryColor={colors.G300} />}
+        renderImage={() => <EditorSuccessIcon size="medium" label="Success" color="currentColor" />}
       />
     );
   }
@@ -63,19 +62,13 @@ export const SchemaValidator: FC<SchemaValidatorProps> = ({ results, onSelectRan
       <TBody rows={sortedByLineNumber}>
         {(row) => {
           const { label, icon: Icon, color } = severityDefinitions[row.severity];
-          const {
-            message,
-            startColumn,
-            startLineNumber,
-            endColumn,
-            endLineNumber,
-          } = row;
-          const locationString = `${startLineNumber}:${startColumn}-${endLineNumber}:${endColumn}`
+          const { message, startColumn, startLineNumber, endColumn, endLineNumber } = row;
+          const locationString = `${startLineNumber}:${startColumn}-${endLineNumber}:${endColumn}`;
           return (
             <Row key={`${locationString}-${message}`}>
               <Cell>
                 <Flex>
-                  <Icon label={label} primaryColor={color} />
+                  <Icon label={label} color="currentColor" />
                   <span>{label}</span>
                 </Flex>
               </Cell>
@@ -84,7 +77,7 @@ export const SchemaValidator: FC<SchemaValidatorProps> = ({ results, onSelectRan
                 <a
                   href=""
                   onClick={(e) => {
-                    e.preventDefault()
+                    e.preventDefault();
                     onSelectRange({
                       startColumn,
                       startLineNumber,

@@ -7,7 +7,7 @@ import { createMemoryHistory } from 'history';
 import { LoadSchema } from '../LoadSchema';
 import { getRecentlyViewedLinks } from '../recently-viewed';
 
-class ErrorBoundary extends React.Component<{}, { error?: Error }> {
+class ErrorBoundary extends React.Component<React.PropsWithChildren<{}>, { error?: Error }> {
   state: { error?: Error } = {};
 
   componentDidCatch(error: Error) {

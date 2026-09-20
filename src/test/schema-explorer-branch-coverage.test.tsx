@@ -8,21 +8,35 @@ jest.mock('@atlaskit/button', () => (props: any) => (
     {props.children}
   </button>
 ));
-jest.mock('@atlaskit/icon/glyph/chevron-left', () => () => <span />);
-jest.mock('@atlaskit/icon/glyph/link', () => () => <span />);
+jest.mock('@atlaskit/icon/core/chevron-left', () => () => <span />);
+jest.mock('@atlaskit/icon/core/link', () => () => <span />);
 jest.mock('@atlaskit/breadcrumbs', () => ({
-  BreadcrumbsStateless: (props: any) => <div>{props.children}</div>,
+  __esModule: true,
+  default: (props: any) => <div>{props.children}</div>,
   BreadcrumbsItem: (props: any) => <div>{props.component ? props.component() : props.text}</div>,
 }));
-jest.mock('@atlaskit/tabs', () => (props: any) => (
-  <div>
-    {props.tabs.map((tab: any) => (
-      <button key={tab.view} onClick={() => props.onSelect(tab)}>
-        {tab.content}
-      </button>
-    ))}
-  </div>
-));
+jest.mock('@atlaskit/tabs', () => {
+  const React = require('react');
+  const TabsContext = React.createContext((_: number) => undefined);
+  const Tab = (props: any) => {
+    const onChange = React.useContext(TabsContext);
+    return <button onClick={() => onChange(props.index)}>{props.children}</button>;
+  };
+  const TabList = (props: any) => <div>{props.children}</div>;
+  const TabPanel = (props: any) => <section>{props.children}</section>;
+  const Tabs = (props: any) => {
+    const tabs = React.Children.toArray(props.children)[0].props.children;
+    return (
+      <TabsContext.Provider value={props.onChange}>
+        <div>
+          {React.Children.map(tabs, (tab: any, index: number) => React.cloneElement(tab, { index }))}
+          {React.Children.toArray(props.children).slice(1)}
+        </div>
+      </TabsContext.Provider>
+    );
+  };
+  return { __esModule: true, default: Tabs, Tab, TabList, TabPanel };
+});
 jest.mock('../search-preserving-link', () => ({
   LinkPreservingSearch: (props: any) =>
     props.component ? (

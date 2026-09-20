@@ -10,10 +10,11 @@ jest.mock('../monaco-helpers', () => ({
 jest.mock('@atlaskit/button', () => (props: any) => (
   <button onClick={props.onClick}>{props.children}</button>
 ));
-jest.mock('@atlaskit/icon/glyph/chevron-left', () => () => <span />);
-jest.mock('@atlaskit/icon/glyph/link', () => () => <span />);
+jest.mock('@atlaskit/icon/core/chevron-left', () => () => <span />);
+jest.mock('@atlaskit/icon/core/link', () => () => <span />);
 jest.mock('@atlaskit/breadcrumbs', () => ({
-  BreadcrumbsStateless: (props: any) => (
+  __esModule: true,
+  default: (props: any) => (
     <div>
       <button onClick={props.onExpand}>Expand breadcrumbs</button>
       {props.children}
@@ -21,17 +22,30 @@ jest.mock('@atlaskit/breadcrumbs', () => ({
   ),
   BreadcrumbsItem: (props: any) => <span>{props.text}</span>,
 }));
-jest.mock('@atlaskit/tabs', () => (props: any) => (
-  <div>
-    {props.tabs.map((tab: any) => (
-      <section key={tab.view}>
-        <button onClick={() => props.onSelect(tab)}>{tab.label}</button>
-        {tab.content}
-      </section>
-    ))}
-  </div>
-));
+jest.mock('@atlaskit/tabs', () => {
+  const React = require('react');
+  const TabsContext = React.createContext((_: number) => undefined);
+  const Tab = (props: any) => {
+    const onChange = React.useContext(TabsContext);
+    return <button onClick={() => onChange(props.index)}>{props.children}</button>;
+  };
+  const TabList = (props: any) => <div>{props.children}</div>;
+  const TabPanel = (props: any) => <section>{props.children}</section>;
+  const Tabs = (props: any) => {
+    const tabs = React.Children.toArray(props.children)[0].props.children;
+    return (
+      <TabsContext.Provider value={props.onChange}>
+        <div>
+          {React.Children.map(tabs, (tab: any, index: number) => React.cloneElement(tab, { index }))}
+          {React.Children.toArray(props.children).slice(1)}
+        </div>
+      </TabsContext.Provider>
+    );
+  };
+  return { __esModule: true, default: Tabs, Tab, TabList, TabPanel };
+});
 jest.mock('../Parameter', () => ({ ParameterView: () => <span /> }));
+jest.mock('../markdown', () => ({ Markdown: (props: any) => <p>{props.source}</p> }));
 jest.mock('../SchemaValidator', () => ({
   SchemaValidator: (props: any) => (
     <button onClick={() => props.onSelectRange({ startLineNumber: 4 })}>

@@ -4,12 +4,13 @@ import { getSchemaFromResult, Lookup } from './lookup';
 import { ParameterView } from './Parameter';
 import styled from 'styled-components';
 import Button from '@atlaskit/button';
-import ChevronLeftIcon from '@atlaskit/icon/glyph/chevron-left';
-import LinkIcon from '@atlaskit/icon/glyph/link';
+import ChevronLeftIcon from '@atlaskit/icon/core/chevron-left';
+import LinkIcon from '@atlaskit/icon/core/link';
 import { Markdown } from './markdown';
-import { BreadcrumbsStateless, BreadcrumbsItem } from '@atlaskit/breadcrumbs';
-import Tabs from '@atlaskit/tabs';
-import { TabData, OnSelectCallback } from '@atlaskit/tabs/types';
+import Breadcrumbs from '@atlaskit/breadcrumbs';
+import { BreadcrumbsItem } from '@atlaskit/breadcrumbs';
+import Tabs, { Tab, TabList, TabPanel } from '@atlaskit/tabs';
+import type { TabData } from '@atlaskit/tabs';
 import { CodeBlockWithCopy } from './code-block-with-copy';
 import { generateJsonExampleFor, isExample } from './example';
 import { Stage, shouldShowInStage } from './stage';
@@ -106,12 +107,12 @@ const SEPHead: React.FC<SEPHeadProps> = (props) => {
     <Head>
       <div>{ActionButton}</div>
       <Path>
-        <BreadcrumbsStateless
+        <Breadcrumbs
           isExpanded={props.pathExpanded}
           onExpand={onExpandClick}
         >
           {getObjectPath(props.basePathSegments, props.path)}
-        </BreadcrumbsStateless>
+        </Breadcrumbs>
       </Path>
     </Head>
   );
@@ -132,6 +133,7 @@ const Permalink: React.FC = () => {
 type ExpandProps = {
   onOpen: string;
   onClosed: string;
+  children?: React.ReactNode;
 };
 
 type ExpandState = {
@@ -509,9 +511,9 @@ export class SchemaExplorer extends React.PureComponent<SchemaExplorerProps, Sch
       },
     ];
 
-    const onTabSelect: OnSelectCallback = (tab) => {
+    const onTabSelect = (selectedIndex: number) => {
       this.setState({
-        view: (tab as ExtendedTabData).view
+        view: tabData[selectedIndex].view
       });
     };
 
@@ -528,10 +530,15 @@ export class SchemaExplorer extends React.PureComponent<SchemaExplorerProps, Sch
           <Permalink />
         </SchemaExplorer.HeadingContainer>
         <Tabs
-          tabs={tabData}
-          onSelect={onTabSelect}
+          id="schema-explorer-tabs"
+          onChange={onTabSelect}
           selected={tabData.findIndex((tab) => tab.view === (this.state.view || 'details'))}
-        />
+        >
+          <TabList>
+            {tabData.map(tab => <Tab key={tab.view}>{tab.label}</Tab>)}
+          </TabList>
+          {tabData.map(tab => <TabPanel key={tab.view}>{tab.content}</TabPanel>)}
+        </Tabs>
       </SchemaExplorer.Container>
     );
   }

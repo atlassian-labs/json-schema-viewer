@@ -1,6 +1,6 @@
 import React from 'react';
-import ChevronDownIcon from '@atlaskit/icon/glyph/chevron-down';
-import ChevronRightIcon from '@atlaskit/icon/glyph/chevron-right';
+import ChevronDownIcon from '@atlaskit/icon/core/chevron-down';
+import ChevronRightIcon from '@atlaskit/icon/core/chevron-right';
 import styled from 'styled-components';
 import { forSize } from './breakpoints';
 import { NavLink } from 'react-router-dom';
@@ -43,32 +43,32 @@ ${({ selected }) => `
     `}
     */
 
-const NavItem = styled<NavItemProps, 'li'>('li')`
-    margin: 0;
-    font-size: 11px;
+const NavItem = styled.li<NavItemProps>`
+  margin: 0;
+  font-size: 11px;
 
-    a {
-        color: inherit;
-        font-size: 14px;
-        text-decoration: none;
+  a {
+    color: inherit;
+    font-size: 14px;
+    text-decoration: none;
 
-        line-height: 18px;
-        padding: ${({ indent }) => `0.7rem 1rem 0.22rem ${indent ? '13px' : 0}`};
+    line-height: 18px;
+    padding: ${({ indent }) => `0.7rem 1rem 0.22rem ${indent ? '13px' : 0}`};
 
-        display: inline-flex;
-        display: -moz-box;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-    }
+    display: inline-flex;
+    display: -moz-box;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
 
-    a:focus {
-        outline: none;
-    }
+  a:focus {
+    outline: none;
+  }
 
-    a.active {
-      color: #0057d8;
-    }
+  a.active {
+    color: #0057d8;
+  }
 `;
 
 type SideNavGroupProps = {
@@ -88,7 +88,7 @@ class SideNavGroup extends React.PureComponent<SideNavGroupProps, SideNavGroupSt
     align-items: center;
 
     a {
-        color: rgb(37, 56, 88);
+      color: rgb(37, 56, 88);
     }
 
     a.active {
@@ -113,7 +113,7 @@ class SideNavGroup extends React.PureComponent<SideNavGroupProps, SideNavGroupSt
 
   UNSAFE_componentWillMount() {
     this.setState({
-      open: false
+      open: false,
     });
   }
 
@@ -139,38 +139,38 @@ class SideNavGroup extends React.PureComponent<SideNavGroupProps, SideNavGroupSt
       return <></>;
     }
 
-    const subLinks = !isGroupSideNavLink(link) ? [] : link.children.map(childLink => {
-      return (
-        <NavItem key={childLink.reference} indent={true}>
-          <NavLinkPreservingSearch to={linkTo(basePathSagments, [childLink.reference])} exact={true}>
-            {childLink.title}
-          </NavLinkPreservingSearch>
-        </NavItem>
-      );
-    });
+    const subLinks = !isGroupSideNavLink(link)
+      ? []
+      : link.children.map((childLink) => {
+          return (
+            <NavItem key={childLink.reference} indent={true}>
+              <NavLinkPreservingSearch
+                to={linkTo(basePathSagments, [childLink.reference])}
+                exact={true}
+              >
+                {childLink.title}
+              </NavLinkPreservingSearch>
+            </NavItem>
+          );
+        });
 
-    const icon = open
-      ? (
-        <ChevronDownIcon label="Open" />
-      )
-      : (
-        <ChevronRightIcon label="Closed" />
-      );
+    const icon = open ? <ChevronDownIcon label="Open" /> : <ChevronRightIcon label="Closed" />;
 
-    const groupLink = link.reference !== undefined ?
-      (
+    const groupLink =
+      link.reference !== undefined ? (
         <NavLinkPreservingSearch to={linkTo(basePathSagments, [link.reference])} exact={true}>
           {link.title}
         </NavLinkPreservingSearch>
-      ) :
-      (
+      ) : (
         <span>{link.title}</span>
       );
 
     return (
       <>
         <SideNavGroup.Item>
-          <SideNavGroup.IconWrap onClick={() => this.toggleState(!open)}>{icon}</SideNavGroup.IconWrap>
+          <SideNavGroup.IconWrap onClick={() => this.toggleState(!open)}>
+            {icon}
+          </SideNavGroup.IconWrap>
           {groupLink}
         </SideNavGroup.Item>
         {open && <SideNavGroup.SubItemContainer>{subLinks}</SideNavGroup.SubItemContainer>}
@@ -181,7 +181,7 @@ class SideNavGroup extends React.PureComponent<SideNavGroupProps, SideNavGroupSt
   private toggleState(open: boolean): void {
     // Change the state
     this.setState({
-      open
+      open,
     });
   }
 }
@@ -192,19 +192,22 @@ const SideNavSpacerDiv = styled.div`
 
 type SideNavLinksProps = {
   basePathSegments: Array<string>;
-  links: Array<SideNavLink>
+  links: Array<SideNavLink>;
 };
 
 class SideNavLinks extends React.PureComponent<SideNavLinksProps> {
   private static Container = styled.div`
     display: none;
-    ${forSize('tablet-landscape-up', `
+    ${forSize(
+      'tablet-landscape-up',
+      `
       display: block;
       flex: auto;
       overflow-y: auto;
       min-width: 300px;
       padding-top: 24px;
-    `)}
+    `
+    )}
     &:focus {
       outline: 0;
     }
@@ -217,20 +220,22 @@ class SideNavLinks extends React.PureComponent<SideNavLinksProps> {
       if (isSideNavSpace(link)) {
         return <SideNavSpacerDiv key={`${index}-spacer`} />;
       }
-      return <SideNavGroup basePathSagments={basePathSegments} key={`${index}-${link.title}`} link={link} />
+      return (
+        <SideNavGroup
+          basePathSagments={basePathSegments}
+          key={`${index}-${link.title}`}
+          link={link}
+        />
+      );
     });
 
-    return (
-      <SideNavLinks.Container>
-        {groups}
-      </SideNavLinks.Container>
-    );
+    return <SideNavLinks.Container>{groups}</SideNavLinks.Container>;
   }
 }
 
 export type SideNavWithRouterProps = {
   basePathSegments: Array<string>;
-  links: Array<SideNavLink>
+  links: Array<SideNavLink>;
 };
 
 export class SideNavWithRouter extends React.PureComponent<SideNavWithRouterProps> {
@@ -238,10 +243,13 @@ export class SideNavWithRouter extends React.PureComponent<SideNavWithRouterProp
     display: flex;
     flex-direction: column;
 
-    ${forSize('tablet-landscape-up', `
+    ${forSize(
+      'tablet-landscape-up',
+      `
       height: 95vh;
       width: 300px;
-    `)}
+    `
+    )}
   `;
 
   render() {
