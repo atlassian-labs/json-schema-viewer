@@ -1,6 +1,6 @@
 # Open-issue proposal index
 
-This directory contains a decision proposal for every open GitHub issue retrieved from `atlassian-labs/json-schema-viewer` on 2026-09-19, plus a dependency-modernization assessment. The proposals are planning artifacts only; none implements, closes, or comments on an issue.
+This directory contains a decision proposal for every open GitHub issue retrieved from `atlassian-labs/json-schema-viewer` on 2026-09-19, plus dependency-modernization and testing assessments. Most are planning artifacts only. The dependency-modernization and testing proposals were completed on 2026-09-20; issue #38 was completed and merged through pull request #55.
 
 | GitHub issue | Proposal |
 | --- | --- |
@@ -22,12 +22,12 @@ This directory contains a decision proposal for every open GitHub issue retrieve
 | [#35 — VS Code previewer](https://github.com/atlassian-labs/json-schema-viewer/issues/35) | [proposal](issue-35-vscode-previewer.md) |
 | [#36 — primitive definition details](https://github.com/atlassian-labs/json-schema-viewer/issues/36) | [proposal](issue-36-root-primitive-details.md) |
 | [#37 — static-server build](https://github.com/atlassian-labs/json-schema-viewer/issues/37) | [proposal](issue-37-static-server-build.md) |
-| [#38 — const keyword](https://github.com/atlassian-labs/json-schema-viewer/issues/38) | [proposal](issue-38-const-keyword.md) |
+| [#38 — const keyword](https://github.com/atlassian-labs/json-schema-viewer/issues/38) | [proposal — complete](issue-38-const-keyword.md) |
 | [#39 — run-instruction ordering](https://github.com/atlassian-labs/json-schema-viewer/issues/39) | [proposal](issue-39-run-instructions-out-of-order.md) |
 | [#40 — publish packages](https://github.com/atlassian-labs/json-schema-viewer/issues/40) | [proposal](issue-40-publish-packages.md) |
 | [#48 — external reference resolution](https://github.com/atlassian-labs/json-schema-viewer/issues/48) | [proposal](issue-48-external-refs-resolution.md) |
 | [#51 — titles not shown](https://github.com/atlassian-labs/json-schema-viewer/issues/51) | [proposal](issue-51-titles-not-shown.md) |
 
-The separate [dependency modernization proposal](dependency-modernization.md) inventories current package age and recommends staged updates rather than a blanket major-version upgrade.
+The separate [dependency modernization proposal — complete](dependency-modernization.md) records the completed React, Atlaskit, and toolchain upgrade work.
 
-The [testing strategy proposal](testing-strategy.md) recommends layered unit, component, and browser coverage for the schema semantics and user workflows.
+The [testing strategy proposal — complete](testing-strategy.md) records the delivered fast unit/component coverage and local browser smoke suite.

@@ -2,6 +2,13 @@
 
 Issue: https://github.com/atlassian-labs/json-schema-viewer/issues/38. The report says Draft 6+ `const` values are not displayed while `enum` values are.
 
+## Status: complete (2026-09-20)
+
+Implemented and merged through pull request #55. The viewer now models and
+renders Draft-07 `const` values, treats them as singleton allowed values for
+examples and discriminants without rewriting schemas, and covers primitive,
+object, array, null, and falsy constants in the fast Jest suite.
+
 ## Current code evidence
 
 `Type.tsx:117–134` uses titles and single-value `enum` for object names; the discriminant logic only checks `property.enum` (`Type.tsx:122–130`). `SchemaExplorerDetails` renders properties and composites but has no dedicated `const` display. The generated schema typings come from Draft 07, so the keyword should be available after regeneration, but rendering/example logic must be checked separately.
