@@ -1,5 +1,19 @@
 # Testing strategy proposal
 
+## Status: complete (2026-09-20)
+
+The layered test strategy is implemented. The fast Jest suite enforces a
+repository-wide 90% threshold across statements, branches, functions, and
+lines, and covers schema semantics, routing/query preservation, Markdown
+sanitization, loading, validation, editor integration boundaries, and UI
+workflows. It completes in well under 20 seconds.
+
+Playwright now provides a local-only Chromium smoke suite against the production
+bundle. It serves a hand-authored local schema fixture, verifies sanitized
+Markdown, reference navigation, JSON examples, documentation routing, and a
+compact viewport journey. The browser suite is run in CI on Node 22, with
+failure-only Playwright artifacts ignored from source control.
+
 ## Objective
 
 Build a dependable, layered test suite for the JSON Schema viewer so that changes to schema interpretation, routing, rendering, and security can be made with confidence. The suite should protect user-visible behavior without treating implementation details or Storybook snapshots as the only source of truth.

@@ -1,0 +1,33 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Smoke Schema",
+  "description": "A local smoke schema with **Markdown**. <script>window.__smokeXss = true</script>",
+  "type": "object",
+  "definitions": {
+    "Address": {
+      "title": "Address",
+      "description": "The local address.",
+      "type": "object",
+      "properties": {
+        "city": {
+          "title": "City",
+          "description": "City name.",
+          "type": "string"
+        }
+      },
+      "required": ["city"]
+    }
+  },
+  "properties": {
+    "name": {
+      "title": "Name",
+      "description": "The person's name.",
+      "type": "string"
+    },
+    "address": {
+      "title": "Address reference",
+      "$ref": "#/definitions/Address"
+    }
+  },
+  "required": ["name", "address"]
+}

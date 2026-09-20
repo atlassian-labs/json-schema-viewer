@@ -4,6 +4,8 @@ node_modules
 # Built files
 /dist
 /coverage
+/test-results
+/playwright-report
 /src/schema.ts
 *.zip
 /packaged.template
