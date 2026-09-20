@@ -1,11 +1,13 @@
 import React, { ReactNode } from 'react';
-import { RouteComponentProps, withRouter } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import { JsonSchema } from './schema';
 import Spinner from '@atlaskit/spinner';
 import EmptyState from '@atlaskit/empty-state';
 import { addRecentlyViewedLink } from './recently-viewed';
+import { RouteLocation } from './router-types';
 
-export type LoadSchemaProps = RouteComponentProps & {
+export type LoadSchemaProps = {
+   location: RouteLocation;
    children: (schema: JsonSchema) => ReactNode;
 };
 
@@ -96,4 +98,7 @@ class LoadSchemaWR extends React.PureComponent<LoadSchemaProps, LoadSchemaState>
    }
 }
 
-export const LoadSchema = withRouter<LoadSchemaProps, typeof LoadSchemaWR>(LoadSchemaWR);
+export const LoadSchema: React.FC<Omit<LoadSchemaProps, 'location'>> = props => {
+   const location = useLocation();
+   return <LoadSchemaWR {...props} location={location} />;
+};

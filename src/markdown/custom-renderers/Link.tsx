@@ -1,13 +1,11 @@
 import React from 'react';
-import OpenIcon from '@atlaskit/icon/glyph/open';
-import { Components } from "react-markdown";
+import OpenIcon from '@atlaskit/icon/core/link-external';
+import { Components } from 'react-markdown';
 
 export const isExternalLink = (href: string): boolean => {
-  return ![
-    () => href.startsWith('/'),
-    () => href.startsWith('.'),
-    () => href.startsWith('#'),
-  ].some(match => match());
+  return ![() => href.startsWith('/'), () => href.startsWith('.'), () => href.startsWith('#')].some(
+    (match) => match()
+  );
 };
 
 export const LinkRenderer: Components['a'] = ({ href, children }) => {

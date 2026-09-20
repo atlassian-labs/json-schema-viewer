@@ -1,5 +1,5 @@
 import React from 'react';
-import { Story, Meta } from '@storybook/react';
+import { StoryFn, Meta } from '@storybook/react';
 import { DebuggingMemoryRouter } from './DebuggingMemoryRouter';
 import { SchemaApp } from '../SchemaApp';
 
@@ -10,7 +10,7 @@ export default {
    },
 } as Meta;
 
-const Template: Story<{}> = () => (
+const Template: StoryFn<{}> = () => (
    <DebuggingMemoryRouter initialEntries={['/']}>
       <SchemaApp />
    </DebuggingMemoryRouter>

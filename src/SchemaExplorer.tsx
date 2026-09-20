@@ -4,24 +4,25 @@ import { getSchemaFromResult, Lookup } from './lookup';
 import { ParameterView } from './Parameter';
 import styled from 'styled-components';
 import Button from '@atlaskit/button';
-import ChevronLeftIcon from '@atlaskit/icon/glyph/chevron-left';
-import LinkIcon from '@atlaskit/icon/glyph/link';
+import ChevronLeftIcon from '@atlaskit/icon/core/chevron-left';
+import LinkIcon from '@atlaskit/icon/core/link';
 import { Markdown } from './markdown';
-import { BreadcrumbsStateless, BreadcrumbsItem } from '@atlaskit/breadcrumbs';
-import Tabs from '@atlaskit/tabs';
-import { TabData, OnSelectCallback } from '@atlaskit/tabs/types';
+import Breadcrumbs from '@atlaskit/breadcrumbs';
+import { BreadcrumbsItem } from '@atlaskit/breadcrumbs';
+import Tabs, { Tab, TabList, TabPanel } from '@atlaskit/tabs';
+import type { TabData } from '@atlaskit/tabs';
 import { CodeBlockWithCopy } from './code-block-with-copy';
 import { generateJsonExampleFor, isExample } from './example';
 import { Stage, shouldShowInStage } from './stage';
 import { externalLinkTo, linkTo, PathElement } from './route-path';
 import { ClickElement, Type, Anything } from './Type';
-import { Link, LinkProps, useHistory, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { getTitle, findTitle } from './title';
 import { LinkPreservingSearch, NavLinkPreservingSearch } from './search-preserving-link';
 import { dump } from 'js-yaml';
 import { isExternalReference } from './type-inference';
 import { SchemaValidator } from './SchemaValidator';
-import type { editor, IRange } from 'monaco-editor';
+import type { editor, IRange } from 'monaco-editor/editor';
 
 interface SEPHeadProps {
   basePathSegments: Array<string>;
@@ -59,7 +60,7 @@ function getObjectPath(basePathSegments: Array<string>, path: PathElement[]): JS
       key={`${pe.title}-${i}`}
       text={pe.title}
       component={() => (
-        <NavLinkPreservingSearch to={linkTo(basePathSegments, path.slice(0, i+1).map(p => p.reference))}  exact={true}>
+        <NavLinkPreservingSearch to={linkTo(basePathSegments, path.slice(0, i+1).map(p => p.reference))} end={true}>
           {getTitle(pe.reference, { title: pe.title !== 'object' ? pe.title : undefined })}
         </NavLinkPreservingSearch>
       )}
@@ -67,16 +68,17 @@ function getObjectPath(basePathSegments: Array<string>, path: PathElement[]): JS
   ));
 }
 
-const BackButton: React.FC<LinkProps> = props => {
-  const history = useHistory();
+const BackButton: React.FC<{ to: string }> = props => {
+  const navigate = useNavigate();
+  const location = useLocation();
   return (
     <Button
       key="backButton"
       iconBefore={<ChevronLeftIcon label="Back" />}
-      href={props.href}
+      href={props.to}
       onClick={e => {
         e.preventDefault();
-        history.push(props.href || '');
+        navigate({ pathname: props.to, search: location.search });
       }}
     >Back
     </Button>
@@ -99,19 +101,19 @@ const SEPHead: React.FC<SEPHeadProps> = (props) => {
   const ActionButton = props.path.length <= 1
     ? <h1>Root</h1>
     : (
-      <LinkPreservingSearch to={linkTo(props.basePathSegments, init(props.path.map(p => p.reference)))} component={BackButton} />
+      <BackButton to={linkTo(props.basePathSegments, init(props.path.map(p => p.reference)))} />
     );
 
   return (
     <Head>
       <div>{ActionButton}</div>
       <Path>
-        <BreadcrumbsStateless
+        <Breadcrumbs
           isExpanded={props.pathExpanded}
           onExpand={onExpandClick}
         >
           {getObjectPath(props.basePathSegments, props.path)}
-        </BreadcrumbsStateless>
+        </Breadcrumbs>
       </Path>
     </Head>
   );
@@ -132,6 +134,7 @@ const Permalink: React.FC = () => {
 type ExpandProps = {
   onOpen: string;
   onClosed: string;
+  children?: React.ReactNode;
 };
 
 type ExpandState = {
@@ -509,9 +512,9 @@ export class SchemaExplorer extends React.PureComponent<SchemaExplorerProps, Sch
       },
     ];
 
-    const onTabSelect: OnSelectCallback = (tab) => {
+    const onTabSelect = (selectedIndex: number) => {
       this.setState({
-        view: (tab as ExtendedTabData).view
+        view: tabData[selectedIndex].view
       });
     };
 
@@ -528,10 +531,15 @@ export class SchemaExplorer extends React.PureComponent<SchemaExplorerProps, Sch
           <Permalink />
         </SchemaExplorer.HeadingContainer>
         <Tabs
-          tabs={tabData}
-          onSelect={onTabSelect}
+          id="schema-explorer-tabs"
+          onChange={onTabSelect}
           selected={tabData.findIndex((tab) => tab.view === (this.state.view || 'details'))}
-        />
+        >
+          <TabList>
+            {tabData.map(tab => <Tab key={tab.view}>{tab.label}</Tab>)}
+          </TabList>
+          {tabData.map(tab => <TabPanel key={tab.view}>{tab.content}</TabPanel>)}
+        </Tabs>
       </SchemaExplorer.Container>
     );
   }

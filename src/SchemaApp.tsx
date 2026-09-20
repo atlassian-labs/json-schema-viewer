@@ -1,7 +1,7 @@
 import { AtlassianNavigation, Create, ProductHome } from '@atlaskit/atlassian-navigation';
 import { AtlassianIcon, AtlassianLogo } from '@atlaskit/logo';
 import React from 'react';
-import { Redirect, Route, RouteComponentProps, Switch, useHistory, withRouter } from 'react-router-dom';
+import { Navigate, Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 import { LoadSchema } from './LoadSchema';
 import { JsonSchema } from './schema';
 import { SchemaView } from './SchemaView';
@@ -20,14 +20,15 @@ const JsonSchemaHome = () => (
 type NavigationButtonItemProps = {
   exampleUrl: string;
   onClick: () => void;
+  children?: React.ReactNode;
 };
 
 const NavigationButtonItem: React.FC<NavigationButtonItemProps> = (props) => {
-  const history = useHistory();
+  const navigate = useNavigate();
   const linkLocation = linkToRoot(['view'], props.exampleUrl);
   const onClick = (e: React.MouseEvent | React.KeyboardEvent) => {
     e.preventDefault();
-    history.push(linkLocation);
+    navigate(linkLocation);
     props.onClick();
   };
   return <LinkItem href={linkLocation} onClick={onClick}>{props.children}</LinkItem>
@@ -69,12 +70,12 @@ const ExampleMenu: React.FC<ContentPropsWithClose> = (props) => (
 );
 
 const HelpMenu: React.FC<ContentPropsWithClose> = (props) => {
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const goTo = (location: string) => {
     return (e: React.MouseEvent | React.KeyboardEvent) => {
       e.preventDefault();
-      history.push(location);
+      navigate(location);
       props.closePopup();
     };
   };
@@ -95,8 +96,9 @@ const HelpMenu: React.FC<ContentPropsWithClose> = (props) => {
 };
 
 const NewSchema: React.FC = () => {
-  const history = useHistory();
-  const isStart = history.location.pathname === '/start';
+  const navigate = useNavigate();
+  const location = useLocation();
+  const isStart = location.pathname === '/start';
   if (isStart) {
     return <></>;
   }
@@ -106,7 +108,7 @@ const NewSchema: React.FC = () => {
       buttonTooltip="Render a new JSON Schema"
       iconButtonTooltip="Render a new JSON Schema"
       text="Load new schema"
-      onClick={() => history.push('/start')}
+      onClick={() => navigate('/start')}
     />
   );
 };
@@ -120,7 +122,7 @@ export type SchemaAppState = {
   loadedState?: LoadedState;
 }
 
-class SchemaAppWR extends React.PureComponent<RouteComponentProps, SchemaAppState> {
+class SchemaAppWR extends React.PureComponent<{}, SchemaAppState> {
   state: SchemaAppState = {
 
   };
@@ -146,12 +148,10 @@ class SchemaAppWR extends React.PureComponent<RouteComponentProps, SchemaAppStat
           renderCreate={NewSchema}
           renderProductHome={JsonSchemaHome}
         />
-        <Switch>
-          <Route exact={true} path="/"><Redirect to="/start" /></Route>
-          <Route exact={true} path="/start">
-            <Start />
-          </Route>
-          <Route path="/view">
+        <Routes>
+          <Route path="/" element={<Navigate to="/start" replace={true} />} />
+          <Route path="/start" element={<Start />} />
+          <Route path="/view/*" element={(
             <LoadSchema>
               {(schema) => (
                 <SchemaView
@@ -161,12 +161,12 @@ class SchemaAppWR extends React.PureComponent<RouteComponentProps, SchemaAppStat
                 />
               )}
             </LoadSchema>
-          </Route>
-          <Route path="/docs/:id"><Docs /></Route>
-        </Switch>
+          )} />
+          <Route path="/docs/:id" element={<Docs />} />
+        </Routes>
       </div>
     );
   }
 }
 
-export const SchemaApp = withRouter<RouteComponentProps, typeof SchemaAppWR>(SchemaAppWR);
+export const SchemaApp: React.FC = () => <SchemaAppWR />;

@@ -12,7 +12,6 @@ export type RenderElementProps = {
 export type RenderElement = React.ComponentClass<RenderElementProps>;
 
 export type ElementAndTooltip = {
-
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   element: any;
   tooltip?: string;
@@ -30,7 +29,7 @@ export type ExpandibleListState = {
 
 class InlineCodeRenderElement extends React.PureComponent<RenderElementProps> {
   render() {
-    return <Code text={this.props.text} language="text"/>;
+    return <Code>{this.props.text}</Code>;
   }
 }
 
@@ -46,25 +45,31 @@ type RendererProps = {
 };
 
 const Inline = styled.span`
-    display: inline-block;
+  display: inline-block;
 `;
 
-const Renderer: React.FC<RendererProps> = props => {
+const Renderer: React.FC<RendererProps> = (props) => {
   if (props.e.tooltip === undefined) {
     return <props.RE text={`${props.e.element}`} />;
   } else {
-    return <Inline><Tooltip content={props.e.tooltip}><props.RE text={`${props.e.element}`} /></Tooltip></Inline>;
+    return (
+      <Inline>
+        <Tooltip content={props.e.tooltip}>
+          <props.RE text={`${props.e.element}`} />
+        </Tooltip>
+      </Inline>
+    );
   }
 };
 
 export class ExpandibleList extends React.PureComponent<ExpandibleListProps, ExpandibleListState> {
   private static Link = styled.a`
-      margin-left: 10px;
+    margin-left: 10px;
   `;
 
   UNSAFE_componentWillMount() {
     this.setState({
-      expanded: false
+      expanded: false,
     });
   }
 
@@ -84,17 +89,22 @@ export class ExpandibleList extends React.PureComponent<ExpandibleListProps, Exp
       return (
         <span>
           {intersperse(renderedElements, ', ')}
-          <ExpandibleList.Link onClick={(e) => this.expand(e, false)}>(Show less)</ExpandibleList.Link>
+          <ExpandibleList.Link onClick={(e: React.MouseEvent<HTMLElement>) => this.expand(e, false)}>
+            (Show less)
+          </ExpandibleList.Link>
         </span>
       );
     } else {
-      const renderedElements = elements.slice(0, collapsedMaxLength)
+      const renderedElements = elements
+        .slice(0, collapsedMaxLength)
         .map((e, i) => <Renderer key={i} RE={RE} e={e} />);
 
       return (
         <span>
           {intersperse(renderedElements, ', ')} ...
-          <ExpandibleList.Link onClick={(e) => this.expand(e, true)}>(Show more)</ExpandibleList.Link>
+          <ExpandibleList.Link onClick={(e: React.MouseEvent<HTMLElement>) => this.expand(e, true)}>
+            (Show more)
+          </ExpandibleList.Link>
         </span>
       );
     }
@@ -103,7 +113,7 @@ export class ExpandibleList extends React.PureComponent<ExpandibleListProps, Exp
   private expand(e: React.MouseEvent<HTMLElement>, expanded: boolean) {
     e.preventDefault();
     this.setState({
-      expanded
+      expanded,
     });
   }
 }

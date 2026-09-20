@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { JsonSchema } from './schema';
 import Editor, { OnValidate, useMonaco } from '@monaco-editor/react';
-import type { IRange } from 'monaco-editor';
+import type { editor, IRange } from 'monaco-editor/editor';
 import { ScrollType } from './monaco-helpers';
 
 export type SchemaEditorProps = {
@@ -41,7 +41,7 @@ export const SchemaEditor: React.FC<SchemaEditorProps> = (props) => {
     if (!validationRange || !monaco) {
       return;
     }
-    monaco.editor.getEditors().forEach((codeEditor) => {
+    monaco.editor.getEditors().forEach((codeEditor: editor.ICodeEditor) => {
       codeEditor.setSelection(validationRange);
       codeEditor.revealRangeAtTop(validationRange, ScrollType.Smooth);
     });

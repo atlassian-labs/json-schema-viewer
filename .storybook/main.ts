@@ -16,5 +16,15 @@ const config: StorybookConfig = {
   docs: {
     autodocs: true,
   },
+  webpackFinal: async (config) => {
+    config.module ??= {};
+    config.module.rules ??= [];
+    config.module.rules.push({
+      test: /\.[jt]sx?$/,
+      exclude: /node_modules/,
+      use: [{ loader: require.resolve('babel-loader') }],
+    });
+    return config;
+  },
 };
 export default config;

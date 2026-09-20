@@ -8,7 +8,7 @@ import { Code } from '@atlaskit/code';
 import { extractEnum } from './enum-extraction';
 
 const MetadataContainer = styled.div`
-    margin: 8px 0 8px 0;
+  margin: 8px 0 8px 0;
 `;
 
 export type ParameterMetadataProps = {
@@ -26,24 +26,35 @@ function turnEnumToValues(schema: JsonSchema, lookup: Lookup): JSX.Element | und
   return (
     <p key="enum">
       Valid values:&nbsp;
-      <ExpandibleList elements={potentialEnum.map(element => ({ element }))} collapsedMaxLength={10} />
+      <ExpandibleList
+        elements={potentialEnum.map((element) => ({ element }))}
+        collapsedMaxLength={10}
+      />
     </p>
   );
 }
 
-export const ParameterMetadata: React.SFC<ParameterMetadataProps> = (props) => {
+export const ParameterMetadata: React.FC<ParameterMetadataProps> = (props) => {
   const { schema, lookup } = props;
 
   const restrictions: JSX.Element[] = new Array<JSX.Element>();
   const validValues = new Array<JSX.Element>();
 
   function showBoolean(name: string, key: string, value: boolean) {
-    return <span key={key}>{name}: <Code language="text" text={value ? 'true' : 'false'} /></span>;
+    return (
+      <span key={key}>
+        {name}: <Code>{value ? 'true' : 'false'}</Code>
+      </span>
+    );
   }
 
   function show(name: string, key: string, value: string | number) {
     const displayVal = typeof value === 'string' ? value : value.toString();
-    return <span key={key}>{name}: <Code text={displayVal} language="text" /></span>;
+    return (
+      <span key={key}>
+        {name}: <Code>{displayVal}</Code>
+      </span>
+    );
   }
 
   if (typeof schema !== 'boolean') {
@@ -67,11 +78,15 @@ export const ParameterMetadata: React.SFC<ParameterMetadataProps> = (props) => {
     }
     if (schema.minimum !== undefined) {
       const isExclusive = typeof schema.exclusiveMinimum === 'boolean' && schema.exclusiveMinimum;
-      restrictions.push(show(`${isExclusive ? 'Exclusive ' : ''}Minimum`, 'minimum', schema.minimum));
+      restrictions.push(
+        show(`${isExclusive ? 'Exclusive ' : ''}Minimum`, 'minimum', schema.minimum)
+      );
     }
     if (schema.maximum !== undefined) {
       const isExclusive = typeof schema.exclusiveMaximum === 'boolean' && schema.exclusiveMaximum;
-      restrictions.push(show(`${isExclusive ? 'Exclusive ' : ''}Maximum`, 'maximum', schema.maximum));
+      restrictions.push(
+        show(`${isExclusive ? 'Exclusive ' : ''}Maximum`, 'maximum', schema.maximum)
+      );
     }
     if (typeof schema.exclusiveMinimum === 'number' && schema.minimum === undefined) {
       restrictions.push(show('Exclusive Minimum', 'minimum', schema.exclusiveMinimum));
@@ -107,5 +122,10 @@ export const ParameterMetadata: React.SFC<ParameterMetadataProps> = (props) => {
     }
   }
 
-  return <MetadataContainer>{intersperse(restrictions, ', ')}{validValues}</MetadataContainer>;
+  return (
+    <MetadataContainer>
+      {intersperse(restrictions, ', ')}
+      {validValues}
+    </MetadataContainer>
+  );
 };
