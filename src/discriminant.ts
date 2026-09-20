@@ -1,7 +1,8 @@
 import { isPresent } from "ts-is-present";
 import { Lookup } from "./lookup";
 import { JsonSchema } from "./schema";
-import { isPrimitiveType, jsonTypeToSchemaType } from "./type-inference";
+import { isPrimitiveType, jsonValueToSchemaType } from "./type-inference";
+import { getSingletonSchemaValue, isPrimitiveSchemaValue } from './schema-value';
 
 function isNotString<A>(v: A | string): v is A {
   return typeof v !== 'string';
@@ -53,12 +54,11 @@ function findPotentialDiscriminants(rawSchema: JsonSchema, lookup: Lookup): Set<
     resolvedProperties.filter(property => {
       const propertySchema = property.lookupResult.schema;
 
-      if (typeof propertySchema !== 'boolean' && propertySchema.enum !== undefined && propertySchema.enum.length === 1) {
-        const enumValue = propertySchema.enum[0];
-
-        const jsonType = jsonTypeToSchemaType(enumValue);
-        if (jsonType !== undefined) {
-          return isPrimitiveType(jsonType);
+      if (typeof propertySchema !== 'boolean') {
+        const singleton = getSingletonSchemaValue(propertySchema);
+        if (singleton !== undefined && isPrimitiveSchemaValue(singleton.value)) {
+          const jsonType = jsonValueToSchemaType(singleton.value);
+          return jsonType !== undefined && isPrimitiveType(jsonType);
         }
       }
 

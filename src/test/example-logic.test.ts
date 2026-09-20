@@ -35,6 +35,15 @@ describe('generateJsonExampleFor', () => {
     expect(example({ type: 'number', description: 'abc' })).toBe(3);
   });
 
+  it('returns the exact const value, including falsy and structured values', () => {
+    expect(example({ const: false, examples: [true], enum: [true] })).toBe(false);
+    expect(example({ const: 0 })).toBe(0);
+    expect(example({ const: '' })).toBe('');
+    expect(example({ const: null })).toBeNull();
+    expect(example({ const: { state: 'fixed' } })).toEqual({ state: 'fixed' });
+    expect(example({ const: ['fixed'] })).toEqual(['fixed']);
+  });
+
   it('infers object and array types from their constraints', () => {
     expect(example({ properties: { name: { type: 'string' } } })).toEqual({ name: '<string>' });
     expect(example({ items: { type: 'integer' }, minItems: 2 })).toEqual([2154, 2154]);
@@ -139,6 +148,15 @@ describe('findDiscriminant', () => {
       { type: 'object', properties: { kind: { enum: ['b'] }, value: { type: 'number' } } },
     ];
     expect(findDiscriminant(schemas, new InternalLookup({ anyOf: schemas }))).toBe('kind');
+  });
+
+  it('finds a common singleton const property across object schemas', () => {
+    const schemas: [JsonSchema, ...JsonSchema[]] = [
+      { type: 'object', properties: { kind: { const: 'a' } } },
+      { type: 'object', properties: { kind: { const: 'b' } } },
+    ];
+
+    expect(findDiscriminant(schemas, new InternalLookup({}))).toBe('kind');
   });
 
   it('requires the property in every object and rejects non-primitive or non-singleton enums', () => {
