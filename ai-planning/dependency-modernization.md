@@ -1,5 +1,17 @@
 # Dependency modernization proposal
 
+## Status: complete (2026-09-20)
+
+Implemented in `6e78884` and `f6a0e86`. The application now runs on Node 22 with
+React 18, current compatible Atlaskit packages, React Router 7, React Markdown
+10, Styled Components 6, Monaco 0.56, Jest 30, Webpack 5.111, and Storybook
+8.6. Lint, the repository-wide coverage suite, the production build, and the
+Storybook build all pass.
+
+React 18, Babel 7, TypeScript 5, Webpack 5, and Storybook 8 are intentional
+compatibility boundaries rather than unfinished patch work: moving each to its
+newest major would require a separate platform migration outside this proposal.
+
 ## Inventory
 
 The root `package.json` pins a 2021-era React 16 / React Router 5 / styled-components 3 application, Atlaskit packages mostly in major versions 0–17, Monaco 0.39, React Markdown 8, and Webpack 5.87. It also has a large Babel/Storybook/Jest/TypeScript toolchain in `devDependencies`. The repository uses Yarn and `yarn.lock`; `.nvmrc` currently targets Node 16.
