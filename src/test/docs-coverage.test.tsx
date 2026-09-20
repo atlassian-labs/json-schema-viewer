@@ -1,7 +1,7 @@
 import React from 'react';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import { MemoryRouter, Route, useHistory } from 'react-router-dom';
+import { MemoryRouter, Route, Routes, useNavigate } from 'react-router-dom';
 
 jest.mock('../docs/introduction.md', () => 'introduction.md');
 jest.mock('../docs/usage.md', () => 'usage.md');
@@ -9,9 +9,9 @@ jest.mock('../docs/usage.md', () => 'usage.md');
 import { Docs } from '../Docs';
 
 function ChangeDocument() {
-  const history = useHistory();
+  const navigate = useNavigate();
   return (
-    <button type="button" onClick={() => history.push('/docs/usage')}>
+    <button type="button" onClick={() => navigate('/docs/usage')}>
       Usage
     </button>
   );
@@ -20,10 +20,9 @@ function ChangeDocument() {
 function renderDocs(path = '/docs/introduction') {
   return render(
     <MemoryRouter initialEntries={[path]}>
-      <Route path="/docs/:id">
-        <Docs />
-        <ChangeDocument />
-      </Route>
+      <Routes>
+        <Route path="/docs/:id" element={<><Docs /><ChangeDocument /></>} />
+      </Routes>
     </MemoryRouter>
   );
 }

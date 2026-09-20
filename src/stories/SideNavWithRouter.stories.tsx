@@ -1,5 +1,5 @@
 import React from 'react';
-import { Story, Meta } from '@storybook/react';
+import { StoryFn, Meta } from '@storybook/react';
 import { action } from '@storybook/addon-actions';
 import { SideNavWithRouter, SideNavWithRouterProps, GroupSideNavLink, SingleSideNavLink, SideNavLink } from '../SideNavWithRouter';
 import { DebuggingMemoryRouter } from './DebuggingMemoryRouter';
@@ -11,7 +11,7 @@ export default {
   },
 } as Meta;
 
-const Template: Story<SideNavWithRouterProps> = (args) => (
+const Template: StoryFn<SideNavWithRouterProps> = (args) => (
   <DebuggingMemoryRouter initialEntries={['base']}>
     <SideNavWithRouter {...args} />
   </DebuggingMemoryRouter>

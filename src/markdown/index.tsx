@@ -1,7 +1,8 @@
 import React from 'react';
-import ReactMarkdown, { Components } from 'react-markdown';
+import ReactMarkdown from 'react-markdown';
+import type { Components } from 'react-markdown';
 import styled from 'styled-components';
-import { BlockCodeRenderer, InlineCodeRenderer } from './custom-renderers/Code';
+import { CodeRenderer, PreRenderer } from './custom-renderers/Code';
 import { LinkRenderer } from './custom-renderers/Link';
 import rehypeSanitize from 'rehype-sanitize';
 import rehypeRaw from 'rehype-raw';
@@ -53,8 +54,8 @@ export const Markdown: React.FC<MarkdownProps> = (props: MarkdownProps) => {
       rehypePlugins={[rehypeRaw, rehypeSanitize]}
       children={source}
       components={{
-        code: (props) =>
-          props.inline ? <InlineCodeRenderer {...props} /> : <BlockCodeRenderer {...props} />,
+        code: CodeRenderer,
+        pre: PreRenderer,
         a: LinkRenderer,
         blockquote: BlockQuoteRenderer,
         hr: HorizontalRuleRenderer,

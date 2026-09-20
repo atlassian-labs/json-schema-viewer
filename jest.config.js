@@ -6,6 +6,7 @@ const config = {
   moduleNameMapper: {
     '\\.(css|less|scss|sass)$': '<rootDir>/src/test/style-mock.js',
   },
+  setupFiles: ['<rootDir>/src/test/setup.js'],
   collectCoverageFrom: [
     'src/**/*.{ts,tsx}',
     '!src/schema.ts',

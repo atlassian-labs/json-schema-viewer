@@ -89,7 +89,7 @@ export class ExpandibleList extends React.PureComponent<ExpandibleListProps, Exp
       return (
         <span>
           {intersperse(renderedElements, ', ')}
-          <ExpandibleList.Link onClick={(e) => this.expand(e, false)}>
+          <ExpandibleList.Link onClick={(e: React.MouseEvent<HTMLElement>) => this.expand(e, false)}>
             (Show less)
           </ExpandibleList.Link>
         </span>
@@ -102,7 +102,7 @@ export class ExpandibleList extends React.PureComponent<ExpandibleListProps, Exp
       return (
         <span>
           {intersperse(renderedElements, ', ')} ...
-          <ExpandibleList.Link onClick={(e) => this.expand(e, true)}>
+          <ExpandibleList.Link onClick={(e: React.MouseEvent<HTMLElement>) => this.expand(e, true)}>
             (Show more)
           </ExpandibleList.Link>
         </span>

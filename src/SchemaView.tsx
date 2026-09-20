@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { RouteComponentProps, withRouter } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import { getSchemaFromReference, InternalLookup, Lookup } from './lookup';
 import { PathElement } from './route-path';
 import { JsonSchema } from './schema';
@@ -11,9 +11,11 @@ import { extractLinks } from './side-nav-loader';
 import { SchemaEditor } from './SchemaEditor';
 import { generateJsonExampleFor, isErrors } from './example';
 import { forSize } from './breakpoints';
-import type { editor, IRange } from 'monaco-editor';
+import type { editor, IRange } from 'monaco-editor/editor';
+import { RouteLocation } from './router-types';
 
-export type SchemaViewProps = RouteComponentProps & {
+export type SchemaViewProps = {
+  location: RouteLocation;
   basePathSegments: Array<string>;
   schema: JsonSchema;
   stage: Stage;
@@ -159,4 +161,7 @@ export class SchemaViewWR extends React.PureComponent<SchemaViewProps, SchemaVie
   }
 }
 
-export const SchemaView = withRouter<SchemaViewProps, typeof SchemaViewWR>(SchemaViewWR);
+export const SchemaView: React.FC<Omit<SchemaViewProps, 'location'>> = props => {
+  const location = useLocation();
+  return <SchemaViewWR {...props} location={location} />;
+};

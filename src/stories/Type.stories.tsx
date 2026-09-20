@@ -1,5 +1,5 @@
 import React from 'react';
-import { Story, Meta } from '@storybook/react';
+import { StoryFn, Meta } from '@storybook/react';
 
 import { IdLookup } from '../lookup';
 import { Type, TypeProps } from '../Type';
@@ -21,7 +21,7 @@ const defaultProps: Partial<TypeProps> = {
   clickElement: (props) => <a>{props.fallbackTitle}</a>
 };
 
-const Template: Story<TypeProps> = (args) => <Type {...args} />;
+const Template: StoryFn<TypeProps> = (args) => <Type {...args} />;
 
 export const EmptySchema = Template.bind({});
 EmptySchema.args = {

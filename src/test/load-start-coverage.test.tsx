@@ -1,7 +1,7 @@
 import React from 'react';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import { MemoryRouter, Route, useLocation } from 'react-router-dom';
+import { MemoryRouter, Route, Routes, useLocation } from 'react-router-dom';
 
 import { LoadSchema } from '../LoadSchema';
 import { Start } from '../Start';
@@ -56,10 +56,9 @@ describe('Start', () => {
   test('navigates to the encoded schema URL on submit', () => {
     render(
       <MemoryRouter initialEntries={['/start']}>
-        <Route path="*">
-          <Start />
-          <LocationText />
-        </Route>
+        <Routes>
+          <Route path="*" element={<><Start /><LocationText /></>} />
+        </Routes>
       </MemoryRouter>
     );
 
@@ -92,9 +91,9 @@ describe('LoadSchema', () => {
 
     render(
       <MemoryRouter initialEntries={['/view/%23?url=https%3A%2F%2Fexample.test%2Fschema.json']}>
-        <Route path="/view/:reference">
-          <LoadSchema>{child}</LoadSchema>
-        </Route>
+        <Routes>
+          <Route path="/view/:reference" element={<LoadSchema>{child}</LoadSchema>} />
+        </Routes>
       </MemoryRouter>
     );
 
@@ -111,9 +110,9 @@ describe('LoadSchema', () => {
 
     render(
       <MemoryRouter initialEntries={['/view/%23?url=https%3A%2F%2Fexample.test%2Fmissing.json']}>
-        <Route path="/view/:reference">
-          <LoadSchema>{() => <div>Should not render</div>}</LoadSchema>
-        </Route>
+        <Routes>
+          <Route path="/view/:reference" element={<LoadSchema>{() => <div>Should not render</div>}</LoadSchema>} />
+        </Routes>
       </MemoryRouter>
     );
 

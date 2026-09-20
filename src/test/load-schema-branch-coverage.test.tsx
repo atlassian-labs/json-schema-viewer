@@ -1,8 +1,7 @@
 import React from 'react';
 import { render, screen, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import { MemoryRouter, Route, Router } from 'react-router-dom';
-import { createMemoryHistory } from 'history';
+import { MemoryRouter, Route, Routes, useNavigate } from 'react-router-dom';
 
 import { LoadSchema } from '../LoadSchema';
 import { getRecentlyViewedLinks } from '../recently-viewed';
@@ -33,9 +32,9 @@ describe('LoadSchema branch coverage', () => {
 
     render(
       <MemoryRouter initialEntries={['/view/%23']}>
-        <Route path="/view/:reference">
-          <LoadSchema>{() => <div>Loaded</div>}</LoadSchema>
-        </Route>
+        <Routes>
+          <Route path="/view/:reference" element={<LoadSchema>{() => <div>Loaded</div>}</LoadSchema>} />
+        </Routes>
       </MemoryRouter>
     );
 
@@ -52,9 +51,9 @@ describe('LoadSchema branch coverage', () => {
 
     render(
       <MemoryRouter initialEntries={[`/view/%23?url=${encodeURIComponent(url)}`]}>
-        <Route path="/view/:reference">
-          <LoadSchema>{child}</LoadSchema>
-        </Route>
+        <Routes>
+          <Route path="/view/:reference" element={<LoadSchema>{child}</LoadSchema>} />
+        </Routes>
       </MemoryRouter>
     );
 
@@ -71,9 +70,9 @@ describe('LoadSchema branch coverage', () => {
 
     render(
       <MemoryRouter initialEntries={[`/view/%23?url=${encodeURIComponent(url)}`]}>
-        <Route path="/view/:reference">
-          <LoadSchema>{() => <div>Untitled schema</div>}</LoadSchema>
-        </Route>
+        <Routes>
+          <Route path="/view/:reference" element={<LoadSchema>{() => <div>Untitled schema</div>}</LoadSchema>} />
+        </Routes>
       </MemoryRouter>
     );
 
@@ -91,11 +90,13 @@ describe('LoadSchema branch coverage', () => {
     try {
       render(
         <MemoryRouter initialEntries={['/view/%23?url=https%3A%2F%2Fexample.test%2Fschema.json']}>
-          <Route path="/view/:reference">
-            <ErrorBoundary>
-              <LoadSchema>{'not a function' as any}</LoadSchema>
-            </ErrorBoundary>
-          </Route>
+          <Routes>
+            <Route path="/view/:reference" element={(
+              <ErrorBoundary>
+                <LoadSchema>{'not a function' as any}</LoadSchema>
+              </ErrorBoundary>
+            )} />
+          </Routes>
         </MemoryRouter>
       );
 
@@ -120,22 +121,31 @@ describe('LoadSchema branch coverage', () => {
       })
     );
 
-    const history = createMemoryHistory({
-      initialEntries: [`/view/root?url=${encodeURIComponent(firstUrl)}`],
-    });
-
-    render(
-      <Router history={history}>
-        <LoadSchema>
-          {(schema) => <div>{typeof schema === 'boolean' ? String(schema) : schema.title}</div>}
-        </LoadSchema>
+    const ChangeSchema = () => {
+      const navigate = useNavigate();
+      return (
         <button
           type="button"
-          onClick={() => history.push(`/view/root?url=${encodeURIComponent(secondUrl)}`)}
+          onClick={() => navigate(`/view/root?url=${encodeURIComponent(secondUrl)}`)}
         >
           Change schema
         </button>
-      </Router>
+      );
+    };
+
+    render(
+      <MemoryRouter initialEntries={[`/view/root?url=${encodeURIComponent(firstUrl)}`]}>
+        <Routes>
+          <Route path="/view/:reference" element={(
+            <>
+              <LoadSchema>
+                {(schema) => <div>{typeof schema === 'boolean' ? String(schema) : schema.title}</div>}
+              </LoadSchema>
+              <ChangeSchema />
+            </>
+          )} />
+        </Routes>
+      </MemoryRouter>
     );
 
     await waitFor(() => expect(screen.getByText('First')).toBeInTheDocument());

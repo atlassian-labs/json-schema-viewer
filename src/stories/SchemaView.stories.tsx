@@ -1,5 +1,5 @@
 import React from 'react';
-import { Story, Meta } from '@storybook/react';
+import { StoryFn, Meta } from '@storybook/react';
 import { SchemaView, SchemaViewProps } from '../SchemaView';
 import { Schema as PackageJson } from './package.json';
 import { Schema as OpenAPISchema } from './openapi.json';
@@ -12,7 +12,7 @@ export default {
    },
 } as Meta;
 
-const Template: Story<SchemaViewProps> = (args) => (
+const Template: StoryFn<SchemaViewProps> = (args) => (
    <DebuggingMemoryRouter initialEntries={['/base']}>
       <SchemaView {...args} />
    </DebuggingMemoryRouter>

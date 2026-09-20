@@ -12,8 +12,6 @@ function pathFor(schema: any, pathname: string, basePathSegments: string[] = ['b
     schema,
     stage: 'both',
     location: { pathname, search: '', hash: '', state: undefined },
-    history: {},
-    match: {},
   } as any);
   return (view as any).getPathFromRoute(new InternalLookup(schema));
 }

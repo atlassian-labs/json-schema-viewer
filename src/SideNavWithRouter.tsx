@@ -33,7 +33,7 @@ function isSideNavSpace(l: SideNavLink): l is SideNavSpace {
 }
 
 interface NavItemProps {
-  indent?: boolean;
+  $indent?: boolean;
 }
 
 /*
@@ -53,7 +53,7 @@ const NavItem = styled.li<NavItemProps>`
     text-decoration: none;
 
     line-height: 18px;
-    padding: ${({ indent }) => `0.7rem 1rem 0.22rem ${indent ? '13px' : 0}`};
+    padding: ${({ $indent }) => `0.7rem 1rem 0.22rem ${$indent ? '13px' : 0}`};
 
     display: inline-flex;
     display: -moz-box;
@@ -126,7 +126,7 @@ class SideNavGroup extends React.PureComponent<SideNavGroupProps, SideNavGroupSt
         <>
           <SideNavGroup.Item>
             <SideNavGroup.SingleLinkContainer>
-              <NavLinkPreservingSearch to={linkTo(basePathSagments, [link.reference])} exact={true}>
+              <NavLinkPreservingSearch to={linkTo(basePathSagments, [link.reference])} end={true}>
                 {link.title}
               </NavLinkPreservingSearch>
             </SideNavGroup.SingleLinkContainer>
@@ -143,10 +143,10 @@ class SideNavGroup extends React.PureComponent<SideNavGroupProps, SideNavGroupSt
       ? []
       : link.children.map((childLink) => {
           return (
-            <NavItem key={childLink.reference} indent={true}>
+            <NavItem key={childLink.reference} $indent={true}>
               <NavLinkPreservingSearch
                 to={linkTo(basePathSagments, [childLink.reference])}
-                exact={true}
+                end={true}
               >
                 {childLink.title}
               </NavLinkPreservingSearch>
@@ -158,7 +158,7 @@ class SideNavGroup extends React.PureComponent<SideNavGroupProps, SideNavGroupSt
 
     const groupLink =
       link.reference !== undefined ? (
-        <NavLinkPreservingSearch to={linkTo(basePathSagments, [link.reference])} exact={true}>
+        <NavLinkPreservingSearch to={linkTo(basePathSagments, [link.reference])} end={true}>
           {link.title}
         </NavLinkPreservingSearch>
       ) : (

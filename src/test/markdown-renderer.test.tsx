@@ -27,4 +27,16 @@ describe('markdown renderer', () => {
     expect(screen.queryByTitle('xss')).toBeNull();
     expect(screen.queryByTitle('xsscss')).toBeNull();
   });
-})
+
+  test('renders inline and fenced code with the react-markdown 10 component API', () => {
+    render(
+      <Markdown
+        source={['Inline `value`.', '', '```json', '{"answer": 42}', '```'].join('\n')}
+      />
+    );
+
+    expect(screen.getByText('value')).toBeInTheDocument();
+    expect(screen.getByText('Copy')).toBeInTheDocument();
+    expect(screen.getByText('{"answer": 42}')).toBeInTheDocument();
+  });
+});

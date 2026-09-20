@@ -38,7 +38,7 @@ const Container = styled.div`
 `;
 
 export const Docs: React.FC = () => {
-   let { id } = useParams<RouteParams>();
+   const { id = '' } = useParams<RouteParams>();
 
    const [loadResult, setLoadResult] = useState<LoadResult>(undefined);
 

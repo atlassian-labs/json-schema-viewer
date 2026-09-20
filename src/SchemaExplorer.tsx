@@ -16,13 +16,13 @@ import { generateJsonExampleFor, isExample } from './example';
 import { Stage, shouldShowInStage } from './stage';
 import { externalLinkTo, linkTo, PathElement } from './route-path';
 import { ClickElement, Type, Anything } from './Type';
-import { Link, LinkProps, useHistory, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { getTitle, findTitle } from './title';
 import { LinkPreservingSearch, NavLinkPreservingSearch } from './search-preserving-link';
 import { dump } from 'js-yaml';
 import { isExternalReference } from './type-inference';
 import { SchemaValidator } from './SchemaValidator';
-import type { editor, IRange } from 'monaco-editor';
+import type { editor, IRange } from 'monaco-editor/editor';
 
 interface SEPHeadProps {
   basePathSegments: Array<string>;
@@ -60,7 +60,7 @@ function getObjectPath(basePathSegments: Array<string>, path: PathElement[]): JS
       key={`${pe.title}-${i}`}
       text={pe.title}
       component={() => (
-        <NavLinkPreservingSearch to={linkTo(basePathSegments, path.slice(0, i+1).map(p => p.reference))}  exact={true}>
+        <NavLinkPreservingSearch to={linkTo(basePathSegments, path.slice(0, i+1).map(p => p.reference))} end={true}>
           {getTitle(pe.reference, { title: pe.title !== 'object' ? pe.title : undefined })}
         </NavLinkPreservingSearch>
       )}
@@ -68,16 +68,17 @@ function getObjectPath(basePathSegments: Array<string>, path: PathElement[]): JS
   ));
 }
 
-const BackButton: React.FC<LinkProps> = props => {
-  const history = useHistory();
+const BackButton: React.FC<{ to: string }> = props => {
+  const navigate = useNavigate();
+  const location = useLocation();
   return (
     <Button
       key="backButton"
       iconBefore={<ChevronLeftIcon label="Back" />}
-      href={props.href}
+      href={props.to}
       onClick={e => {
         e.preventDefault();
-        history.push(props.href || '');
+        navigate({ pathname: props.to, search: location.search });
       }}
     >Back
     </Button>
@@ -100,7 +101,7 @@ const SEPHead: React.FC<SEPHeadProps> = (props) => {
   const ActionButton = props.path.length <= 1
     ? <h1>Root</h1>
     : (
-      <LinkPreservingSearch to={linkTo(props.basePathSegments, init(props.path.map(p => p.reference)))} component={BackButton} />
+      <BackButton to={linkTo(props.basePathSegments, init(props.path.map(p => p.reference)))} />
     );
 
   return (

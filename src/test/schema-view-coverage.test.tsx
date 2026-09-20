@@ -46,8 +46,6 @@ function view(pathname: string, currentSchema: any = schema) {
       schema={currentSchema}
       stage="both"
       location={{ pathname, search: '', hash: '', state: undefined }}
-      history={{} as any}
-      match={{} as any}
     />
   );
 }

@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import type { editor, IRange } from 'monaco-editor';
+import type { editor, IRange } from 'monaco-editor/editor';
 import IconError from '@atlaskit/icon/core/error';
 import IconInfo from '@atlaskit/icon/core/information';
 import IconWarning from '@atlaskit/icon/core/warning';

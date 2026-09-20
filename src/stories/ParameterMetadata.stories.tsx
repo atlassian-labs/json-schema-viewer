@@ -1,5 +1,5 @@
 import React from 'react';
-import { Story, Meta } from '@storybook/react';
+import { StoryFn, Meta } from '@storybook/react';
 
 import { IdLookup } from '../lookup';
 import { ParameterMetadata, ParameterMetadataProps } from '../ParameterMetadata';
@@ -15,7 +15,7 @@ const defaultProps = {
   lookup: new IdLookup()
 };
 
-const Template: Story<ParameterMetadataProps> = (args) => <ParameterMetadata {...args} />;
+const Template: StoryFn<ParameterMetadataProps> = (args) => <ParameterMetadata {...args} />;
 
 export const ItemRestrictors = Template.bind({});
 ItemRestrictors.args = {

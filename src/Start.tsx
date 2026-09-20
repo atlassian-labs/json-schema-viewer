@@ -1,13 +1,13 @@
 import EmptyState from '@atlaskit/empty-state';
 import React from 'react';
 import styled from 'styled-components';
-import { RouteComponentProps, withRouter } from 'react-router-dom';
+import { useNavigate, type NavigateFunction } from 'react-router-dom';
 import TextField from '@atlaskit/textfield';
 import Button from '@atlaskit/button';
 import { Markdown } from './markdown';
 
-export type StartProps = RouteComponentProps & {
-
+export type StartProps = {
+  navigate: NavigateFunction;
 };
 
 export type StartState = {
@@ -90,10 +90,8 @@ export class StartWR extends React.PureComponent<StartProps, StartState> {
   };
 
   render() {
-    const { history } = this.props;
-
     const handleOnClick = () => {
-      history.push(`/view/${encodeURIComponent('#')}?url=${encodeURIComponent(this.state.urlInput || '')}`);
+      this.props.navigate(`/view/${encodeURIComponent('#')}?url=${encodeURIComponent(this.state.urlInput || '')}`);
     };
 
     const onTextChange: React.FormEventHandler<HTMLInputElement> = e => {
@@ -120,4 +118,7 @@ export class StartWR extends React.PureComponent<StartProps, StartState> {
   }
 }
 
-export const Start = withRouter<StartProps, typeof StartWR>(StartWR)
+export const Start: React.FC = () => {
+  const navigate = useNavigate();
+  return <StartWR navigate={navigate} />;
+};
