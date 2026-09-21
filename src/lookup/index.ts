@@ -62,11 +62,15 @@ export class InternalLookup implements Lookup {
       return undefined;
     }
 
-    const result = pointerGet(this.schema, ref.slice(1));
+    let result = pointerGet(this.schema, ref.slice(1));
 
     if (result === undefined) {
       return undefined;
     }
+
+    // reference schema exists, add description from original schema if one exists
+    // fulfills scenario where schema property is a schema ref but also specifies a "top-level" description for the ref schema IE context description
+    result = {description: schema.description, ...result};
 
     // TODO add in a type check on the result to ensure that it is of the right type
 
