@@ -42,9 +42,30 @@ export class IdLookup implements Lookup {
 
 export class InternalLookup implements Lookup {
   private schema: JsonSchema;
+  private references: Map<string, JsonSchema>;
 
   constructor(schema: JsonSchema) {
     this.schema = schema;
+    this.references = new Map();
+    this.visit(schema);
+  }
+
+  private visit(schema: JsonSchema, base?: string) {
+    if (typeof schema === 'boolean') {
+      return;
+    }
+    if (schema.$id) {
+      base = new window.URL(schema.$id, base).href;
+      if (this.references.has(base)) {
+        throw new Error('Duplicated $id was found in the schema');
+      }
+      this.references.set(base, schema);
+    }
+    if (schema.definitions) {
+      for (const definition of Object.values(schema.definitions)) {
+        this.visit(definition, base);
+      }
+    }
   }
 
   public getSchema(schema: JsonSchema): LookupResult {
@@ -60,6 +81,14 @@ export class InternalLookup implements Lookup {
     if (!ref.startsWith('#')) {
       // This class does not support non-internal references
       return undefined;
+    }
+
+    if (typeof this.schema !== 'boolean' && this.schema.$id) {
+      const url = new window.URL(ref, this.schema.$id).href;
+      const result = this.references.get(url);
+      if (result) {
+        return this.getSchema(result);
+      }
     }
 
     const result = pointerGet(this.schema, ref.slice(1));
