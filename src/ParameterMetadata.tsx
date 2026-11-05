@@ -6,6 +6,7 @@ import { intersperse } from './jsx-util';
 import { ExpandibleList } from './ExpandibleList';
 import { Code } from '@atlaskit/code';
 import { extractEnum } from './enum-extraction';
+import { displaySchemaValue } from './schema-value';
 
 const MetadataContainer = styled.div`
   margin: 8px 0 8px 0;
@@ -48,8 +49,8 @@ export const ParameterMetadata: React.FC<ParameterMetadataProps> = (props) => {
     );
   }
 
-  function show(name: string, key: string, value: string | number) {
-    const displayVal = typeof value === 'string' ? value : value.toString();
+  function show(name: string, key: string, value: unknown) {
+    const displayVal = displaySchemaValue(value);
     return (
       <span key={key}>
         {name}: <Code>{displayVal}</Code>
@@ -65,6 +66,10 @@ export const ParameterMetadata: React.FC<ParameterMetadataProps> = (props) => {
       } else if (typeof def === 'boolean') {
         restrictions.push(showBoolean('Default', 'default', def));
       }
+    }
+
+    if (Object.prototype.hasOwnProperty.call(schema, 'const')) {
+      restrictions.push(show('Constant', 'const', schema.const));
     }
 
     if (schema.minItems !== undefined) {

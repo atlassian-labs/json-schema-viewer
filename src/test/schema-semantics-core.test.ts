@@ -11,6 +11,7 @@ import {
   isExternalReference,
   isPrimitiveType,
   jsonTypeToSchemaType,
+  jsonValueToSchemaType,
 } from '../type-inference';
 import { extractEnum } from '../enum-extraction';
 import { shouldShowInStage } from '../stage';
@@ -67,6 +68,12 @@ describe('schema type inference', () => {
     expect(jsonTypeToSchemaType(value)).toBe(expected);
   });
 
+  it('maps JSON constants to their precise schema types', () => {
+    expect(jsonValueToSchemaType(null)).toBe('null');
+    expect(jsonValueToSchemaType([])).toBe('array');
+    expect(jsonValueToSchemaType({})).toBe('object');
+  });
+
   it('deduplicates enum types and preserves mixed enum ordering', () => {
     expect(getTypesFromEnum(['a', 'b'])).toBe('string');
     expect(getTypesFromEnum([1, 2])).toBe('number');
@@ -81,6 +88,11 @@ describe('schema type inference', () => {
     expect(getOrInferType({ minimum: 0 })).toBe('number');
     expect(getOrInferType({ pattern: 'x' })).toBe('string');
     expect(getOrInferType({ enum: ['x'] })).toBe('string');
+    expect(getOrInferType({ const: false })).toBe('boolean');
+    expect(getOrInferType({ const: 0 })).toBe('number');
+    expect(getOrInferType({ const: '' })).toBe('string');
+    expect(getOrInferType({ const: null })).toBe('null');
+    expect(getOrInferType({ const: [] })).toBe('array');
     expect(getOrInferType({})).toBeUndefined();
     expect(getOrInferType({ type: 'null', minimum: 0 })).toBe('null');
   });
@@ -113,6 +125,10 @@ describe('enum extraction and read/write stage', () => {
       extractEnum({ type: 'array', items: [{ enum: ['red'] }] }, directLookup)
     ).toBeUndefined();
     expect(extractEnum(true, directLookup)).toBeUndefined();
+  });
+
+  it('keeps const separate from enum extraction', () => {
+    expect(extractEnum({ const: 'draft' }, directLookup)).toBeUndefined();
   });
 
   it('shows booleans and both-stage schemas, and filters one-sided visibility', () => {
