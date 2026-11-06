@@ -20,12 +20,10 @@ export function externalLinkTo(basePathSegments: Array<string>, externalRef: str
   try {
     const parsedUrl = new URL(externalRef);
 
-    if (parsedUrl.protocol === 'http:') {
-      // In production, since we host on https, without this you would get mixed content errors when attempting to
-      // fetch. This may be surprising behaviour.
-      parsedUrl.protocol = 'https:';
-    }
-
+    // Do not rewrite the protocol (e.g. http -> https) of the external reference: the generated link must point at
+    // the same URL as the $ref itself. Browsers may still block fetching an http: URL from an https: page as mixed
+    // content, in which case the schema loader shows its regular load failure state. Silently switching the
+    // protocol is surprising behaviour (see issue #34) and often points at a URL that does not exist at all.
     const pathSegment = parsedUrl.hash.startsWith('#') ? parsedUrl.hash : '#';
     parsedUrl.hash = '';
     const url = parsedUrl.toString();
