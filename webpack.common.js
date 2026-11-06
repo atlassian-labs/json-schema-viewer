@@ -35,7 +35,7 @@ module.exports = {
     new HtmlWebpackPlugin({
       title: 'JSON Schema Viewer',
       template: 'index.html',
-      publicPath: '/',
+      publicPath: process.env.WEBPACK_PUBLIC_PATH ?? '/',
       filename: 'index.html'
     }),
     new CspHtmlWebpackPlugin({
@@ -52,7 +52,7 @@ module.exports = {
     }),
     new FaviconsWebpackPlugin({
       logo: './src/logo.svg',
-      publicPath: '/',
+      publicPath: process.env.WEBPACK_PUBLIC_PATH ?? '/',
       prefix: 'auto/[contenthash]'
     })
   ]
